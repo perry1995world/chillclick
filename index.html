@@ -261,6 +261,49 @@ body{
 }
 .ad-countdown.hidden{opacity:0;}
 
+/* ── 유료 전환 팝업 ── */
+.upgrade-overlay{
+  position:absolute;inset:0;z-index:95;
+  background:rgba(30,25,20,.6);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.upgrade-overlay.show{opacity:1;pointer-events:all;}
+
+.upgrade-card{
+  width:300px;background:#fff;border-radius:20px;
+  padding:28px 24px 24px;
+  position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+  animation:cardIn .3s cubic-bezier(.3,0,.5,1.2);
+}
+.upgrade-emoji{font-size:48px;text-align:center;display:block;margin-bottom:12px;}
+.upgrade-title{font-size:18px;font-weight:900;color:#3A3530;text-align:center;margin-bottom:8px;}
+.upgrade-desc{font-size:13px;color:#A8A49C;text-align:center;line-height:1.6;margin-bottom:18px;}
+.upgrade-benefits{
+  background:#FFF8E8;border-radius:12px;padding:14px;
+  margin-bottom:18px;border:1.5px solid #FFD96A;
+  display:flex;flex-direction:column;gap:7px;
+}
+.upgrade-benefit-item{
+  font-size:12px;color:#8B6914;
+  display:flex;align-items:center;gap:7px;font-weight:600;
+}
+.upgrade-btn-main{
+  width:100%;padding:14px;border-radius:12px;
+  background:linear-gradient(135deg,#FFD96A,#C49A20);color:#5A3E00;
+  font-size:14px;font-weight:800;border:none;cursor:pointer;
+  margin-bottom:8px;
+  box-shadow:0 4px 16px rgba(196,154,32,.3);
+  transition:transform .15s;
+}
+.upgrade-btn-main:active{transform:scale(.97);}
+.upgrade-btn-skip{
+  width:100%;padding:12px;border-radius:12px;
+  background:#F5F3EE;color:#A8A49C;
+  font-size:13px;font-weight:700;border:none;cursor:pointer;
+}
+
 /* ── 리셋 팝업 ── */
 .reset-overlay{
   position:absolute;inset:0;z-index:90;
@@ -509,6 +552,23 @@ body{
         <div class="ad-desc" id="adDesc">배달의민족과 함께라면<br>집이 더 좋아집니다 🍕</div>
         <button class="ad-cta">자세히 보기</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ── 유료 전환 팝업 ── -->
+  <div class="upgrade-overlay" id="upgradeOverlay">
+    <div class="upgrade-card">
+      <span class="upgrade-emoji">✨</span>
+      <div class="upgrade-title">광고 없이 즐겨볼까요?</div>
+      <div class="upgrade-desc">유료 회원이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
+      <div class="upgrade-benefits">
+        <div class="upgrade-benefit-item">🚫 광고 완전 제거</div>
+        <div class="upgrade-benefit-item">♾️ 클릭 횟수 무제한</div>
+        <div class="upgrade-benefit-item">💾 클릭 수 저장 및 유지</div>
+        <div class="upgrade-benefit-item">🔓 모든 테마 잠금 해제</div>
+      </div>
+      <button class="upgrade-btn-main" onclick="closeUpgradePopup();showToast('유료 전환 페이지로 이동합니다 (준비중)')">✨ 유료 회원 전환하기</button>
+      <button class="upgrade-btn-skip" onclick="closeUpgradePopup()">괜찮아요, 다음에</button>
     </div>
   </div>
 
@@ -762,6 +822,15 @@ function closeAd() {
   document.getElementById('adOverlay').classList.remove('show');
   document.getElementById('adKeyLayer').style.display = 'none';
   state.adShowing = false;
+  setTimeout(showUpgradePopup, 300);
+}
+
+/* ─── 유료 전환 팝업 ─── */
+function showUpgradePopup() {
+  document.getElementById('upgradeOverlay').classList.add('show');
+}
+function closeUpgradePopup() {
+  document.getElementById('upgradeOverlay').classList.remove('show');
 }
 
 /* ─── 리셋 팝업 ─── */
