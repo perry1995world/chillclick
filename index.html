@@ -140,25 +140,33 @@ body{
   position:absolute;inset:0;border-radius:11px;
   overflow:hidden;display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#f8f4ee,#ede8df);
 }
 .key-ad-img{
-  width:100%;height:65%;object-fit:cover;
+  width:100%;flex:1;
   display:flex;align-items:center;justify-content:center;
-  font-size:32px;
+  font-size:30px;
 }
 .key-ad-label{
-  width:100%;padding:3px 6px;
-  font-size:9px;font-weight:700;
-  color:#fff;background:rgba(0,0,0,.45);
+  width:100%;padding:4px 6px;
+  font-size:9px;font-weight:800;
+  color:#fff;
   text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .key-ad-tag{
-  position:absolute;top:4px;left:4px;
-  background:rgba(0,0,0,.5);color:#fff;
-  font-size:7px;font-weight:800;padding:2px 5px;border-radius:4px;
-  letter-spacing:.5px;
+  position:absolute;top:4px;right:4px;
+  background:rgba(255,255,255,.85);color:#333;
+  font-size:7px;font-weight:800;padding:2px 4px;border-radius:3px;
+  letter-spacing:.3px;
 }
+/* 키별 브랜드 색상 */
+#adKey1{background:linear-gradient(160deg,#00C4D4,#0097A7);}
+#adKey1 .key-ad-label{background:#0097A7;}
+#adKey2{background:linear-gradient(160deg,#FF6B6B,#E53935);}
+#adKey2 .key-ad-label{background:#E53935;}
+#adKey3{background:linear-gradient(160deg,#FFB300,#F57F17);}
+#adKey3 .key-ad-label{background:#F57F17;}
+#adKey4{background:linear-gradient(160deg,#66BB6A,#2E7D32);}
+#adKey4 .key-ad-label{background:#2E7D32;}
 
 /* ── 공유 버튼 ── */
 .share-btn{
@@ -448,24 +456,24 @@ body{
       <div class="key" id="key3" style="background:var(--ks)"><span class="key-text" id="k3" style="color:#CF3E50">가고</span></div>
       <div class="key" id="key4" style="background:var(--ks)"><span class="key-text" id="k4" style="color:#CF3E50">싶다</span></div>
 
-      <!-- 광고 이미지 레이어 (비회원/무료 회원용) -->
+      <!-- 광고 이미지 레이어 -->
       <div id="adKeyLayer" style="display:none;position:absolute;inset:0;border-radius:18px;overflow:hidden;pointer-events:none;">
-        <div class="key-ad" style="position:absolute;top:0;left:0;width:calc(50% - 3.5px);height:calc(50% - 3.5px);">
+        <div class="key-ad" id="adKey1" style="position:absolute;top:0;left:0;width:calc(50% - 3.5px);height:calc(50% - 3.5px);">
           <div class="key-ad-img" id="adImg1">🍕</div>
           <div class="key-ad-label" id="adLabel1">배달의민족</div>
           <div class="key-ad-tag">AD</div>
         </div>
-        <div class="key-ad" style="position:absolute;top:0;right:0;width:calc(50% - 3.5px);height:calc(50% - 3.5px);">
+        <div class="key-ad" id="adKey2" style="position:absolute;top:0;right:0;width:calc(50% - 3.5px);height:calc(50% - 3.5px);">
           <div class="key-ad-img" id="adImg2">🛋️</div>
           <div class="key-ad-label" id="adLabel2">오늘의집</div>
           <div class="key-ad-tag">AD</div>
         </div>
-        <div class="key-ad" style="position:absolute;bottom:0;left:0;width:calc(50% - 3.5px);height:calc(50% - 3.5px);">
+        <div class="key-ad" id="adKey3" style="position:absolute;bottom:0;left:0;width:calc(50% - 3.5px);height:calc(50% - 3.5px);">
           <div class="key-ad-img" id="adImg3">✈️</div>
           <div class="key-ad-label" id="adLabel3">야놀자</div>
           <div class="key-ad-tag">AD</div>
         </div>
-        <div class="key-ad" style="position:absolute;bottom:0;right:0;width:calc(50% - 3.5px);height:calc(50% - 3.5px);">
+        <div class="key-ad" id="adKey4" style="position:absolute;bottom:0;right:0;width:calc(50% - 3.5px);height:calc(50% - 3.5px);">
           <div class="key-ad-img" id="adImg4">☕</div>
           <div class="key-ad-label" id="adLabel4">스타벅스</div>
           <div class="key-ad-tag">AD</div>
@@ -714,10 +722,15 @@ function setTier(tier, el) {
 function updateProgress() {}
 
 /* ─── 광고 체크 ─── */
-function checkAd() {
-  const c = state.count;
+function checkAdKeys() {
   if(state.tier !== 'free') return false;
+  const c = state.count;
   return c === 50 || c === 100 || c === 150;
+}
+function checkAdPopup() {
+  if(state.tier !== 'free') return false;
+  const c = state.count;
+  return c === 51 || c === 101 || c === 151;
 }
 
 /* ─── 광고 키 이미지 테마 ─── */
@@ -916,8 +929,11 @@ function handlePress(e) {
 
   saveCount();
 
-  // 광고 체크
-  if(checkAd()) { setTimeout(showAd, 100); return; }
+  // 50/100/150회: 키캡에 광고 이미지 노출
+  if(checkAdKeys()) { showAdKeyLayer(); return; }
+
+  // 51/101/151회: 팝업 노출
+  if(checkAdPopup()) { setTimeout(showAd, 100); return; }
 
   // 리셋 체크 (무료 회원)
   if(state.tier === 'free' && state.count >= 159) {
