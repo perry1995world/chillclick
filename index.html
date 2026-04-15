@@ -566,6 +566,12 @@ body{
       <button class="demo-btn" onclick="setTier('free',this)">무료 회원</button>
       <button class="demo-btn" onclick="setTier('premium',this)">유료 회원 ✨</button>
     </div>
+    <div id="premiumResetWrap" style="display:none;margin-top:8px;text-align:center;">
+      <button onclick="resetPremiumCount()" style="
+        font-size:11px;color:#A8A49C;background:none;border:none;
+        cursor:pointer;text-decoration:underline;
+      ">클릭 수 초기화</button>
+    </div>
   </div>
 
   <!-- ── 광고 오버레이 ── -->
@@ -632,6 +638,26 @@ const state = {
   adTimer: null,
 };
 
+/* ─── 유료 회원 클릭 수 저장 ─── */
+function saveCount() {
+  if(state.tier === 'premium') {
+    localStorage.setItem('chillclick_count_' + state.theme, state.count);
+  }
+}
+function loadCount() {
+  if(state.tier === 'premium') {
+    const saved = localStorage.getItem('chillclick_count_' + state.theme);
+    return saved ? parseInt(saved) : 0;
+  }
+  return 0;
+}
+function resetPremiumCount() {
+  localStorage.removeItem('chillclick_count_' + state.theme);
+  state.count = 0;
+  document.getElementById('countNum').textContent = '0';
+  showToast('클릭 수가 초기화됐어요');
+}
+
 /* ─── 테마 정의 ─── */
 const themes = {
   home: {
@@ -685,8 +711,8 @@ function buildBgKeys() {
 function setTheme(name, el) {
   if(name !== 'home' && state.tier === 'guest') { showToast('무료 회원 가입 후 이용 가능해요'); return; }
   state.theme = name;
-  state.count = 0;
-  document.getElementById('countNum').textContent = '0';
+  state.count = loadCount();
+  document.getElementById('countNum').textContent = state.count;
   updateProgress();
 
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -699,7 +725,6 @@ function setTheme(name, el) {
   document.getElementById('keycapBody').style.setProperty('--kside2', t.kside2);
   document.getElementById('keycapBody').style.setProperty('--kshad2', t.kshad2);
   document.getElementById('countNum').style.color = t.acc;
-  document.getElementById('progressFill').style.background = t.acc;
   document.querySelector('.share-btn').style.background = t.acc;
 
   // 키 색상
@@ -746,6 +771,9 @@ function setTier(tier, el) {
   else if(tier === 'premium') { badge.classList.add('premium'); badge.textContent = '✨ 유료 회원'; }
   else { badge.classList.add('guest'); badge.textContent = '비회원'; }
 
+  state.count = loadCount();
+  document.getElementById('countNum').textContent = state.count;
+  document.getElementById('premiumResetWrap').style.display = tier === 'premium' ? 'block' : 'none';
   updateProgress();
   updateAdKeyLayer();
   showToast(tier === 'premium' ? '유료 회원으로 전환됩니다' : tier === 'free' ? '무료 회원으로 전환됩니다' : '비회원으로 전환됩니다');
@@ -953,6 +981,8 @@ function handlePress(e) {
   const cy = e?.clientY ?? window.innerHeight/2;
   spawnFloat(cx, cy);
   if(state.count % 5 === 0) spawnParticles(cx, cy);
+
+  saveCount();
 
   // 광고 체크
   if(checkAd()) { setTimeout(showAd, 100); return; }
