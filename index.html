@@ -737,20 +737,22 @@ const adKeyData = {
 };
 
 function updateAdKeyLayer() {
-  const show = state.tier === 'free';
   const layer = document.getElementById('adKeyLayer');
-  layer.style.display = show ? 'block' : 'none';
-  if(!show) return;
+  layer.style.display = 'none';
+}
+function showAdKeyLayer() {
   const data = adKeyData[state.theme] || adKeyData.home;
   for(let i=1;i<=4;i++){
     document.getElementById('adImg'+i).textContent = data[i-1].emoji;
     document.getElementById('adLabel'+i).textContent = data[i-1].label;
   }
+  document.getElementById('adKeyLayer').style.display = 'block';
 }
 
 /* ─── 광고 표시 ─── */
 function showAd() {
   state.adShowing = true;
+  showAdKeyLayer();
   const overlay = document.getElementById('adOverlay');
   const countdown = document.getElementById('adCountdown');
   const closeBtn = document.getElementById('adCloseBtn');
@@ -775,6 +777,7 @@ function showAd() {
 
 function closeAd() {
   document.getElementById('adOverlay').classList.remove('show');
+  document.getElementById('adKeyLayer').style.display = 'none';
   state.adShowing = false;
 }
 
