@@ -135,23 +135,6 @@ body{
 @keyframes numPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
 .count-label{font-size:13px;color:var(--sub);margin-top:3px;}
 
-/* ── 진행 바 (무료 회원용) ── */
-.progress-wrap{
-  width:100%;margin-top:14px;
-  padding:0 4px;
-}
-.progress-bar{
-  height:4px;background:#E8E4DA;border-radius:4px;overflow:hidden;
-}
-.progress-fill{
-  height:100%;border-radius:4px;
-  background:var(--acc,#CF3E50);
-  transition:width .3s ease,background .4s;
-}
-.progress-label{
-  display:flex;justify-content:space-between;
-  font-size:10px;color:var(--sub);margin-top:4px;
-}
 
 /* ── 공유 버튼 ── */
 .share-btn{
@@ -506,12 +489,6 @@ body{
       <div class="count-label">번 눌렀어요</div>
     </div>
 
-    <!-- 진행바 (무료 회원) -->
-    <div class="progress-wrap" id="progressWrap" style="display:none">
-      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <div class="progress-label"><span id="progressLeft"></span><span id="progressRight">159회 리셋</span></div>
-    </div>
-
     <!-- 공유 버튼 -->
     <button class="share-btn" onclick="openShare()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -723,14 +700,7 @@ function setTier(tier, el) {
 }
 
 /* ─── 진행바 업데이트 ─── */
-function updateProgress() {
-  const wrap = document.getElementById('progressWrap');
-  if(state.tier !== 'free') { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-  const pct = Math.min((state.count / 159) * 100, 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressLeft').textContent = state.count + '회';
-}
+function updateProgress() {}
 
 /* ─── 광고 체크 ─── */
 function checkAd() {
