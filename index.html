@@ -421,7 +421,7 @@ body{
   <!-- 헤더 -->
   <div class="header">
     <div class="logo">심신안정 <span>v1.2</span></div>
-    <div class="tier-badge free" id="tierBadge">무료 회원</div>
+    <div class="tier-badge free" id="tierBadge" onclick="toggleTier()" style="cursor:pointer;">무료 회원 ↕</div>
   </div>
 
   <!-- 테마 탭 -->
@@ -699,6 +699,13 @@ function setTheme(name, el) {
   buildBgKeys();
 }
 
+/* ─── 뱃지 클릭 토글 ─── */
+function toggleTier() {
+  const next = state.tier === 'free' ? 'premium' : 'free';
+  const btn = document.querySelector(`.demo-btn[onclick*="'${next}'"]`);
+  setTier(next, btn);
+}
+
 /* ─── 회원 등급 설정 ─── */
 function setTier(tier, el) {
   state.tier = tier;
@@ -706,13 +713,14 @@ function setTier(tier, el) {
   document.getElementById('countNum').textContent = '0';
 
   document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
+  if(el) el.classList.add('active');
 
   const badge = document.getElementById('tierBadge');
   badge.className = 'tier-badge';
-  if(tier === 'free') { badge.classList.add('free'); badge.textContent = '무료 회원'; }
-  else if(tier === 'premium') { badge.classList.add('premium'); badge.textContent = '✨ 유료 회원'; }
-  else { badge.classList.add('free'); badge.textContent = '무료 회원'; }
+  badge.style.cursor = 'pointer';
+  if(tier === 'free') { badge.classList.add('free'); badge.textContent = '무료 회원 ↕'; }
+  else if(tier === 'premium') { badge.classList.add('premium'); badge.textContent = '✨ 유료 회원 ↕'; }
+  else { badge.classList.add('free'); badge.textContent = '무료 회원 ↕'; }
 
   state.count = loadCount();
   document.getElementById('countNum').textContent = state.count;
