@@ -186,19 +186,7 @@ body{
 }
 .share-btn:active{transform:scale(.96);}
 
-/* ── 데모 티어 스위처 (프로토타입 전용) ── */
-.demo-switcher{
-  margin-top:auto;
-  width:100%;padding:16px 20px;
-  background:rgba(0,0,0,.04);
-  border-top:1px solid rgba(0,0,0,.06);
-}
-.demo-label{
-  font-size:10px;color:var(--sub);font-weight:600;
-  letter-spacing:.5px;margin-bottom:8px;
-  text-align:center;
-}
-.demo-btns{display:flex;gap:6px;}
+
 .demo-btn{
   flex:1;padding:8px 0;border-radius:10px;
   font-size:11px;font-weight:700;
@@ -502,19 +490,11 @@ body{
 
   </div><!-- /main -->
 
-  <!-- 데모 티어 스위처 -->
-  <div class="demo-switcher">
-    <div class="demo-label">🛠 PROTOTYPE — 회원 등급 전환</div>
-    <div class="demo-btns">
-      <button class="demo-btn active" onclick="setTier('free',this)">무료 회원</button>
-      <button class="demo-btn" onclick="setTier('premium',this)">유료 회원 ✨</button>
-    </div>
-    <div id="premiumResetWrap" style="display:none;margin-top:8px;text-align:center;">
-      <button onclick="resetPremiumCount()" style="
-        font-size:11px;color:#A8A49C;background:none;border:none;
-        cursor:pointer;text-decoration:underline;
-      ">클릭 수 초기화</button>
-    </div>
+  <div id="premiumResetWrap" style="display:none;padding:8px;text-align:center;">
+    <button onclick="resetPremiumCount()" style="
+      font-size:11px;color:#A8A49C;background:none;border:none;
+      cursor:pointer;text-decoration:underline;
+    ">클릭 수 초기화</button>
   </div>
 
   <!-- ── 광고 오버레이 ── -->
