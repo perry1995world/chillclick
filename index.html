@@ -33,6 +33,22 @@
       user-select: none;
     }
 
+    /* ── 타이틀 ── */
+    .site-title {
+      position: fixed;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--red);
+      text-transform: uppercase;
+      z-index: 30;
+      white-space: nowrap;
+      opacity: 0.75;
+    }
+
     /* ── 배경 키캡들 ── */
     .bg-key {
       position: fixed;
@@ -224,6 +240,9 @@
 </head>
 <body>
 
+  <!-- 타이틀 -->
+  <div class="site-title">sweet home sweet</div>
+
   <!-- 체인 & 키링 SVG -->
   <div class="chain-wrap">
     <svg class="chain-svg" width="60" height="48" viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -278,7 +297,7 @@
       10: '10번?! 집 생각 많네 ㅋ',
       30: '30번... 진짜 집 가고 싶구나',
       50: '50번 돌파!! 정말이야?',
-      100: '100번!!! 이미 집에 있는 줄 알았는데',
+      100: 'sweet home sweet 🏠',
     };
 
     const particleColors = ['#CF3E50','#F2A5AE','#E85A6A','#F5C8CC','#D44455'];
