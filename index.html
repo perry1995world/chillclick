@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>집가고 싶다</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #F0ECE2;
+      --cream-dark: #E0DBD0;
+      --key-surface: #FDFAF4;
+      --key-side: #C4BFB5;
+      --key-shadow: #A8A39A;
+      --pink: #F2A5AE;
+      --pink-dark: #D4848E;
+      --red: #CF3E50;
+      --red-soft: #E85A6A;
+      --silver: #D0D4DC;
+    }
+
+    body {
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', 'Segoe UI', sans-serif;
+      overflow: hidden;
+      position: relative;
+      user-select: none;
+    }
+
+    /* ── 배경 키캡들 ── */
+    .bg-key {
+      position: fixed;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    /* ── 키링 체인 ── */
+    .chain-wrap {
+      position: relative;
+      z-index: 20;
+      margin-bottom: -4px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-left: 26px;
+    }
+
+    .chain-svg {
+      display: block;
+    }
+
+    /* ── 메인 키캡 그리드 ── */
+    .keycap-body {
+      background: var(--cream-dark);
+      border-radius: 16px;
+      padding: 12px;
+      gap: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      box-shadow:
+        0 10px 0 var(--key-side),
+        0 14px 0 var(--key-shadow),
+        0 18px 28px rgba(0,0,0,0.18);
+      cursor: pointer;
+      transition: transform 0.07s cubic-bezier(0.2, 0, 0.6, 1),
+                  box-shadow 0.07s cubic-bezier(0.2, 0, 0.6, 1);
+      position: relative;
+      z-index: 20;
+      will-change: transform;
+    }
+
+    .keycap-body.pressed {
+      transform: translateY(9px);
+      box-shadow:
+        0 1px 0 var(--key-side),
+        0 3px 0 var(--key-shadow),
+        0 6px 12px rgba(0,0,0,0.12);
+    }
+
+    .key {
+      width: 120px;
+      height: 120px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      position: relative;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.08), inset 0 2px 3px rgba(255,255,255,0.7);
+    }
+
+    .key-w { background: var(--key-surface); color: var(--red); }
+    .key-p { background: var(--pink); color: #fff; }
+    .key-heart { font-size: 36px; }
+
+    /* 하트 화살표 SVG 스타일 */
+    .heart-icon {
+      width: 52px;
+      height: 52px;
+      fill: #fff;
+    }
+
+    /* ── 눌림 카운터 ── */
+    .counter-wrap {
+      margin-top: 36px;
+      text-align: center;
+      z-index: 20;
+      position: relative;
+    }
+
+    .counter-num {
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--red);
+      line-height: 1;
+      display: block;
+      transition: transform 0.1s;
+    }
+
+    .counter-num.pop {
+      animation: numPop 0.2s ease-out;
+    }
+
+    @keyframes numPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+
+    .counter-label {
+      font-size: 14px;
+      color: #A8A49C;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── 플로팅 텍스트 ── */
+    .float-msg {
+      position: fixed;
+      font-weight: 900;
+      color: var(--red-soft);
+      pointer-events: none;
+      z-index: 99;
+      white-space: nowrap;
+      animation: floatUp 1.8s cubic-bezier(0.2, 0, 0.4, 1) forwards;
+    }
+
+    @keyframes floatUp {
+      0%   { opacity: 1; transform: translateY(0px) scale(1) rotate(var(--rot)); }
+      30%  { opacity: 1; transform: translateY(-50px) scale(1.08) rotate(var(--rot)); }
+      100% { opacity: 0; transform: translateY(-160px) scale(0.85) rotate(var(--rot)); }
+    }
+
+    /* ── 파티클 ── */
+    .particle {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 98;
+      animation: particleFly 0.9s ease-out forwards;
+    }
+
+    @keyframes particleFly {
+      0%   { opacity: 1; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(0.3); }
+    }
+
+    /* ── 작은 힌트 ── */
+    .hint {
+      position: fixed;
+      bottom: 32px;
+      font-size: 13px;
+      color: #B0ACA4;
+      letter-spacing: 0.5px;
+      z-index: 20;
+      animation: fadeHint 3s ease-out 1.5s forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeHint {
+      0%   { opacity: 0; }
+      20%  { opacity: 1; }
+      80%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* ── 맥시멈 리액션 ── */
+    .big-reaction {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      font-weight: 900;
+      color: var(--red);
+      pointer-events: none;
+      z-index: 200;
+      animation: bigReact 1.2s cubic-bezier(0.3, 0, 0.5, 1) forwards;
+    }
+
+    @keyframes bigReact {
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+      70%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 체인 & 키링 SVG -->
+  <div class="chain-wrap">
+    <svg class="chain-svg" width="60" height="48" viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 큰 링 -->
+      <ellipse cx="30" cy="14" rx="12" ry="8" stroke="#C0C4CC" stroke-width="3" fill="none"/>
+      <!-- 스냅훅 몸통 -->
+      <rect x="18" y="28" width="24" height="14" rx="5" fill="#C8CCCC" stroke="#B0B4B8" stroke-width="1.5"/>
+      <rect x="25" y="24" width="10" height="10" rx="3" fill="#D4D8D8" stroke="#B0B4B8" stroke-width="1.5"/>
+      <!-- 작은 하트 참 -->
+      <g transform="translate(44, 30)">
+        <path d="M8 4 C8 2 6 0 4 0 C2 0 0 2 0 4 C0 7 4 10 4 10 C4 10 8 7 8 4Z" fill="#E85A6A" opacity="0.85"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- 메인 키캡 -->
+  <div class="keycap-body" id="mainKey">
+    <div class="key key-w">집</div>
+    <div class="key key-p">
+      <!-- 하트+화살표 아이콘 -->
+      <svg class="heart-icon" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M26 44 C26 44 6 32 6 18 C6 12 10 8 16 8 C20 8 23 10 26 13 C29 10 32 8 36 8 C42 8 46 12 46 18 C46 32 26 44 26 44Z" fill="white" opacity="0.9"/>
+        <line x1="14" y1="20" x2="36" y2="20" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round"/>
+        <polyline points="30,14 37,20 30,26" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="key key-w">가고</div>
+    <div class="key key-w">싶다</div>
+  </div>
+
+  <!-- 카운터 -->
+  <div class="counter-wrap">
+    <span class="counter-num" id="countNum">0</span>
+    <div class="counter-label">번 눌렀어요</div>
+  </div>
+
+  <div class="hint">눌러 눌러 눌러봐 👇</div>
+
+  <script>
+    const btn = document.getElementById('mainKey');
+    const countEl = document.getElementById('countNum');
+    let count = 0;
+
+    const msgs = [
+      '집가고 싶다', '집가고 싶다', '집가고 싶다',
+      '퇴근하고 싶다', '집에 가고파', '오늘 왜 이렇게 길어',
+      '집가고 싶다 진짜로', '밥먹고 싶다', '집가고 싶다 ㅠ',
+      '벌써 퇴근 아니야?', '집', '집!!!', '집가자', '제발',
+    ];
+
+    const milestones = {
+      10: '10번?! 집 생각 많네 ㅋ',
+      30: '30번... 진짜 집 가고 싶구나',
+      50: '50번 돌파!! 정말이야?',
+      100: '100번!!! 이미 집에 있는 줄 알았는데',
+    };
+
+    const particleColors = ['#CF3E50','#F2A5AE','#E85A6A','#F5C8CC','#D44455'];
+
+    // 배경 키캡 생성
+    const bgKeys = ['ㅎ','ㅏ','ㅁ','집','ㅣ','ㅗ','ㄱ','ㅅ','퇴','근','♥','★','→','ㄷ','ㅡ'];
+    const bgColors = [
+      {bg:'#FDFAF4',color:'#CF3E50'},{bg:'#F2A5AE',color:'#fff'},
+      {bg:'#E8E4DA',color:'#C4BFB5'},{bg:'#FDFAF4',color:'#A8A49C'},
+    ];
+
+    for (let i = 0; i < 22; i++) {
+      const el = document.createElement('div');
+      el.className = 'bg-key';
+      const sz = 36 + Math.random() * 28;
+      const c = bgColors[Math.floor(Math.random() * bgColors.length)];
+      el.style.cssText = `
+        width:${sz}px; height:${sz}px;
+        left:${Math.random()*96}%; top:${Math.random()*96}%;
+        background:${c.bg}; color:${c.color};
+        font-size:${sz * 0.38}px;
+        box-shadow:0 ${sz*0.06}px 0 #C0BCB4;
+        transform:rotate(${-20+Math.random()*40}deg);
+      `;
+      el.textContent = bgKeys[Math.floor(Math.random()*bgKeys.length)];
+      document.body.appendChild(el);
+    }
+
+    // 클릭 사운드 (Web Audio)
+    let audioCtx;
+    function playClick() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.12);
+      } catch(e) {}
+    }
+
+    // 플로팅 텍스트
+    function spawnFloat(x, y) {
+      const el = document.createElement('div');
+      el.className = 'float-msg';
+      const msg = msgs[Math.floor(Math.random() * msgs.length)];
+      const rot = (-10 + Math.random() * 20).toFixed(1);
+      el.style.setProperty('--rot', rot + 'deg');
+      el.style.cssText += `
+        left:${x + (-60 + Math.random()*120)}px;
+        top:${y - 20}px;
+        font-size:${18 + Math.random()*14}px;
+        --rot:${rot}deg;
+      `;
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1900);
+    }
+
+    // 파티클
+    function spawnParticles(x, y) {
+      const n = 8 + Math.floor(Math.random() * 6);
+      for (let i = 0; i < n; i++) {
+        const el = document.createElement('div');
+        el.className = 'particle';
+        const angle = (Math.PI * 2 * i) / n + Math.random() * 0.5;
+        const dist = 60 + Math.random() * 80;
+        const px = (Math.cos(angle) * dist).toFixed(0);
+        const py = (Math.sin(angle) * dist - 30).toFixed(0);
+        el.style.cssText = `
+          left:${x}px; top:${y}px;
+          background:${particleColors[Math.floor(Math.random()*particleColors.length)]};
+          --px:${px}px; --py:${py}px;
+          border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 950);
+      }
+    }
+
+    // 마일스톤 리액션
+    function checkMilestone(n) {
+      const msg = milestones[n];
+      if (!msg) return;
+      const el = document.createElement('div');
+      el.className = 'big-reaction';
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1300);
+    }
+
+    // 버튼 클릭
+    btn.addEventListener('mousedown', handlePress);
+    btn.addEventListener('touchstart', e => { e.preventDefault(); handlePress(e.touches[0]); }, { passive: false });
+
+    function handlePress(e) {
+      btn.classList.add('pressed');
+      playClick();
+      count++;
+      countEl.textContent = count;
+      countEl.classList.remove('pop');
+      void countEl.offsetWidth;
+      countEl.classList.add('pop');
+
+      const cx = e ? e.clientX : window.innerWidth / 2;
+      const cy = e ? e.clientY : window.innerHeight / 2;
+
+      const floatCount = count % 10 === 0 ? 4 : (count % 5 === 0 ? 2 : 1);
+      for (let i = 0; i < floatCount; i++) {
+        setTimeout(() => spawnFloat(cx, cy), i * 80);
+      }
+      spawnParticles(cx, cy);
+      checkMilestone(count);
+    }
+
+    document.addEventListener('mouseup', () => btn.classList.remove('pressed'));
+    document.addEventListener('touchend', () => btn.classList.remove('pressed'));
+
+    // 키보드 스페이스바도 지원
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space' && !e.repeat) {
+        e.preventDefault();
+        btn.classList.add('pressed');
+        const rect = btn.getBoundingClientRect();
+        handlePress({ clientX: rect.left + rect.width/2, clientY: rect.top + rect.height/2 });
+      }
+    });
+    document.addEventListener('keyup', e => {
+      if (e.code === 'Space') btn.classList.remove('pressed');
+    });
+  </script>
+</body>
+</html>
