@@ -409,7 +409,7 @@ body{
   <!-- 헤더 -->
   <div class="header">
     <div class="logo">심신안정 <span>v1.2</span></div>
-    <div class="tier-badge guest" id="tierBadge">비회원</div>
+    <div class="tier-badge free" id="tierBadge">무료 회원</div>
   </div>
 
   <!-- 테마 탭 -->
@@ -494,8 +494,7 @@ body{
   <div class="demo-switcher">
     <div class="demo-label">🛠 PROTOTYPE — 회원 등급 전환</div>
     <div class="demo-btns">
-      <button class="demo-btn active" onclick="setTier('guest',this)">비회원</button>
-      <button class="demo-btn" onclick="setTier('free',this)">무료 회원</button>
+      <button class="demo-btn active" onclick="setTier('free',this)">무료 회원</button>
       <button class="demo-btn" onclick="setTier('premium',this)">유료 회원 ✨</button>
     </div>
     <div id="premiumResetWrap" style="display:none;margin-top:8px;text-align:center;">
@@ -562,7 +561,7 @@ body{
 <script>
 /* ─── 상태 ─── */
 const state = {
-  tier: 'guest',   // guest | free | premium
+  tier: 'free',   // free | premium
   theme: 'home',   // home | lottery
   count: 0,
   adShowing: false,
@@ -641,7 +640,7 @@ function buildBgKeys() {
 
 /* ─── 테마 적용 ─── */
 function setTheme(name, el) {
-  if(name !== 'home' && state.tier === 'guest') { showToast('무료 회원 가입 후 이용 가능해요'); return; }
+
   state.theme = name;
   state.count = loadCount();
   document.getElementById('countNum').textContent = state.count;
@@ -701,7 +700,7 @@ function setTier(tier, el) {
   badge.className = 'tier-badge';
   if(tier === 'free') { badge.classList.add('free'); badge.textContent = '무료 회원'; }
   else if(tier === 'premium') { badge.classList.add('premium'); badge.textContent = '✨ 유료 회원'; }
-  else { badge.classList.add('guest'); badge.textContent = '비회원'; }
+  else { badge.classList.add('free'); badge.textContent = '무료 회원'; }
 
   state.count = loadCount();
   document.getElementById('countNum').textContent = state.count;
