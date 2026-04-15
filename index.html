@@ -717,10 +717,8 @@ function updateProgress() {}
 /* ─── 광고 체크 ─── */
 function checkAd() {
   const c = state.count;
-  if(state.tier === 'premium') return false;
-  if(state.tier === 'guest' && c === 50) return true;
-  if(state.tier === 'free' && (c === 50 || c === 100 || c === 150)) return true;
-  return false;
+  if(state.tier !== 'free') return false;
+  return c === 50 || c === 100 || c === 150;
 }
 
 /* ─── 광고 키 이미지 테마 ─── */
@@ -740,7 +738,7 @@ const adKeyData = {
 };
 
 function updateAdKeyLayer() {
-  const show = state.tier !== 'premium';
+  const show = state.tier === 'free';
   const layer = document.getElementById('adKeyLayer');
   layer.style.display = show ? 'block' : 'none';
   if(!show) return;
