@@ -519,6 +519,69 @@ body{
 .main{position:relative;z-index:1;}
 .counter-wrap{position:relative;z-index:1;}
 
+/* ── 키보드 스타일 탭 ── */
+.kbstyle-tabs{
+  display:flex;gap:8px;
+  padding:10px 20px 0;
+  position:relative;z-index:2;
+  background:var(--bg,var(--cream));
+}
+.kbstyle-label{
+  font-size:10px;font-weight:700;color:var(--sub);
+  display:flex;align-items:center;margin-right:2px;
+  white-space:nowrap;
+}
+.kbstyle-tab{
+  flex-shrink:0;
+  padding:6px 14px;border-radius:16px;
+  font-size:12px;font-weight:700;
+  border:1.5px solid #DDD8CE;
+  background:#fff;color:#A8A49C;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:5px;
+}
+.kbstyle-tab.active{
+  background:var(--txt,#3A3530);color:#fff;
+  border-color:var(--txt,#3A3530);
+}
+.kbstyle-tab.locked{
+  background:#F5F3EE;color:#CCC8C0;
+  position:relative;
+}
+.kbstyle-tab.locked::after{
+  content:'🔒';font-size:9px;margin-left:2px;
+}
+
+/* ── Glassy 스타일 ── */
+.keycap-body.style-glassy{
+  background:rgba(228,224,255,0.5);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border:1.5px solid rgba(255,255,255,0.88);
+  box-shadow:
+    0 10px 0 rgba(180,160,255,0.28),
+    0 14px 0 rgba(155,130,240,0.18),
+    0 20px 40px rgba(120,100,220,0.13),
+    inset 0 1.5px 0 rgba(255,255,255,0.95);
+}
+.keycap-body.style-glassy.pressed{
+  transform:translateY(10px);
+  box-shadow:
+    0 1px 0 rgba(180,160,255,0.28),
+    0 3px 0 rgba(155,130,240,0.18),
+    0 5px 14px rgba(120,100,220,0.08),
+    inset 0 1.5px 0 rgba(255,255,255,0.95);
+}
+.keycap-body.style-glassy .key{
+  background:rgba(255,255,255,0.62) !important;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.92);
+  box-shadow:
+    inset 0 -3px 0 rgba(170,150,255,0.12),
+    inset 0 2px 4px rgba(255,255,255,0.85);
+}
+
 /* ── 기록 저장 행 ── */
 .records-row{
   display:flex;gap:8px;
@@ -629,6 +692,13 @@ body{
     <div class="tab" data-theme="lottery" onclick="trySetTheme('lottery',this)">🍀 복권당첨</div>
     <div class="tab locked" data-theme="salary" onclick="trySetTheme('salary',this)">💸 월급올려줘</div>
     <div class="tab locked" data-theme="rest" onclick="trySetTheme('rest',this)">😴 그냥쉬고싶다</div>
+  </div>
+
+  <!-- 키보드 스타일 탭 -->
+  <div class="kbstyle-tabs" id="kbStyleTabs">
+    <span class="kbstyle-label">⌨️</span>
+    <div class="kbstyle-tab active" data-kbstyle="classic" onclick="setKbStyle('classic',this)">클래식</div>
+    <div class="kbstyle-tab" data-kbstyle="glassy" onclick="setKbStyle('glassy',this)">✨ 글래시</div>
   </div>
 
   <!-- 저장된 기록 버튼 행 -->
@@ -823,8 +893,9 @@ body{
 <script>
 /* ─── 상태 ─── */
 const state = {
-  tier: 'free',   // free | premium
-  theme: 'home',   // home | lottery
+  tier: 'free',       // free | premium
+  theme: 'home',      // home | lottery | salary | rest
+  kbStyle: 'classic', // classic | glassy
   count: 0,
   adShowing: false,
   resetShowing: false,
@@ -914,6 +985,37 @@ function resetPremiumCount() {
   showToast('클릭 수가 초기화됐어요');
 }
 
+/* ─── 키보드 스타일 정의 ─── */
+const kbStyles = {
+  classic: {
+    appBgOverride: null,  // 테마 색상 그대로
+  },
+  glassy: {
+    appBgOverride: '#F0EEFF',  // 연보라 배경 고정
+  },
+};
+
+function setKbStyle(name, el) {
+  state.kbStyle = name;
+
+  // 탭 활성화
+  document.querySelectorAll('.kbstyle-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  const kb = document.getElementById('keycapBody');
+  const app = document.getElementById('app');
+
+  if(name === 'glassy') {
+    kb.classList.add('style-glassy');
+    app.style.background = '#F0EEFF';
+  } else {
+    kb.classList.remove('style-glassy');
+    // 클래식은 현재 테마 배경 복원
+    const t = themes[state.theme];
+    app.style.background = t.bg;
+  }
+}
+
 /* ─── 테마 정의 ─── */
 const themes = {
   home: {
@@ -997,7 +1099,10 @@ function setTheme(name, el) {
 
   const t = themes[name];
   const app = document.getElementById('app');
-  app.style.background = t.bg;
+  // 글래시 스타일이면 배경 고정, 아니면 테마 배경
+  if(state.kbStyle !== 'glassy') {
+    app.style.background = t.bg;
+  }
   document.getElementById('keycapBody').style.background = t.kbody;
   document.getElementById('keycapBody').style.setProperty('--kside2', t.kside2);
   document.getElementById('keycapBody').style.setProperty('--kshad2', t.kshad2);
