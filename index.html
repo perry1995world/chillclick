@@ -504,6 +504,11 @@ body{
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
 /* 배경 키캡 */
+#bgKeys{
+  position:absolute;inset:0;
+  z-index:0;pointer-events:none;
+  overflow:hidden;
+}
 .bg-key{
   position:absolute;border-radius:7px;
   display:flex;align-items:center;justify-content:center;
@@ -511,6 +516,53 @@ body{
   box-shadow:0 4px 0 rgba(0,0,0,.08);
   transition:opacity .5s;
 }
+.main{position:relative;z-index:1;}
+.counter-wrap{position:relative;z-index:1;}
+
+/* ── 기록 저장 행 ── */
+.records-row{
+  display:flex;gap:8px;
+  padding:8px 20px 0;
+  overflow-x:auto;scrollbar-width:none;
+  position:relative;z-index:2;
+}
+.records-row:empty{display:none;}
+.records-row::-webkit-scrollbar{display:none;}
+.record-chip{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:5px;
+  padding:6px 8px 6px 12px;border-radius:16px;
+  background:#fff;border:1.5px solid #E8E4DA;
+  cursor:pointer;transition:background .15s;
+}
+.record-chip:active{background:#F5F3EE;}
+.record-chip-label{
+  font-size:11px;font-weight:700;color:#3A3530;
+  white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis;
+}
+.record-chip-input{
+  font-size:11px;font-weight:700;color:#3A3530;
+  border:none;outline:none;background:transparent;
+  width:80px;
+}
+.record-chip-edit{
+  font-size:13px;color:#C8C4BC;cursor:pointer;
+  padding:0 2px;flex-shrink:0;
+}
+.record-chip-del{
+  font-size:11px;color:#E0DBD0;cursor:pointer;
+  padding:0 2px;flex-shrink:0;
+}
+
+/* ── 기록 저장 버튼 ── */
+.save-record-btn{
+  font-size:11px;color:#A8A49C;background:none;border:none;
+  cursor:pointer;text-decoration:none;
+  display:flex;align-items:center;gap:4px;
+  padding:4px 8px;border-radius:8px;
+  transition:background .15s;
+}
+.save-record-btn:active{background:#E8E4DA;}
 
 /* ── 비밀번호 게이트 ── */
 #pwGate{
@@ -577,6 +629,9 @@ body{
     <div class="tab locked" data-theme="salary" onclick="trySetTheme('salary',this)">💸 월급올려줘</div>
     <div class="tab locked" data-theme="rest" onclick="trySetTheme('rest',this)">😴 그냥쉬고싶다</div>
   </div>
+
+  <!-- 저장된 기록 버튼 행 -->
+  <div class="records-row" id="recordsRow"></div>
 
   <!-- 메인 -->
   <div class="main">
@@ -648,11 +703,12 @@ body{
 
   </div><!-- /main -->
 
-  <div id="premiumResetWrap" style="display:none;padding:8px;text-align:center;">
+  <div id="premiumResetWrap" style="display:none;padding:8px 0 4px;display:none;flex-direction:row;align-items:center;justify-content:center;gap:12px;">
+    <button class="save-record-btn" onclick="saveRecord()">💾 기록 저장</button>
     <button onclick="resetPremiumCount()" style="
-      font-size:11px;color:#A8A49C;background:none;border:none;
-      cursor:pointer;text-decoration:underline;
-    ">클릭 수 초기화</button>
+      font-size:11px;color:#C8C4BC;background:none;border:none;
+      cursor:pointer;
+    ">초기화</button>
   </div>
 
   <!-- ── 광고 오버레이 ── -->
@@ -663,7 +719,7 @@ body{
       <div class="ad-content">
         <div class="ad-img">📢</div>
         <div class="ad-title">광고주를 모집합니다</div>
-        <div class="ad-desc">이 자리에 당신의 브랜드를 노출하세요.<br>문의: contact@chillclick.kr</div>
+        <div class="ad-desc">이 자리에 당신의 브랜드를 노출하세요.<br>문의: minwoo5836@gmail.com</div>
         <button class="ad-cta" onclick="closeAd()">닫기</button>
       </div>
     </div>
@@ -676,12 +732,6 @@ body{
       <span class="upgrade-emoji">✨</span>
       <div class="upgrade-choice-title">유료 회원 전환</div>
       <div class="upgrade-choice-desc">유료 회원이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
-      <div class="upgrade-choice-benefits">
-        <div class="upgrade-choice-benefit">🚫 광고 완전 제거</div>
-        <div class="upgrade-choice-benefit">♾️ 클릭 횟수 무제한</div>
-        <div class="upgrade-choice-benefit">💾 클릭 수 저장 및 유지</div>
-        <div class="upgrade-choice-benefit">🔓 모든 테마 잠금 해제</div>
-      </div>
       <div class="upgrade-choice-btns">
         <button class="upgrade-pay-btn" onclick="closeUpgradeChoice();showToast('결제 페이지 준비중이에요 🙏')">💳 유료 결제하기</button>
         <button class="upgrade-code-btn" onclick="closeUpgradeChoice();showCodeInput()">🔑 코드 입력하기</button>
@@ -767,6 +817,69 @@ const state = {
   resetShowing: false,
   adTimer: null,
 };
+
+/* ─── 기록 저장 ─── */
+const THEME_NAMES = {home:'집가고싶다', lottery:'복권당첨', salary:'월급올려줘', rest:'그냥쉬고싶다'};
+
+function saveRecord() {
+  if(state.tier !== 'premium') return;
+  const now = new Date();
+  const label = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+  const record = { id: Date.now(), label, count: state.count, theme: state.theme };
+  const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  records.unshift(record);
+  localStorage.setItem('chillclick_records', JSON.stringify(records));
+  renderRecords();
+  showToast('기록이 저장됐어요 💾');
+}
+
+function renderRecords() {
+  const row = document.getElementById('recordsRow');
+  if(state.tier !== 'premium') { row.innerHTML=''; return; }
+  const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  if(!records.length) { row.innerHTML=''; return; }
+  row.innerHTML = records.map(r => `<div class="record-chip" onclick="showRecordInfo(${r.id})">
+    <span class="record-chip-label" id="rlabel-${r.id}">${r.label}</span>
+    <span class="record-chip-edit" onclick="event.stopPropagation();editRecord(${r.id})">✏️</span>
+    <span class="record-chip-del" onclick="event.stopPropagation();deleteRecord(${r.id})" title="삭제">✕</span>
+  </div>`).join('');
+}
+
+function showRecordInfo(id) {
+  const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  const r = records.find(x => x.id === id);
+  if(!r) return;
+  showToast(`${r.label} · ${THEME_NAMES[r.theme]||r.theme} · ${r.count}번`);
+}
+
+function editRecord(id) {
+  const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  const r = records.find(x => x.id === id);
+  if(!r) return;
+  const labelEl = document.getElementById('rlabel-'+id);
+  if(!labelEl) return;
+  const input = document.createElement('input');
+  input.className = 'record-chip-input';
+  input.value = r.label;
+  input.style.width = Math.max(60, r.label.length * 9) + 'px';
+  labelEl.replaceWith(input);
+  input.focus(); input.select();
+  function save() {
+    const val = input.value.trim();
+    if(val) r.label = val;
+    localStorage.setItem('chillclick_records', JSON.stringify(records));
+    renderRecords();
+  }
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', e => { if(e.key==='Enter') { input.blur(); } });
+}
+
+function deleteRecord(id) {
+  let records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  records = records.filter(x => x.id !== id);
+  localStorage.setItem('chillclick_records', JSON.stringify(records));
+  renderRecords();
+}
 
 /* ─── 유료 회원 클릭 수 저장 ─── */
 function saveCount() {
@@ -963,8 +1076,9 @@ function activatePremium() {
   document.querySelectorAll('.tab.locked').forEach(t => t.classList.remove('locked'));
   state.count = loadCount();
   document.getElementById('countNum').textContent = state.count;
-  document.getElementById('premiumResetWrap').style.display = 'block';
+  document.getElementById('premiumResetWrap').style.cssText = 'display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;padding:8px 0 4px;';
   updateAdKeyLayer();
+  renderRecords();
   showToast('✨ 유료 회원으로 전환됐어요!');
 }
 
@@ -982,9 +1096,14 @@ function setTier(tier, el) {
 
   state.count = loadCount();
   document.getElementById('countNum').textContent = state.count;
-  document.getElementById('premiumResetWrap').style.display = tier === 'premium' ? 'block' : 'none';
+  if(tier === 'premium') {
+    document.getElementById('premiumResetWrap').style.cssText = 'display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;padding:8px 0 4px;';
+  } else {
+    document.getElementById('premiumResetWrap').style.display = 'none';
+  }
   updateProgress();
   updateAdKeyLayer();
+  renderRecords();
 }
 
 /* ─── 테마 설정 시도 ─── */
