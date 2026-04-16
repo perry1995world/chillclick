@@ -2,4 +2,4 @@
 
 | 구분 | 링크 |
 |------|------|
-| 🌐 라이브 서버 (app) | https://perry1995world.github.io/chillclick/
+| 🌐 라이브 서버 (app) | https://vercel.com/minwoo5836-9790s-projects/chillclick
