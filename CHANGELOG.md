@@ -2,6 +2,39 @@
 
 ---
 
+## [1.5.0] — 2026-04-17
+
+### Added
+- 테마 4종 완성: 집가고싶다 🏠 / 복권당첨 🍀 / 월급올려줘 💸 / 그냥쉬고싶다 😴
+- 유료 회원 기록 저장 시스템 (날짜별 클릭 수 저장, 수정, 삭제)
+- 이용약관 페이지 (`terms.html`)
+- 개인정보처리방침 페이지 (`privacy.html`)
+- 하단 푸터 (이용약관 / 개인정보처리방침 / 문의하기 링크)
+- 광고 팝업 즉시 닫기 버튼 (5초 잠금 제거)
+- "광고주 모집합니다" 자체 광고 스타일 적용
+- Apple App Store 심사 대비 코드 입력 버튼 숨김 처리
+- Vercel Analytics 삽입 (`/_vercel/insights/script.js`)
+- GitHub → Vercel 배포 이전 (비공개 레포 지원)
+- 레포 비공개 전환 (chillclick, grillo, grillo-test, sakyung, yiyun)
+- App Store 제출 준비: Capacitor iOS 프로젝트 구성
+- Apple 개인정보 매니페스트 (`PrivacyInfo.xcprivacy`) 추가
+- 앱 아이콘 1024×1024 생성 (심·신·안·정 키캡 디자인)
+- App Store 스크린샷 생성기 (`make-screenshots.html`)
+- 버전 스냅샷 저장: `version/chillclick_v1.5.html`
+
+### Changed
+- 배포 환경: GitHub Pages → Vercel
+- 유료 회원 전환 팝업: 4개 혜택 리스트 박스 제거, 심플하게 변경
+- 배경(bgKeys) z-index 수정 → 콘텐츠 뒤로 고정 (겹침 버그 해결)
+- 비밀번호 게이트: 테스트 서버 전용 → 라이브 서버로 이전 (pw: 1234)
+- 문의 이메일: `minwoo5836@gmail.com` 전체 페이지 통일
+
+### Removed
+- 테스트 서버 레포 (`chillclick-test`) 삭제
+- 유료 회원 전환 팝업 내 4개 항목 리스트 박스
+
+---
+
 ## [1.0.2] — 2026-04-16
 
 ### Added
@@ -35,5 +68,12 @@
 - 회원 등급 시스템 프로토타입 (비회원·무료·유료 switcher)
 - 광고 시스템: 비회원 50회 / 무료 회원 50·100·150회 트리거
 - 무료 회원 159회 리셋 팝업 (유료 전환 유도)
-- 클릭 수 공유 기능 (텍스트 복사·네이티브 공유·이미지 저장 준비중)
-- 파일 버전 관리: `chillclick_v1.0.html`, `chillclick_v1.0.2.html`
+- 클릭 수 공유 기능 (텍스트 복사·네이티브 공유)
+- 파일 버전 관리 시작: `version/chillclick_v1.0.html`
+
+---
+
+## [1.8.0] — 예정
+
+### 계획 중
+- (v1.8 작업 내용 추가 예정)
