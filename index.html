@@ -734,7 +734,7 @@ body{
       <div class="upgrade-choice-desc">유료 회원이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
       <div class="upgrade-choice-btns">
         <button class="upgrade-pay-btn" onclick="closeUpgradeChoice();showToast('결제 페이지 준비중이에요 🙏')">💳 유료 결제하기</button>
-        <button class="upgrade-code-btn" onclick="closeUpgradeChoice();showCodeInput()">🔑 코드 입력하기</button>
+        <!-- 코드 입력 버튼 비활성화 (Apple 심사 대응) -->
       </div>
     </div>
   </div>
@@ -803,6 +803,18 @@ body{
       </div>
       <button class="share-cancel" onclick="closeShare()">취소</button>
     </div>
+  </div>
+
+  <!-- ── 하단 푸터 ── -->
+  <div style="padding:16px 20px 32px;text-align:center;display:flex;flex-direction:column;gap:8px;position:relative;z-index:2;">
+    <div style="display:flex;justify-content:center;gap:16px;">
+      <a href="privacy.html" style="font-size:11px;color:#A8A49C;text-decoration:none;">개인정보처리방침</a>
+      <span style="font-size:11px;color:#D0CBB8;">|</span>
+      <a href="terms.html" style="font-size:11px;color:#A8A49C;text-decoration:none;">이용약관</a>
+      <span style="font-size:11px;color:#D0CBB8;">|</span>
+      <a href="mailto:minwoo5836@gmail.com" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
+    </div>
+    <div style="font-size:10px;color:#C8C4BC;">© 2026 심신안정. All rights reserved.</div>
   </div>
 
 </div><!-- /app -->
