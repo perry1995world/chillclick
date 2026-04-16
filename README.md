@@ -2,5 +2,4 @@
 
 | 구분 | 링크 |
 |------|------|
-| 🌐 라이브 서버 | https://perry1995world.github.io/chillclick/ |
-| 🧪 테스트 서버 | https://perry1995world.github.io/chillclick/test/ (pw: 1234) |
+| 🌐 라이브 서버 (app) | https://perry1995world.github.io/chillclick/
