@@ -623,7 +623,7 @@ body{
   <!-- 헤더 -->
   <div class="header">
     <div class="logo">심신안정 <span>v1.5</span></div>
-    <div class="tier-badge free" id="tierBadge" onclick="onBadgeClick()" style="cursor:pointer;">무료 회원</div>
+    <div class="tier-badge free" id="tierBadge" onclick="onBadgeClick()" style="cursor:pointer;">심신 불안정 중</div>
   </div>
 
   <!-- 테마 탭 -->
@@ -723,7 +723,7 @@ body{
       <div class="ad-content">
         <div class="ad-img">📢</div>
         <div class="ad-title">광고주를 모집합니다</div>
-        <div class="ad-desc">이 자리에 당신의 브랜드를 노출하세요.<br>문의: minwoo5836@gmail.com</div>
+        <div class="ad-desc">이 자리에 당신의 브랜드를 노출하세요.<br>문의: ask.perryworld.03@gmail.com</div>
         <button class="ad-cta" onclick="closeAd()">닫기</button>
       </div>
     </div>
@@ -734,10 +734,10 @@ body{
     <div class="upgrade-choice-card">
       <button class="upgrade-choice-close" onclick="closeUpgradeChoice()">✕</button>
       <span class="upgrade-emoji">✨</span>
-      <div class="upgrade-choice-title">유료 회원 전환</div>
-      <div class="upgrade-choice-desc">유료 회원이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
+      <div class="upgrade-choice-title">심신 안정으로 전환</div>
+      <div class="upgrade-choice-desc">심신 안정 중이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
       <div class="upgrade-choice-btns">
-        <button class="upgrade-pay-btn" onclick="closeUpgradeChoice();showToast('결제 페이지 준비중이에요 🙏')">💳 유료 결제하기</button>
+        <button class="upgrade-pay-btn" onclick="closeUpgradeChoice();showToast('결제 페이지 준비중이에요 🙏')">💳 심신 안정 중으로 전환하기</button>
         <!-- 코드 입력 버튼 비활성화 (Apple 심사 대응) -->
       </div>
     </div>
@@ -761,14 +761,14 @@ body{
     <div class="upgrade-card">
       <span class="upgrade-emoji">✨</span>
       <div class="upgrade-title">광고 없이 즐겨볼까요?</div>
-      <div class="upgrade-desc">유료 회원이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
+      <div class="upgrade-desc">심신 안정 중이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
       <div class="upgrade-benefits">
         <div class="upgrade-benefit-item">🚫 광고 완전 제거</div>
         <div class="upgrade-benefit-item">♾️ 클릭 횟수 무제한</div>
         <div class="upgrade-benefit-item">💾 클릭 수 저장 및 유지</div>
         <div class="upgrade-benefit-item">🔓 모든 테마 잠금 해제</div>
       </div>
-      <button class="upgrade-btn-main" onclick="closeUpgradePopup();showUpgradeChoice()">✨ 유료 회원 전환하기</button>
+      <button class="upgrade-btn-main" onclick="closeUpgradePopup();showUpgradeChoice()">✨ 심신 안정 중으로 전환하기</button>
       <button class="upgrade-btn-skip" onclick="closeUpgradePopup()">괜찮아요, 다음에</button>
     </div>
   </div>
@@ -781,10 +781,10 @@ body{
       <div class="reset-title">초기화 시간이에요</div>
       <div class="reset-desc">오늘의 심신안정 <strong>159번</strong> 달성!<br>닫으면 자동으로 0부터 다시 시작돼요.</div>
       <div class="reset-upsell">
-        <div class="reset-upsell-title">✨ 유료 회원이라면?</div>
+        <div class="reset-upsell-title">✨ 심신 안정 중이라면?</div>
         <div class="reset-upsell-desc">횟수 제한 없이 무제한으로 누를 수 있어요.<br>광고도 없고, 클릭 수도 저장돼요.</div>
       </div>
-      <button class="reset-btn-upgrade" onclick="closeReset();showToast('유료 전환 페이지로 이동합니다 (준비중)')">✨ 유료 회원 전환하기</button>
+      <button class="reset-btn-upgrade" onclick="closeReset();showToast('결제 페이지 준비중이에요 🙏')">✨ 심신 안정 중으로 전환하기</button>
       <div style="height:8px"></div>
       <button class="reset-btn" onclick="closeReset()">닫고 처음부터 시작</button>
     </div>
@@ -816,7 +816,7 @@ body{
       <span style="font-size:11px;color:#D0CBB8;">|</span>
       <a href="terms.html" style="font-size:11px;color:#A8A49C;text-decoration:none;">이용약관</a>
       <span style="font-size:11px;color:#D0CBB8;">|</span>
-      <a href="mailto:minwoo5836@gmail.com" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
+      <a href="mailto:ask.perryworld.03@gmail.com" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
     </div>
     <div style="font-size:10px;color:#C8C4BC;">© 2026 심신안정. All rights reserved.</div>
   </div>
@@ -978,7 +978,7 @@ function buildBgKeys() {
     el.style.cssText = `
       width:${sz}px;height:${sz}px;
       left:${Math.random()*92}%;top:${Math.random()*92}%;
-      background:${state.theme==='home'?'#FDFAF4':'#FFF8E0'};
+      background:${t.bg};
       color:${t.keyColor};font-size:${sz*.38}px;opacity:.25;
       transform:rotate(${-20+Math.random()*40}deg);
     `;
@@ -1001,6 +1001,7 @@ function setTheme(name, el) {
   const t = themes[name];
   const app = document.getElementById('app');
   app.style.background = t.bg;
+  document.body.style.background = t.bg;
   document.getElementById('keycapBody').style.background = t.kbody;
   document.getElementById('keycapBody').style.setProperty('--kside2', t.kside2);
   document.getElementById('keycapBody').style.setProperty('--kshad2', t.kshad2);
@@ -1043,7 +1044,7 @@ const VALID_CODES = ['CHILL-2024','RELAX-PRO','SINSIN-VIP','CHILLPRO','PREMIUM77
 /* ─── 뱃지 클릭 ─── */
 function onBadgeClick() {
   if(state.tier === 'free') { showUpgradeChoice(); }
-  else { showToast('✨ 유료 회원이에요!'); }
+  else { showToast('✨ 심신 안정 중이에요!'); }
 }
 
 /* ─── 업그레이드 선택 팝업 ─── */
@@ -1087,7 +1088,7 @@ function activatePremium() {
   state.tier = 'premium';
   const badge = document.getElementById('tierBadge');
   badge.className = 'tier-badge premium';
-  badge.textContent = '✨ 유료 회원';
+  badge.textContent = '✨ 심신 안정 중';
   // 탭 잠금 해제
   document.querySelectorAll('.tab.locked').forEach(t => t.classList.remove('locked'));
   state.count = loadCount();
@@ -1095,7 +1096,7 @@ function activatePremium() {
   document.getElementById('premiumResetWrap').style.cssText = 'display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;padding:8px 0 4px;';
   updateAdKeyLayer();
   renderRecords();
-  showToast('✨ 유료 회원으로 전환됐어요!');
+  showToast('✨ 심신 안정 중으로 전환됐어요!');
 }
 
 /* ─── 회원 등급 설정 ─── */
@@ -1107,8 +1108,8 @@ function setTier(tier, el) {
   const badge = document.getElementById('tierBadge');
   badge.className = 'tier-badge';
   badge.style.cursor = 'pointer';
-  if(tier === 'free') { badge.classList.add('free'); badge.textContent = '무료 회원'; }
-  else if(tier === 'premium') { badge.classList.add('premium'); badge.textContent = '✨ 유료 회원'; }
+  if(tier === 'free') { badge.classList.add('free'); badge.textContent = '심신 불안정 중'; }
+  else if(tier === 'premium') { badge.classList.add('premium'); badge.textContent = '✨ 심신 안정 중'; }
 
   state.count = loadCount();
   document.getElementById('countNum').textContent = state.count;
@@ -1364,6 +1365,7 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 /* ─── 초기화 ─── */
+document.body.style.background = themes[state.theme].bg;
 buildBgKeys();
 updateAdKeyLayer();
 </script>

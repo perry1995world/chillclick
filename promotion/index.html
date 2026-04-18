@@ -338,7 +338,7 @@ body{
       <span style="font-size:11px;color:#D0CBB8;">|</span>
       <a href="terms.html" style="font-size:11px;color:#A8A49C;text-decoration:none;">이용약관</a>
       <span style="font-size:11px;color:#D0CBB8;">|</span>
-      <a href="mailto:minwoo5836@gmail.com" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
+      <a href="mailto:ask.perryworld.03@gmail.com" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
     </div>
     <div style="font-size:10px;color:#C8C4BC;">© 2026 심신안정. All rights reserved.</div>
   </div>
@@ -421,6 +421,7 @@ function setTheme(name) {
   const t = themes[name];
   const app = document.getElementById('app');
   app.style.background = t.bg;
+  document.body.style.background = t.bg;
   document.getElementById('keycapBody').style.background = t.kbody;
   document.getElementById('keycapBody').style.setProperty('--kside2', t.kside2);
   document.getElementById('keycapBody').style.setProperty('--kshad2', t.kshad2);
@@ -480,7 +481,7 @@ function buildBgKeys() {
     el.style.cssText = `
       width:${sz}px;height:${sz}px;
       left:${Math.random()*92}%;top:${Math.random()*92}%;
-      background:${state.theme==='home'?'#FDFAF4':'#FFF8E0'};
+      background:${t.bg};
       color:${t.keyColor};font-size:${sz*.38}px;opacity:.25;
       transform:rotate(${-20+Math.random()*40}deg);
     `;
@@ -598,6 +599,7 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => { if(e.code==='Space') body.classList.remove('pressed'); });
 
 /* ─── 초기화 ─── */
+document.body.style.background = themes[state.theme].bg;
 buildBgKeys();
 </script>
 </body>
