@@ -2029,6 +2029,12 @@ function openContact() {
 
 async function initPremiumStatus() {
   if (localStorage.getItem('premium_purchased') === '1') { activatePremium(); return; }
+  // v1.0에서 업그레이드한 사용자 → 추가 결제 없이 프리미엄 유지
+  if (localStorage.getItem('premium_v1_user') === '1') {
+    localStorage.setItem('premium_purchased', '1');
+    activatePremium();
+    return;
+  }
   const IAP = window.Capacitor?.Plugins?.IAP;
   if (!IAP) { activatePremium(); return; } // 라이브 서버(브라우저) → 자동 프리미엄
   try {
