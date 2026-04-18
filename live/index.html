@@ -1461,7 +1461,9 @@ function showToast(msg) {
 /* ─── 플로팅 텍스트 ─── */
 function spawnFloat(x, y) {
   const t = themes[state.theme];
-  const msg = t.msgs[Math.floor(Math.random() * t.msgs.length)];
+  const L = LANGS[currentLang] || LANGS.ko;
+  const msgPool = (L.themeMsgs && L.themeMsgs[state.theme]) ? L.themeMsgs[state.theme] : t.msgs;
+  const msg = msgPool[Math.floor(Math.random() * msgPool.length)];
   const el = document.createElement('div');
   el.className = 'float-msg';
   const rot = (-10 + Math.random() * 20).toFixed(1);
@@ -1663,6 +1665,12 @@ const LANGS = {
       salary: ['월급','💰','올려줘','!!!'],
       rest: ['그냥','😴','쉬고','싶다'],
     },
+    themeMsgs: {
+      home: ['집가고 싶다','퇴근하고 싶다','집에 가고파','제발','집!!!','집가자','밥먹고 싶다'],
+      lottery: ['당첨되면 좋겠다','로또 1등!','제발제발','777','🍀🍀🍀','돈돈돈','복권 사야지'],
+      salary: ['월급 올려줘!','나도 연봉협상','인상 좀요','이게 맞나?','💰💰💰','사장님!!','최저임금이라도'],
+      rest: ['그냥 쉬고싶다','피곤해...','낮잠 자고싶다','오늘은 좀','침대가 최고야','쉬어야 해','😴😴😴'],
+    },
     toastPremium: '✨ 심신 안정 계정이에요!',
     toastFree: '무료 계정으로 전환됐어요.',
   },
@@ -1702,6 +1710,12 @@ const LANGS = {
       lottery: ['Win','🍀','The','Lotto'],
       salary: ['Raise','💰','My','Pay!'],
       rest: ['Just','😴','Let','Rest'],
+    },
+    themeMsgs: {
+      home: ['I wanna go home','Time to leave!','Please...','Home!!!','Take me home','I miss home','Feed me🍕'],
+      lottery: ['Pick me!','Jackpot!','Please please','777','🍀🍀🍀','Money money','Gotta win!'],
+      salary: ['Raise my pay!','Pay negotiation','Give me more','Is this fair?','💰💰💰','Boss!!','At least minimum'],
+      rest: ['Just let me rest','So tired...','Need a nap','Just today','Bed is best','I need rest','😴😴😴'],
     },
     toastPremium: '✨ Premium activated!',
     toastFree: 'Switched to free account.',
@@ -1743,6 +1757,12 @@ const LANGS = {
       salary: ['給料','💰','上げて','!!!'],
       rest: ['ただ','😴','休み','たい'],
     },
+    themeMsgs: {
+      home: ['家に帰りたい','退勤したい','家が恋しい','お願い','家!!!','帰ろう','ご飯食べたい'],
+      lottery: ['当たればいいな','宝くじ1等!','お願いします','777','🍀🍀🍀','お金お金','買わなきゃ'],
+      salary: ['給料上げて!','年収交渉したい','もっとほしい','これでいいの?','💰💰💰','社長!!','最低賃金でも'],
+      rest: ['ただ休みたい','疲れた...','昼寝したい','今日くらい','ベッド最高','休まなきゃ','😴😴😴'],
+    },
     toastPremium: '✨ プレミアム有効！',
     toastFree: '無料アカウントに戻りました。',
   },
@@ -1783,6 +1803,12 @@ const LANGS = {
       salary: ['涨工','💰','资吧','！！'],
       rest: ['就想','😴','休息','啊！'],
     },
+    themeMsgs: {
+      home: ['好想回家','想下班了','想家了','求求了','家!!!','回家吧','想吃饭🍚'],
+      lottery: ['希望中奖','彩票一等奖!','拜托拜托','777','🍀🍀🍀','钱钱钱','去买彩票'],
+      salary: ['给我涨工资!','我要谈薪资','多给点嘛','这合理吗?','💰💰💰','老板!!','至少最低工资'],
+      rest: ['就想休息','好累啊...','想睡午觉','就今天','床最棒','该休息了','😴😴😴'],
+    },
     toastPremium: '✨ 高级版已激活！',
     toastFree: '已切换到免费账号。',
   },
@@ -1822,6 +1848,12 @@ const LANGS = {
       lottery: ['彩票','🍀','中獎','!!!'],
       salary: ['漲薪','💰','水啦','！！'],
       rest: ['就想','😴','休息','啊！'],
+    },
+    themeMsgs: {
+      home: ['好想回家','想下班了','想家了','求求了','家!!!','回家吧','想吃飯🍚'],
+      lottery: ['希望中獎','彩票一等獎!','拜託拜託','777','🍀🍀🍀','錢錢錢','去買彩票'],
+      salary: ['給我漲薪水!','我要談薪資','多給點嘛','這合理嗎?','💰💰💰','老闆!!','至少最低薪資'],
+      rest: ['就想休息','好累啊...','想睡午覺','就今天','床最棒','該休息了','😴😴😴'],
     },
     toastPremium: '✨ 高級版已啟用！',
     toastFree: '已切換至免費帳號。',
