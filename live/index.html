@@ -1404,7 +1404,7 @@ async function restorePurchasesIAP() {
 async function initPremiumStatus() {
   if (localStorage.getItem('premium_purchased') === '1') { activatePremium(); return; }
   const IAP = window.Capacitor?.Plugins?.IAP;
-  if (!IAP) return;
+  if (!IAP) { activatePremium(); return; } // 라이브 서버(브라우저) → 자동 프리미엄
   try {
     const result = await IAP.checkPremium();
     if (result.isPremium) {
