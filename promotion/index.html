@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>심신안정 — 체험판</title>
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --cream:#F0ECE2;--cream2:#E0DBD0;--cream3:#D0CBB8;
+  --ks:#FDFAF4;--kside:#C4BFB5;--kshad:#A8A39A;
+  --acc:#CF3E50;--acc2:#E85A6A;--pink:#F2A5AE;
+  --txt:#3A3530;--sub:#A8A49C;
+  --gold:#C49A20;--gold2:#8B6914;--yellow:#FFD96A;
+}
+
+body{
+  font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  background:var(--bg,var(--cream));
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;
+  overflow-x:hidden;overflow-y:auto;
+  user-select:none;
+  transition:background .5s;
+}
+
+.app{
+  width:100%;max-width:390px;
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  background:var(--bg,var(--cream));
+  transition:background .5s;
+}
+
+.header{
+  padding:20px 20px 0;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;z-index:2;
+  background:var(--bg,var(--cream));
+}
+.logo{
+  font-size:20px;font-weight:900;
+  color:var(--acc,#CF3E50);letter-spacing:-0.5px;
+}
+.logo span{font-size:11px;font-weight:500;color:var(--sub);margin-left:4px;letter-spacing:0;}
+.promo-badge{
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
+  background:#F0ECE2;color:#A8A49C;border:1px solid #DDD8CE;
+}
+
+.theme-tabs{
+  display:flex;gap:8px;
+  padding:16px 20px 0;
+  overflow-x:auto;scrollbar-width:none;
+  position:relative;z-index:2;
+  background:var(--bg,var(--cream));
+}
+.theme-tabs::-webkit-scrollbar{display:none;}
+.tab{
+  flex-shrink:0;
+  padding:8px 14px;border-radius:20px;
+  font-size:12px;font-weight:700;
+  border:1.5px solid transparent;
+  background:#E8E4DA;color:#A8A49C;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:5px;
+}
+.tab.active{
+  background:var(--acc,#CF3E50);color:#fff;
+  border-color:var(--acc,#CF3E50);
+}
+
+.main{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:28px 20px 20px;gap:0;
+}
+
+.chain{margin-bottom:-2px;padding-left:20px;align-self:flex-start;}
+
+.keycap-body{
+  background:var(--kbody,#E0DBD0);
+  border-radius:18px;padding:11px;gap:7px;
+  display:grid;grid-template-columns:1fr 1fr;
+  box-shadow:
+    0 10px 0 var(--kside2,#C4BFB5),
+    0 14px 0 var(--kshad2,#A8A39A),
+    0 18px 28px rgba(0,0,0,.16);
+  cursor:pointer;
+  transition:transform .07s cubic-bezier(.2,0,.6,1),box-shadow .07s cubic-bezier(.2,0,.6,1);
+  position:relative;will-change:transform;
+  width:270px;height:270px;
+}
+.keycap-body.pressed{
+  transform:translateY(10px);
+  box-shadow:0 1px 0 var(--kside2,#C4BFB5),0 3px 0 var(--kshad2,#A8A39A),0 5px 10px rgba(0,0,0,.1);
+}
+
+.key{
+  border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;
+  position:relative;
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,.07),inset 0 2px 3px rgba(255,255,255,.65);
+  transition:background .4s,color .4s;
+}
+.key-text{font-size:26px;}
+.key-icon svg{width:52px;height:52px;}
+
+.counter-wrap{
+  margin-top:28px;text-align:center;
+}
+.count-num{
+  font-size:58px;font-weight:900;
+  color:var(--acc,#CF3E50);
+  line-height:1;display:block;
+  transition:color .4s;
+}
+.count-num.pop{animation:numPop .18s ease-out;}
+@keyframes numPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+.count-label{font-size:13px;color:var(--sub);margin-top:3px;}
+
+.share-btn{
+  margin-top:20px;
+  padding:13px 32px;border-radius:30px;
+  background:var(--acc,#CF3E50);color:#fff;
+  font-size:14px;font-weight:700;
+  border:none;cursor:pointer;
+  display:flex;align-items:center;gap:7px;
+  box-shadow:0 4px 16px rgba(0,0,0,.12);
+  transition:all .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.share-btn:active{transform:scale(.96);}
+
+/* ── 플로팅 텍스트 ── */
+.float-msg{
+  position:fixed;font-weight:900;
+  pointer-events:none;z-index:99;white-space:nowrap;
+  animation:floatUp 1.6s cubic-bezier(.2,0,.4,1) forwards;
+}
+@keyframes floatUp{
+  0%{opacity:1;transform:translateY(0) scale(1) rotate(var(--r))}
+  30%{opacity:1;transform:translateY(-40px) scale(1.06) rotate(var(--r))}
+  100%{opacity:0;transform:translateY(-140px) scale(.85) rotate(var(--r))}
+}
+
+/* ── 파티클 ── */
+.particle{
+  position:fixed;width:9px;height:9px;border-radius:2px;
+  pointer-events:none;z-index:98;
+  animation:pFly .85s ease-out forwards;
+}
+@keyframes pFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(.2)}}
+
+/* ── 토스트 ── */
+.toast{
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+  background:#3A3530;color:#fff;
+  padding:10px 20px;border-radius:20px;
+  font-size:13px;font-weight:600;
+  z-index:200;white-space:nowrap;
+  animation:toastIn .2s ease-out;
+  pointer-events:none;
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* 배경 키캡 */
+#bgKeys{
+  position:absolute;inset:0;
+  z-index:0;pointer-events:none;
+  overflow:hidden;
+}
+.bg-key{
+  position:absolute;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;pointer-events:none;
+  box-shadow:0 4px 0 rgba(0,0,0,.08);
+  transition:opacity .5s;
+}
+.main{position:relative;z-index:1;}
+.counter-wrap{position:relative;z-index:1;}
+
+/* ── 앱스토어 팝업 ── */
+.appstore-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(30,25,20,.65);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.appstore-overlay.show{opacity:1;pointer-events:all;}
+
+.appstore-card{
+  width:300px;background:#fff;border-radius:24px;
+  padding:28px 24px 24px;
+  position:relative;
+  box-shadow:0 24px 64px rgba(0,0,0,.25);
+  animation:cardIn .3s cubic-bezier(.3,0,.5,1.2);
+}
+@keyframes cardIn{from{transform:scale(.88) translateY(20px)}to{transform:scale(1) translateY(0)}}
+
+.appstore-close{
+  position:absolute;top:14px;right:14px;
+  width:28px;height:28px;border-radius:50%;
+  background:#F0ECE2;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#A8A49C;
+}
+.appstore-icon{
+  width:72px;height:72px;border-radius:18px;
+  margin:0 auto 14px;display:block;
+  box-shadow:0 4px 16px rgba(0,0,0,.12);
+}
+.appstore-title{
+  font-size:20px;font-weight:900;color:#3A3530;
+  text-align:center;margin-bottom:6px;
+}
+.appstore-desc{
+  font-size:13px;color:#A8A49C;text-align:center;
+  line-height:1.6;margin-bottom:18px;
+}
+.appstore-features{
+  background:#FFF8E8;border-radius:12px;padding:14px;
+  margin-bottom:20px;border:1.5px solid #FFD96A;
+  display:flex;flex-direction:column;gap:7px;
+}
+.appstore-feature{
+  font-size:12px;color:#8B6914;
+  display:flex;align-items:center;gap:7px;font-weight:600;
+}
+.appstore-btn-main{
+  width:100%;padding:14px;border-radius:12px;
+  background:#3A3530;color:#fff;
+  font-size:14px;font-weight:800;border:none;cursor:pointer;
+  margin-bottom:8px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:background .2s;
+}
+.appstore-btn-main:active{background:#1A1510;}
+.appstore-btn-skip{
+  width:100%;padding:12px;border-radius:12px;
+  background:#F5F3EE;color:#A8A49C;
+  font-size:13px;font-weight:700;border:none;cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <div id="bgKeys"></div>
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="logo">심신안정 <span>체험판</span></div>
+    <button class="promo-badge" onclick="triggerAppStorePopup()">앱 다운로드</button>
+  </div>
+
+  <!-- 테마 탭 -->
+  <div class="theme-tabs" id="themeTabs">
+    <div class="tab active" data-theme="home" onclick="triggerAppStorePopup()">🏠 집가고싶다</div>
+    <div class="tab" data-theme="lottery" onclick="triggerAppStorePopup()">🍀 복권당첨</div>
+    <div class="tab" data-theme="salary" onclick="triggerAppStorePopup()">💸 월급올려줘</div>
+    <div class="tab" data-theme="rest" onclick="triggerAppStorePopup()">😴 그냥쉬고싶다</div>
+  </div>
+
+  <!-- 메인 -->
+  <div class="main">
+
+    <div class="chain">
+      <svg width="56" height="44" viewBox="0 0 56 44" fill="none">
+        <ellipse cx="28" cy="13" rx="11" ry="7.5" stroke="#C0C4CC" stroke-width="2.8" fill="none"/>
+        <rect x="16" y="26" width="22" height="13" rx="5" fill="#C8CCCC" stroke="#B0B4B8" stroke-width="1.4"/>
+        <rect x="23" y="22" width="9" height="9" rx="3" fill="#D4D8D8" stroke="#B0B4B8" stroke-width="1.4"/>
+        <path d="M42 29 C42 27 40 25.5 38.5 25.5 C37 25.5 35 27 35 29 C35 31.5 38.5 34 38.5 34 C38.5 34 42 31.5 42 29Z" fill="#E85A6A" opacity=".85"/>
+      </svg>
+    </div>
+
+    <div class="keycap-body" id="keycapBody">
+      <div class="key" id="key1" style="background:var(--ks)"><span class="key-text" id="k1" style="color:#CF3E50">집</span></div>
+      <div class="key" id="key2" style="background:#F2A5AE">
+        <span class="key-icon" id="k2">
+          <svg viewBox="0 0 52 52" fill="none">
+            <path d="M26 44C26 44 6 32 6 18c0-6 4-10 10-10 4 0 7 2 10 5 3-3 6-5 10-5 6 0 10 4 10 10 0 14-20 26-20 26z" fill="white" opacity=".9"/>
+            <line x1="14" y1="20" x2="36" y2="20" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round"/>
+            <polyline points="30,14 37,20 30,26" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+      <div class="key" id="key3" style="background:var(--ks)"><span class="key-text" id="k3" style="color:#CF3E50">가고</span></div>
+      <div class="key" id="key4" style="background:var(--ks)"><span class="key-text" id="k4" style="color:#CF3E50">싶다</span></div>
+    </div>
+
+    <div class="counter-wrap">
+      <span class="count-num" id="countNum">0</span>
+      <div class="count-label">번 눌렀어요</div>
+    </div>
+
+    <button class="share-btn" onclick="triggerAppStorePopup()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </svg>
+      클릭 수 공유하기
+    </button>
+
+  </div>
+
+  <!-- ── 앱스토어 팝업 ── -->
+  <div class="appstore-overlay" id="appstoreOverlay">
+    <div class="appstore-card">
+      <button class="appstore-close" onclick="closeAppStorePopup()">✕</button>
+      <img class="appstore-icon" src="icon.png" alt="심신안정" />
+      <div class="appstore-title">심신안정</div>
+      <div class="appstore-desc">앱으로 더 편하게 즐겨보세요!<br>광고 없이 마음껏 누를 수 있어요.</div>
+      <div class="appstore-features">
+        <div class="appstore-feature">🎨 4가지 테마 전부 이용 가능</div>
+        <div class="appstore-feature">♾️ 클릭 횟수 무제한</div>
+        <div class="appstore-feature">💾 나의 클릭 기록 저장</div>
+        <div class="appstore-feature">🚫 광고 없이 집중 클릭</div>
+      </div>
+      <button class="appstore-btn-main" onclick="goToAppStore()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        App Store에서 다운로드
+      </button>
+      <button class="appstore-btn-skip" onclick="closeAppStorePopup()">나중에 할게요</button>
+    </div>
+  </div>
+
+  <!-- 하단 푸터 -->
+  <div style="padding:16px 20px 32px;text-align:center;display:flex;flex-direction:column;gap:8px;position:relative;z-index:2;">
+    <div style="display:flex;justify-content:center;gap:16px;">
+      <a href="privacy.html" style="font-size:11px;color:#A8A49C;text-decoration:none;">개인정보처리방침</a>
+      <span style="font-size:11px;color:#D0CBB8;">|</span>
+      <a href="terms.html" style="font-size:11px;color:#A8A49C;text-decoration:none;">이용약관</a>
+      <span style="font-size:11px;color:#D0CBB8;">|</span>
+      <a href="mailto:minwoo5836@gmail.com" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
+    </div>
+    <div style="font-size:10px;color:#C8C4BC;">© 2026 심신안정. All rights reserved.</div>
+  </div>
+
+</div>
+
+<script>
+const APPSTORE_URL = 'https://apps.apple.com/app/id6762464784';
+const PROMO_THRESHOLD = 15;
+
+const state = {
+  theme: 'home',
+  count: 0,
+  popupOpen: false,
+};
+
+const themes = {
+  home: {
+    bg:'#F0ECE2', kbody:'#E0DBD0', kside2:'#C4BFB5', kshad2:'#A8A39A',
+    acc:'#CF3E50',
+    keys:['집','♥','가고','싶다'],
+    key2bg:'#F2A5AE', keyColor:'#CF3E50',
+    msgs:['집가고 싶다','퇴근하고 싶다','집에 가고파','제발','집!!!','집가자','밥먹고 싶다'],
+    bgkeys:['ㅎ','ㅏ','ㅁ','집','♥','퇴','근'],
+    particles:['#CF3E50','#F2A5AE','#E85A6A','#F5C8CC'],
+  },
+  lottery: {
+    bg:'#FFFBF0', kbody:'#F0E8C0', kside2:'#C8B870', kshad2:'#A89840',
+    acc:'#8B6914',
+    keys:['복권','🍀','당첨','!!!'],
+    key2bg:'#FFD96A', keyColor:'#8B6914',
+    msgs:['당첨되면 좋겠다','로또 1등!','제발제발','777','🍀🍀🍀','돈돈돈','복권 사야지'],
+    bgkeys:['복','권','🍀','당','첨','7','★'],
+    particles:['#C49A20','#FFD96A','#8B6914','#FFE89A'],
+  },
+  salary: {
+    bg:'#F0FFF4', kbody:'#C6F6D5', kside2:'#68D391', kshad2:'#48BB78',
+    acc:'#276749',
+    keys:['월급','💰','올려줘','!!!'],
+    key2bg:'#9AE6B4', keyColor:'#276749',
+    msgs:['월급 올려줘!','나도 연봉협상','인상 좀요','이게 맞나?','💰💰💰','사장님!!','최저임금이라도'],
+    bgkeys:['월','급','💰','↑','$$','Pay','올'],
+    particles:['#276749','#68D391','#C6F6D5','#9AE6B4'],
+  },
+  rest: {
+    bg:'#EEF2FF', kbody:'#E0E7FF', kside2:'#A5B4FC', kshad2:'#818CF8',
+    acc:'#4338CA',
+    keys:['그냥','😴','쉬고','싶다'],
+    key2bg:'#C7D2FE', keyColor:'#4338CA',
+    msgs:['그냥 쉬고싶다','피곤해...','낮잠 자고싶다','오늘은 좀','침대가 최고야','쉬어야 해','😴😴😴'],
+    bgkeys:['😴','zz','쉬자','휴가','침대','낮잠','😪'],
+    particles:['#4338CA','#818CF8','#A5B4FC','#C7D2FE'],
+  },
+};
+
+/* ─── 앱스토어 팝업 ─── */
+function triggerAppStorePopup() {
+  if(state.popupOpen) return;
+  showAppStorePopup();
+}
+function showAppStorePopup() {
+  state.popupOpen = true;
+  document.getElementById('appstoreOverlay').classList.add('show');
+}
+function closeAppStorePopup() {
+  document.getElementById('appstoreOverlay').classList.remove('show');
+  state.popupOpen = false;
+  // 점수 초기화
+  state.count = 0;
+  const num = document.getElementById('countNum');
+  num.textContent = '0';
+}
+function goToAppStore() {
+  window.open(APPSTORE_URL, '_blank');
+}
+
+/* ─── 테마 적용 ─── */
+function setTheme(name) {
+  state.theme = name;
+  const t = themes[name];
+  const app = document.getElementById('app');
+  app.style.background = t.bg;
+  document.getElementById('keycapBody').style.background = t.kbody;
+  document.getElementById('keycapBody').style.setProperty('--kside2', t.kside2);
+  document.getElementById('keycapBody').style.setProperty('--kshad2', t.kshad2);
+  document.getElementById('countNum').style.color = t.acc;
+  document.querySelector('.share-btn').style.background = t.acc;
+
+  document.getElementById('key1').style.background = '#FDFAF4';
+  document.getElementById('k1').style.color = t.keyColor;
+  document.getElementById('k1').textContent = t.keys[0];
+  document.getElementById('key2').style.background = t.key2bg;
+  document.getElementById('key3').style.background = name==='lottery'?'#FFF8E0':'#FDFAF4';
+  document.getElementById('k3').style.color = t.keyColor;
+  document.getElementById('k3').textContent = t.keys[2];
+  document.getElementById('key4').style.background = name==='lottery'?'#FFF8E0':'#FDFAF4';
+  document.getElementById('k4').style.color = t.keyColor;
+  document.getElementById('k4').textContent = t.keys[3];
+
+  if(name==='lottery') document.getElementById('k2').innerHTML='<span style="font-size:44px">🍀</span>';
+  else if(name==='salary') document.getElementById('k2').innerHTML='<span style="font-size:44px">💰</span>';
+  else if(name==='rest') document.getElementById('k2').innerHTML='<span style="font-size:44px">😴</span>';
+  else document.getElementById('k2').innerHTML=`<svg viewBox="0 0 52 52" fill="none" width="52" height="52">
+    <path d="M26 44C26 44 6 32 6 18c0-6 4-10 10-10 4 0 7 2 10 5 3-3 6-5 10-5 6 0 10 4 10 10 0 14-20 26-20 26z" fill="white" opacity=".9"/>
+    <line x1="14" y1="20" x2="36" y2="20" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round"/>
+    <polyline points="30,14 37,20 30,26" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+
+  // 탭 활성화
+  document.querySelectorAll('.tab').forEach(el => {
+    el.classList.toggle('active', el.dataset.theme === name);
+  });
+
+  buildBgKeys();
+}
+
+/* ─── 탭 클릭: 테마 변경 + 팝업 ─── */
+document.querySelectorAll('.tab').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const name = this.dataset.theme;
+    setTheme(name);
+    // 현재 테마가 아닌 다른 테마 클릭 시 팝업
+    if(name !== 'home') {
+      setTimeout(triggerAppStorePopup, 200);
+    }
+  });
+});
+
+/* ─── 배경 키캡 ─── */
+function buildBgKeys() {
+  const container = document.getElementById('bgKeys');
+  container.innerHTML = '';
+  const t = themes[state.theme];
+  for(let i=0;i<18;i++){
+    const el = document.createElement('div');
+    el.className = 'bg-key';
+    const sz = 32 + Math.random()*24;
+    el.style.cssText = `
+      width:${sz}px;height:${sz}px;
+      left:${Math.random()*92}%;top:${Math.random()*92}%;
+      background:${state.theme==='home'?'#FDFAF4':'#FFF8E0'};
+      color:${t.keyColor};font-size:${sz*.38}px;opacity:.25;
+      transform:rotate(${-20+Math.random()*40}deg);
+    `;
+    el.textContent = t.bgkeys[Math.floor(Math.random()*t.bgkeys.length)];
+    container.appendChild(el);
+  }
+}
+
+/* ─── 토스트 ─── */
+function showToast(msg) {
+  const old = document.querySelector('.toast');
+  if(old) old.remove();
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2200);
+}
+
+/* ─── 플로팅 텍스트 ─── */
+function spawnFloat(x, y) {
+  const t = themes[state.theme];
+  const msg = t.msgs[Math.floor(Math.random() * t.msgs.length)];
+  const el = document.createElement('div');
+  el.className = 'float-msg';
+  const rot = (-10 + Math.random() * 20).toFixed(1);
+  el.style.cssText = `
+    left:${x + (-50 + Math.random()*100)}px;
+    top:${y - 10}px;
+    font-size:${16 + Math.random()*12}px;
+    color:${t.acc};
+    --r:${rot}deg;
+  `;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1700);
+}
+
+/* ─── 파티클 ─── */
+function spawnParticles(x, y) {
+  const colors = themes[state.theme].particles;
+  for(let i=0;i<10;i++){
+    const el = document.createElement('div');
+    el.className = 'particle';
+    const angle = (Math.PI * 2 * i) / 10 + Math.random() * .4;
+    const d = 50 + Math.random() * 70;
+    el.style.cssText = `
+      left:${x}px;top:${y}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      --px:${(Math.cos(angle)*d).toFixed(0)}px;
+      --py:${(Math.sin(angle)*d - 20).toFixed(0)}px;
+      border-radius:${Math.random()>.5?'50%':'3px'};
+    `;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 900);
+  }
+}
+
+/* ─── Web Audio 클릭음 ─── */
+let actx;
+function playClick() {
+  try {
+    if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.connect(g); g.connect(actx.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(580, actx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(180, actx.currentTime+.08);
+    g.gain.setValueAtTime(.2, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, actx.currentTime+.1);
+    o.start(); o.stop(actx.currentTime+.12);
+  } catch(e){}
+}
+
+/* ─── 메인 클릭 핸들러 ─── */
+const body = document.getElementById('keycapBody');
+
+function handlePress(e) {
+  if(state.popupOpen) return;
+
+  body.classList.add('pressed');
+  playClick();
+  state.count++;
+
+  const num = document.getElementById('countNum');
+  num.textContent = state.count;
+  num.classList.remove('pop');
+  void num.offsetWidth;
+  num.classList.add('pop');
+
+  const cx = e?.clientX ?? window.innerWidth/2;
+  const cy = e?.clientY ?? window.innerHeight/2;
+  spawnFloat(cx, cy);
+  if(state.count % 5 === 0) spawnParticles(cx, cy);
+
+  // 15회 배수마다 팝업
+  if(state.count >= PROMO_THRESHOLD && state.count % PROMO_THRESHOLD === 0) {
+    setTimeout(showAppStorePopup, 350);
+  }
+}
+
+body.addEventListener('mousedown', handlePress);
+body.addEventListener('touchstart', e => { e.preventDefault(); handlePress(e.touches[0]); }, {passive:false});
+document.addEventListener('mouseup', () => body.classList.remove('pressed'));
+document.addEventListener('touchend', () => body.classList.remove('pressed'));
+
+document.addEventListener('keydown', e => {
+  if(e.code === 'Space' && !e.repeat) {
+    e.preventDefault();
+    body.classList.add('pressed');
+    const r = body.getBoundingClientRect();
+    handlePress({clientX: r.left+r.width/2, clientY: r.top+r.height/2});
+  }
+});
+document.addEventListener('keyup', e => { if(e.code==='Space') body.classList.remove('pressed'); });
+
+/* ─── 초기화 ─── */
+buildBgKeys();
+</script>
+</body>
+</html>
