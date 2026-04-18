@@ -694,7 +694,7 @@ body{
 
   <!-- 헤더 -->
   <div class="header">
-    <div class="logo">심신 안정 <span>v1.0</span></div>
+    <div class="logo">심신 안정 <span>v1.5</span></div>
     <div style="display:flex;align-items:center;gap:6px;">
       <div class="tier-badge free" id="tierBadge" onclick="onBadgeClick()" style="cursor:pointer;">심신 불안정 중</div>
       <button class="settings-btn" onclick="openSettings()" title="설정">⚙️ <span id="settingsBtnLabel">설정</span></button>
@@ -1922,7 +1922,7 @@ function applyLanguage(lang) {
   const qs = (sel) => document.querySelector(sel);
   // 로고
   const logoEl = qs('.logo');
-  if (logoEl) logoEl.innerHTML = L.logo + ' <span>v1.0</span>';
+  if (logoEl) logoEl.innerHTML = L.logo + ' <span>v1.5</span>';
   // 설정 버튼 텍스트
   if (el('settingsBtnLabel')) el('settingsBtnLabel').textContent = L.settingsBtn;
   // 뱃지
