@@ -589,8 +589,9 @@ body{
 /* ── 설정 버튼 ── */
 .settings-btn{
   background:none;border:none;cursor:pointer;
-  font-size:18px;padding:4px 6px;
-  display:flex;align-items:center;opacity:.6;
+  font-size:13px;padding:4px 8px;
+  display:flex;align-items:center;gap:3px;
+  opacity:.7;font-weight:600;color:inherit;
 }
 .settings-btn:active{opacity:1;}
 
@@ -691,9 +692,11 @@ body{
 
   <!-- 헤더 -->
   <div class="header">
-    <button class="settings-btn" onclick="openSettings()" title="설정">⚙️</button>
     <div class="logo">심신 안정 <span>v1.0</span></div>
-    <div class="tier-badge free" id="tierBadge" onclick="onBadgeClick()" style="cursor:pointer;">심신 불안정 중</div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="tier-badge free" id="tierBadge" onclick="onBadgeClick()" style="cursor:pointer;">심신 불안정 중</div>
+      <button class="settings-btn" onclick="openSettings()" title="설정">⚙️ <span id="settingsBtnLabel">설정</span></button>
+    </div>
   </div>
 
   <!-- 테마 탭 -->
@@ -1617,6 +1620,7 @@ async function restorePurchasesIAP() {
 const LANGS = {
   ko: {
     name: '한국어',
+    settingsBtn: '설정',
     logo: '심신 안정',
     badgeFree: '심신 불안정 중',
     badgePremium: '심신 안정 중',
@@ -1630,11 +1634,21 @@ const LANGS = {
     recordNavDesc: '기록 이동 시 지금 번호는 사라져요',
     recordNavYes: '네',
     recordNavNo: '아니요',
+    saveRecordBtn: '💾 기록 저장',
+    resetBtn: '초기화',
+    upgradeTitle: '심신 안정으로 전환',
+    upgradeDesc: '심신 안정 중이 되면 광고 없이\n마음껏 누를 수 있어요.',
+    upgradePayBtn: '💳 심신 안정 중으로 전환하기 (₩2,500)',
+    upgradeRestoreBtn: '이미 구매했어요 (복원)',
+    adTag: 'AD · 광고',
+    adTitle: '광고주를 모집합니다',
+    adClose: '닫기',
     toastPremium: '✨ 심신 안정 계정이에요!',
     toastFree: '무료 계정으로 전환됐어요.',
   },
   en: {
     name: 'English',
+    settingsBtn: 'Settings',
     logo: 'ChillClick',
     badgeFree: 'Stressed 😓',
     badgePremium: 'Chilling ✨',
@@ -1648,11 +1662,21 @@ const LANGS = {
     recordNavDesc: 'Current count will be lost if you switch.',
     recordNavYes: 'Yes',
     recordNavNo: 'No',
+    saveRecordBtn: '💾 Save Record',
+    resetBtn: 'Reset',
+    upgradeTitle: 'Go Premium',
+    upgradeDesc: 'No ads, unlimited clicks\nwith Premium.',
+    upgradePayBtn: '💳 Go Premium (₩2,500)',
+    upgradeRestoreBtn: 'Already purchased (Restore)',
+    adTag: 'AD',
+    adTitle: 'Advertise Here',
+    adClose: 'Close',
     toastPremium: '✨ Premium activated!',
     toastFree: 'Switched to free account.',
   },
   ja: {
     name: '日本語',
+    settingsBtn: '設定',
     logo: 'チルクリック',
     badgeFree: 'ストレス中 😓',
     badgePremium: 'リラックス中 ✨',
@@ -1666,11 +1690,21 @@ const LANGS = {
     recordNavDesc: '移動すると現在の数字が消えます',
     recordNavYes: 'はい',
     recordNavNo: 'いいえ',
+    saveRecordBtn: '💾 記録を保存',
+    resetBtn: 'リセット',
+    upgradeTitle: 'プレミアムへ',
+    upgradeDesc: '広告なしで思いきりタップ\nできます。',
+    upgradePayBtn: '💳 プレミアムになる (₩2,500)',
+    upgradeRestoreBtn: '購入済み (復元)',
+    adTag: 'AD',
+    adTitle: '広告主を募集中',
+    adClose: '閉じる',
     toastPremium: '✨ プレミアム有効！',
     toastFree: '無料アカウントに戻りました。',
   },
   'zh-cn': {
     name: '中文(简体)',
+    settingsBtn: '设置',
     logo: '冥想点击',
     badgeFree: '压力中 😓',
     badgePremium: '放松中 ✨',
@@ -1684,11 +1718,21 @@ const LANGS = {
     recordNavDesc: '切换后当前数字将消失',
     recordNavYes: '是',
     recordNavNo: '否',
+    saveRecordBtn: '💾 保存记录',
+    resetBtn: '重置',
+    upgradeTitle: '升级会员',
+    upgradeDesc: '无广告，随心点击\n尽情享受。',
+    upgradePayBtn: '💳 升级会员 (₩2,500)',
+    upgradeRestoreBtn: '已购买 (恢复)',
+    adTag: 'AD',
+    adTitle: '招募广告主',
+    adClose: '关闭',
     toastPremium: '✨ 高级版已激活！',
     toastFree: '已切换到免费账号。',
   },
   'zh-tw': {
     name: '中文(繁體)',
+    settingsBtn: '設定',
     logo: '冥想點擊',
     badgeFree: '壓力中 😓',
     badgePremium: '放鬆中 ✨',
@@ -1702,6 +1746,15 @@ const LANGS = {
     recordNavDesc: '切換後目前數字將消失',
     recordNavYes: '是',
     recordNavNo: '否',
+    saveRecordBtn: '💾 儲存記錄',
+    resetBtn: '重置',
+    upgradeTitle: '升級會員',
+    upgradeDesc: '無廣告，盡情點擊\n享受放鬆。',
+    upgradePayBtn: '💳 升級會員 (₩2,500)',
+    upgradeRestoreBtn: '已購買 (恢復)',
+    adTag: 'AD',
+    adTitle: '招募廣告主',
+    adClose: '關閉',
     toastPremium: '✨ 高級版已啟用！',
     toastFree: '已切換至免費帳號。',
   },
@@ -1712,28 +1765,50 @@ let currentLang = localStorage.getItem('chillclick_lang') || 'ko';
 function applyLanguage(lang) {
   const L = LANGS[lang] || LANGS.ko;
   currentLang = lang;
+  const el = (id) => document.getElementById(id);
+  const qs = (sel) => document.querySelector(sel);
   // 로고
-  const logoEl = document.querySelector('.logo');
+  const logoEl = qs('.logo');
   if (logoEl) logoEl.innerHTML = L.logo + ' <span>v1.0</span>';
+  // 설정 버튼 텍스트
+  if (el('settingsBtnLabel')) el('settingsBtnLabel').textContent = L.settingsBtn;
   // 뱃지
-  const badge = document.getElementById('tierBadge');
+  const badge = el('tierBadge');
   if (badge) badge.textContent = state.tier === 'premium' ? L.badgePremium : L.badgeFree;
   // 탭
-  const tabs = document.querySelectorAll('.tab');
-  tabs.forEach((t, i) => { if (L.tabs[i]) t.textContent = L.tabs[i]; });
+  document.querySelectorAll('.tab').forEach((t, i) => { if (L.tabs[i]) t.textContent = L.tabs[i]; });
   // 설정 패널
-  const el = (id) => document.getElementById(id);
   if (el('settingsTitle')) el('settingsTitle').textContent = L.settingsTitle;
   if (el('settingsLangLabel')) el('settingsLangLabel').textContent = L.settingsLang;
   if (el('settingsPrivacyLabel')) el('settingsPrivacyLabel').textContent = L.settingsPrivacy;
   if (el('settingsTermsLabel')) el('settingsTermsLabel').textContent = L.settingsTerms;
   if (el('settingsContactLabel')) el('settingsContactLabel').textContent = L.settingsContact;
   if (el('settingsLangCurrent')) el('settingsLangCurrent').textContent = L.name + ' ›';
-  // 기록 팝업
-  const rTitle = document.querySelector('.record-nav-title');
-  const rDesc = document.querySelector('.record-nav-desc');
-  const rYes = document.querySelector('.record-nav-btn-yes');
-  const rNo = document.querySelector('.record-nav-btn-no');
+  // 기록 저장/초기화 버튼
+  const saveBtn = qs('.save-record-btn');
+  if (saveBtn) saveBtn.textContent = L.saveRecordBtn;
+  const resetBtn = qs('#premiumResetWrap button:last-child');
+  if (resetBtn) resetBtn.textContent = L.resetBtn;
+  // 업그레이드 팝업
+  const upTitle = qs('.upgrade-choice-title');
+  const upDesc = qs('.upgrade-choice-desc');
+  const upPay = qs('.upgrade-pay-btn');
+  const upRestore = qs('.upgrade-pay-btn + .upgrade-pay-btn, .upgrade-pay-btn:nth-child(2)');
+  if (upTitle) upTitle.textContent = L.upgradeTitle;
+  if (upDesc) upDesc.innerHTML = L.upgradeDesc.replace('\n','<br>');
+  if (upPay) upPay.textContent = L.upgradePayBtn;
+  // 광고 팝업
+  const adTag = qs('.ad-tag');
+  const adTitle = qs('.ad-title');
+  const adCta = qs('.ad-cta');
+  if (adTag) adTag.textContent = L.adTag;
+  if (adTitle) adTitle.textContent = L.adTitle;
+  if (adCta) adCta.textContent = L.adClose;
+  // 기록 이동 팝업
+  const rTitle = qs('.record-nav-title');
+  const rDesc = qs('.record-nav-desc');
+  const rYes = qs('.record-nav-btn-yes');
+  const rNo = qs('.record-nav-btn-no');
   if (rTitle) rTitle.textContent = L.recordNavTitle;
   if (rDesc) rDesc.textContent = L.recordNavDesc;
   if (rYes) rYes.textContent = L.recordNavYes;
