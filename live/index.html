@@ -1001,6 +1001,8 @@ function setTheme(name, el) {
 
   const t = themes[name];
   const app = document.getElementById('app');
+  app.style.setProperty('--bg', t.bg);
+  app.style.setProperty('--acc', t.acc);
   app.style.background = t.bg;
   document.body.style.background = t.bg;
   document.getElementById('keycapBody').style.background = t.kbody;
@@ -1413,6 +1415,8 @@ async function initPremiumStatus() {
 }
 
 /* ─── 초기화 ─── */
+document.getElementById('app').style.setProperty('--bg', themes[state.theme].bg);
+document.getElementById('app').style.setProperty('--acc', themes[state.theme].acc);
 document.body.style.background = themes[state.theme].bg;
 buildBgKeys();
 updateAdKeyLayer();
