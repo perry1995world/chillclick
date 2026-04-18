@@ -1000,7 +1000,7 @@ function saveRecord() {
   records.unshift(record);
   localStorage.setItem('chillclick_records', JSON.stringify(records));
   renderRecords();
-  showToast('기록이 저장됐어요 💾');
+  showToast((LANGS[currentLang]||LANGS.ko).toastSaved);
 }
 
 function renderRecords() {
@@ -1020,7 +1020,13 @@ function renderRecords() {
 let _pendingRecordId = null;
 function showRecordNav(id) {
   _pendingRecordId = id;
-  document.getElementById('recordNavOverlay').classList.add('show');
+  const L = LANGS[currentLang] || LANGS.ko;
+  const o = document.getElementById('recordNavOverlay');
+  o.querySelector('.record-nav-title').textContent = L.recordNavTitle;
+  o.querySelector('.record-nav-desc').textContent = L.recordNavDesc;
+  o.querySelector('.record-nav-btn-yes').textContent = L.recordNavYes;
+  o.querySelector('.record-nav-btn-no').textContent = L.recordNavNo;
+  o.classList.add('show');
 }
 function closeRecordNav() {
   document.getElementById('recordNavOverlay').classList.remove('show');
@@ -1640,6 +1646,7 @@ const LANGS = {
     resetConfirmYes: '초기화',
     resetConfirmNo: '취소',
     toastReset: '클릭 수가 초기화됐어요',
+    toastSaved: '기록이 저장됐어요 💾',
     upgradeTitle: '심신 안정으로 전환',
     upgradeDesc: '심신 안정 중이 되면 광고 없이\n마음껏 누를 수 있어요.',
     upgradePayBtn: '💳 심신 안정 중으로 전환하기 (₩2,500)',
@@ -1691,6 +1698,7 @@ const LANGS = {
     resetConfirmYes: 'Reset',
     resetConfirmNo: 'Cancel',
     toastReset: 'Click count has been reset.',
+    toastSaved: 'Record saved 💾',
     upgradeTitle: 'Go Premium',
     upgradeDesc: 'No ads, unlimited clicks\nwith Premium.',
     upgradePayBtn: '💳 Go Premium (₩2,500)',
@@ -1742,6 +1750,7 @@ const LANGS = {
     resetConfirmYes: 'リセット',
     resetConfirmNo: 'キャンセル',
     toastReset: 'クリック数をリセットしました',
+    toastSaved: '記録を保存しました 💾',
     upgradeTitle: 'プレミアムへ',
     upgradeDesc: '広告なしで思いきりタップ\nできます。',
     upgradePayBtn: '💳 プレミアムになる (₩2,500)',
@@ -1793,6 +1802,7 @@ const LANGS = {
     resetConfirmYes: '重置',
     resetConfirmNo: '取消',
     toastReset: '点击次数已重置',
+    toastSaved: '记录已保存 💾',
     upgradeTitle: '升级会员',
     upgradeDesc: '无广告，随心点击\n尽情享受。',
     upgradePayBtn: '💳 升级会员 (₩2,500)',
@@ -1844,6 +1854,7 @@ const LANGS = {
     resetConfirmYes: '重置',
     resetConfirmNo: '取消',
     toastReset: '點擊次數已重置',
+    toastSaved: '記錄已儲存 💾',
     upgradeTitle: '升級會員',
     upgradeDesc: '無廣告，盡情點擊\n享受放鬆。',
     upgradePayBtn: '💳 升級會員 (₩2,500)',
