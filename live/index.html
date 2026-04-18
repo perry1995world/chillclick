@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>심신안정</title>
+<title>심신 안정</title>
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
 <style>
@@ -606,7 +606,7 @@ body{
 
 <!-- 비밀번호 게이트 -->
 <div id="pwGate">
-  <div class="pw-logo">심신안정</div>
+  <div class="pw-logo">심신 안정</div>
   <div class="pw-sub">비밀번호를 입력해주세요</div>
   <input type="password" id="pwInput" placeholder="••••" maxlength="20" />
   <button onclick="checkPw()">입장</button>
@@ -620,7 +620,7 @@ body{
 
   <!-- 헤더 -->
   <div class="header">
-    <div class="logo">심신안정 <span>v1.5</span></div>
+    <div class="logo">심신 안정 <span>v1.5</span></div>
     <div class="tier-badge free" id="tierBadge" onclick="onBadgeClick()" style="cursor:pointer;">심신 불안정 중</div>
   </div>
 
@@ -778,7 +778,7 @@ body{
       <button class="reset-close" onclick="closeReset()">✕</button>
       <span class="reset-emoji">😮‍💨</span>
       <div class="reset-title">초기화 시간이에요</div>
-      <div class="reset-desc">오늘의 심신안정 <strong>159번</strong> 달성!<br>닫으면 자동으로 0부터 다시 시작돼요.</div>
+      <div class="reset-desc">오늘의 심신 안정 <strong>159번</strong> 달성!<br>닫으면 자동으로 0부터 다시 시작돼요.</div>
       <div class="reset-upsell">
         <div class="reset-upsell-title">✨ 심신 안정 중이라면?</div>
         <div class="reset-upsell-desc">횟수 제한 없이 무제한으로 누를 수 있어요.<br>광고도 없고, 클릭 수도 저장돼요.</div>
@@ -797,7 +797,7 @@ body{
         <div class="share-big-num" id="shareNum">0</div>
         <div class="share-theme-name" id="shareThemeName">🏠 집가고싶다</div>
         <div class="share-msg" id="shareMsg">번 눌렀어요</div>
-        <div class="share-watermark">— 심신안정 —</div>
+        <div class="share-watermark">— 심신 안정 —</div>
       </div>
       <div class="share-actions">
         <button class="share-action" onclick="copyCount()"><span class="share-action-icon">📋</span>복사</button>
@@ -817,7 +817,7 @@ body{
       <span style="font-size:11px;color:#D0CBB8;">|</span>
       <a href="mailto:ask.perryworld.03@gmail.com" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
     </div>
-    <div style="font-size:10px;color:#C8C4BC;">© 2026 심신안정. All rights reserved.</div>
+    <div style="font-size:10px;color:#C8C4BC;">© 2026 심신 안정. All rights reserved.</div>
   </div>
 
 </div><!-- /app -->
@@ -1046,8 +1046,13 @@ const VALID_CODES = ['CHILL-2024','RELAX-PRO','SINSIN-VIP','CHILLPRO','PREMIUM77
 
 /* ─── 뱃지 클릭 ─── */
 function onBadgeClick() {
-  if(state.tier === 'free') { showUpgradeChoice(); }
-  else { deactivatePremium(); }
+  if(state.tier === 'free') {
+    const IAP = window.Capacitor?.Plugins?.IAP;
+    if(!IAP) { activatePremium(); return; } // 라이브 서버: 바로 토글
+    showUpgradeChoice();
+  } else {
+    deactivatePremium();
+  }
 }
 
 /* ─── 업그레이드 선택 팝업 ─── */
@@ -1223,13 +1228,13 @@ function closeShare(e) {
 }
 async function nativeShare() {
   const t = themes[state.theme];
-  const text = `나 오늘 "${state.theme === 'home' ? '집가고싶다' : '복권당첨되면좋겠다'}" ${state.count}번 눌렀어 😮‍💨\n— 심신안정 앱`;
+  const text = `나 오늘 "${state.theme === 'home' ? '집가고싶다' : '복권당첨되면좋겠다'}" ${state.count}번 눌렀어 😮‍💨\n— 심신 안정 앱`;
   if(navigator.share) {
     await navigator.share({ text });
   } else { copyCount(); }
 }
 function copyCount() {
-  const text = `나 오늘 ${state.count}번 눌렀어 😮‍💨 — 심신안정`;
+  const text = `나 오늘 ${state.count}번 눌렀어 😮‍💨 — 심신 안정`;
   navigator.clipboard?.writeText(text).then(() => showToast('복사됐어요!'));
   document.getElementById('shareOverlay').classList.remove('show');
 }
