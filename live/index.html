@@ -1118,6 +1118,11 @@ function loadCount() {
   return 0;
 }
 function showResetConfirm() {
+  const L = LANGS[currentLang] || LANGS.ko;
+  document.getElementById('resetConfirmTitle').textContent = L.resetConfirmTitle;
+  document.getElementById('resetConfirmDesc').textContent = L.resetConfirmDesc;
+  document.getElementById('resetConfirmYes').textContent = L.resetConfirmYes;
+  document.getElementById('resetConfirmNo').textContent = L.resetConfirmNo;
   document.getElementById('resetConfirmOverlay').classList.add('show');
 }
 function closeResetConfirm() {
