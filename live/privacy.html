@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>개인정보처리방침 — 심신안정</title>
+<title>Privacy Policy — ChillClick</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:#F0ECE2;color:#3A3530;padding:0;}
 .wrap{max-width:680px;margin:0 auto;padding:40px 24px 80px;}
 .header{display:flex;align-items:center;gap:12px;margin-bottom:40px;padding-bottom:20px;border-bottom:1.5px solid #D0CBB8;}
-.back{font-size:13px;color:#CF3E50;text-decoration:none;font-weight:700;}
+.back{font-size:13px;color:#CF3E50;text-decoration:none;font-weight:700;cursor:pointer;}
 h1{font-size:22px;font-weight:900;color:#CF3E50;}
 .updated{font-size:12px;color:#A8A49C;margin-top:4px;}
 h2{font-size:15px;font-weight:800;color:#3A3530;margin:28px 0 10px;}
@@ -21,65 +21,97 @@ ul{padding-left:18px;display:flex;flex-direction:column;gap:4px;}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="header">
-    <a class="back" href="index.html">← 심신안정</a>
-    <div>
-      <h1>개인정보처리방침</h1>
-      <div class="updated">최종 수정일: 2026년 4월 17일</div>
-    </div>
-  </div>
+<div class="wrap" id="wrap"></div>
+<script>
+const lang = new URLSearchParams(location.search).get('lang') || 'ko';
+const C = {
+  ko: {
+    back: '← 심신안정', title: '개인정보처리방침', updated: '최종 수정일: 2026년 4월 17일',
+    sections: [
+      { h: '1. 수집하는 정보', p: '심신안정 앱은 아래의 정보만 기기 내 로컬에 저장하며, 서버로 전송하거나 외부와 공유하지 않습니다.', ul: ['클릭 횟수 및 저장된 기록','선택한 테마 정보','회원 등급 상태 (무료/유료)'] },
+      { h: '2. 정보 수집 목적', p: '수집된 정보는 앱의 기능 제공(클릭 수 저장, 기록 관리)을 위해서만 사용되며, 마케팅·광고·분석 목적으로는 사용되지 않습니다.' },
+      { h: '3. 정보 저장 방식', p: '모든 데이터는 사용자의 기기 내 로컬 저장소(localStorage)에만 저장됩니다. 외부 서버에 전송되거나 저장되지 않습니다.' },
+      { h: '4. 제3자 제공', p: '심신안정 앱은 수집한 어떠한 정보도 제3자에게 제공, 공유, 판매하지 않습니다.' },
+      { h: '5. 광고', p: '무료 회원에게는 광고가 표시될 수 있습니다. 광고는 현재 광고주 모집 중인 자체 광고로 운영되며, 외부 광고 네트워크를 사용하지 않습니다.' },
+      { h: '6. 개인정보 삭제', p: '앱을 삭제하면 기기에 저장된 모든 데이터가 함께 삭제됩니다. 별도의 서버 데이터 삭제 요청은 필요하지 않습니다.' },
+      { h: '7. 아동 개인정보 보호', p: '심신안정 앱은 만 14세 미만 아동으로부터 의도적으로 개인정보를 수집하지 않습니다.' },
+      { h: '8. 개인정보처리방침 변경', p: '본 방침이 변경될 경우 앱 내 공지 또는 본 페이지를 통해 사전 안내합니다.' },
+    ],
+    contactTitle: '📬 개인정보 관련 문의',
+    contactBody: '개인정보 처리에 관한 문의사항은 아래로 연락해주세요.<br>이메일: <a href="mailto:ask.perryworld.03@gmail.com">ask.perryworld.03@gmail.com</a>',
+  },
+  en: {
+    back: '← ChillClick', title: 'Privacy Policy', updated: 'Last updated: April 17, 2026',
+    sections: [
+      { h: '1. Information We Collect', p: 'ChillClick only stores the following data locally on your device. It is never transmitted to servers or shared externally.', ul: ['Click count and saved records','Selected theme','Account tier (free/premium)'] },
+      { h: '2. Purpose of Collection', p: 'Collected data is used solely to provide app features (saving click counts, managing records). It is not used for marketing, advertising, or analytics.' },
+      { h: '3. Data Storage', p: 'All data is stored only in your device\'s local storage (localStorage). It is never sent to or stored on external servers.' },
+      { h: '4. Third-Party Sharing', p: 'ChillClick does not provide, share, or sell any collected information to third parties.' },
+      { h: '5. Advertising', p: 'Free users may see ads. Ads are managed as in-house placements currently seeking advertisers and do not use external ad networks.' },
+      { h: '6. Data Deletion', p: 'Deleting the app removes all data stored on your device. No server-side deletion request is necessary.' },
+      { h: '7. Children\'s Privacy', p: 'ChillClick does not intentionally collect personal information from children under 14.' },
+      { h: '8. Policy Changes', p: 'If this policy changes, we will notify you via in-app notice or this page in advance.' },
+    ],
+    contactTitle: '📬 Privacy Inquiries',
+    contactBody: 'For questions about data handling, please contact us.<br>Email: <a href="mailto:ask.perryworld.03@gmail.com">ask.perryworld.03@gmail.com</a>',
+  },
+  ja: {
+    back: '← チルクリック', title: 'プライバシーポリシー', updated: '最終更新日: 2026年4月17日',
+    sections: [
+      { h: '1. 収集する情報', p: 'チルクリックは以下の情報のみ端末内のローカルに保存し、サーバーへの送信や外部との共有は行いません。', ul: ['クリック回数および保存した記録','選択したテーマ','会員ランク（無料/有料）'] },
+      { h: '2. 収集目的', p: '収集した情報はアプリの機能提供（クリック数の保存、記録管理）のみに使用され、マーケティング・広告・分析目的には使用されません。' },
+      { h: '3. データの保存方法', p: 'すべてのデータはお客様の端末内のローカルストレージ（localStorage）のみに保存されます。外部サーバーに送信・保存されることはありません。' },
+      { h: '4. 第三者への提供', p: 'チルクリックは収集した情報を第三者に提供・共有・販売することは一切ありません。' },
+      { h: '5. 広告', p: '無料会員には広告が表示される場合があります。広告は現在広告主を募集中の自社広告で運営されており、外部広告ネットワークは使用していません。' },
+      { h: '6. データの削除', p: 'アプリを削除すると、端末に保存されたすべてのデータも削除されます。サーバー側のデータ削除リクエストは不要です。' },
+      { h: '7. 子どものプライバシー', p: 'チルクリックは14歳未満の子どもから意図的に個人情報を収集しません。' },
+      { h: '8. ポリシーの変更', p: 'ポリシーが変更された場合は、アプリ内通知またはこのページを通じて事前にお知らせします。' },
+    ],
+    contactTitle: '📬 プライバシーに関するお問い合わせ',
+    contactBody: 'データの取り扱いに関するご質問は以下までお問い合わせください。<br>メール: <a href="mailto:ask.perryworld.03@gmail.com">ask.perryworld.03@gmail.com</a>',
+  },
+  'zh-cn': {
+    back: '← 冥想点击', title: '隐私政策', updated: '最后更新: 2026年4月17日',
+    sections: [
+      { h: '1. 收集的信息', p: '冥想点击仅在您的设备本地存储以下信息，不会传输至服务器或与外部共享。', ul: ['点击次数及保存的记录','选择的主题','账户等级（免费/高级）'] },
+      { h: '2. 收集目的', p: '收集的信息仅用于提供应用功能（保存点击数、管理记录），不用于营销、广告或分析目的。' },
+      { h: '3. 数据存储方式', p: '所有数据仅存储在您设备的本地存储（localStorage）中，不会发送至或存储于外部服务器。' },
+      { h: '4. 第三方共享', p: '冥想点击不会向第三方提供、共享或出售任何收集的信息。' },
+      { h: '5. 广告', p: '免费用户可能会看到广告。广告以自营形式运营，目前正在招募广告主，不使用外部广告网络。' },
+      { h: '6. 数据删除', p: '删除应用后，存储在设备上的所有数据将一并删除，无需单独申请服务器端数据删除。' },
+      { h: '7. 儿童隐私', p: '冥想点击不会故意收集14岁以下儿童的个人信息。' },
+      { h: '8. 政策变更', p: '若本政策发生变更，我们将通过应用内通知或本页面提前告知。' },
+    ],
+    contactTitle: '📬 隐私相关咨询',
+    contactBody: '如有数据处理方面的疑问，请联系我们。<br>邮箱: <a href="mailto:ask.perryworld.03@gmail.com">ask.perryworld.03@gmail.com</a>',
+  },
+  'zh-tw': {
+    back: '← 冥想點擊', title: '隱私政策', updated: '最後更新: 2026年4月17日',
+    sections: [
+      { h: '1. 收集的資訊', p: '冥想點擊僅在您的裝置本地儲存以下資訊，不會傳輸至伺服器或與外部共享。', ul: ['點擊次數及儲存的記錄','選擇的主題','帳號等級（免費/高級）'] },
+      { h: '2. 收集目的', p: '收集的資訊僅用於提供應用程式功能（儲存點擊數、管理記錄），不用於行銷、廣告或分析目的。' },
+      { h: '3. 資料儲存方式', p: '所有資料僅儲存在您裝置的本地儲存（localStorage）中，不會傳送至或儲存於外部伺服器。' },
+      { h: '4. 第三方共享', p: '冥想點擊不會向第三方提供、共享或出售任何收集的資訊。' },
+      { h: '5. 廣告', p: '免費用戶可能會看到廣告。廣告以自營形式運營，目前正在招募廣告主，不使用外部廣告網絡。' },
+      { h: '6. 資料刪除', p: '刪除應用程式後，儲存在裝置上的所有資料將一併刪除，無需單獨申請伺服器端資料刪除。' },
+      { h: '7. 兒童隱私', p: '冥想點擊不會故意收集14歲以下兒童的個人資訊。' },
+      { h: '8. 政策變更', p: '若本政策發生變更，我們將透過應用程式內通知或本頁面提前告知。' },
+    ],
+    contactTitle: '📬 隱私相關諮詢',
+    contactBody: '如有資料處理方面的疑問，請聯絡我們。<br>信箱: <a href="mailto:ask.perryworld.03@gmail.com">ask.perryworld.03@gmail.com</a>',
+  },
+};
 
-  <div class="section">
-    <h2>1. 수집하는 정보</h2>
-    <p>심신안정 앱은 아래의 정보만 기기 내 로컬에 저장하며, 서버로 전송하거나 외부와 공유하지 않습니다.</p>
-    <ul>
-      <li>클릭 횟수 및 저장된 기록</li>
-      <li>선택한 테마 정보</li>
-      <li>회원 등급 상태 (무료/유료)</li>
-    </ul>
-  </div>
-
-  <div class="section">
-    <h2>2. 정보 수집 목적</h2>
-    <p>수집된 정보는 앱의 기능 제공(클릭 수 저장, 기록 관리)을 위해서만 사용되며, 마케팅·광고·분석 목적으로는 사용되지 않습니다.</p>
-  </div>
-
-  <div class="section">
-    <h2>3. 정보 저장 방식</h2>
-    <p>모든 데이터는 사용자의 기기 내 로컬 저장소(localStorage)에만 저장됩니다. 외부 서버에 전송되거나 저장되지 않습니다.</p>
-  </div>
-
-  <div class="section">
-    <h2>4. 제3자 제공</h2>
-    <p>심신안정 앱은 수집한 어떠한 정보도 제3자에게 제공, 공유, 판매하지 않습니다.</p>
-  </div>
-
-  <div class="section">
-    <h2>5. 광고</h2>
-    <p>무료 회원에게는 광고가 표시될 수 있습니다. 광고는 현재 광고주 모집 중인 자체 광고로 운영되며, 외부 광고 네트워크를 사용하지 않습니다.</p>
-  </div>
-
-  <div class="section">
-    <h2>6. 개인정보 삭제</h2>
-    <p>앱을 삭제하면 기기에 저장된 모든 데이터가 함께 삭제됩니다. 별도의 서버 데이터 삭제 요청은 필요하지 않습니다.</p>
-  </div>
-
-  <div class="section">
-    <h2>7. 아동 개인정보 보호</h2>
-    <p>심신안정 앱은 만 14세 미만 아동으로부터 의도적으로 개인정보를 수집하지 않습니다.</p>
-  </div>
-
-  <div class="section">
-    <h2>8. 개인정보처리방침 변경</h2>
-    <p>본 방침이 변경될 경우 앱 내 공지 또는 본 페이지를 통해 사전 안내합니다.</p>
-  </div>
-
-  <div class="contact">
-    <h2>📬 개인정보 관련 문의</h2>
-    <p style="margin-top:8px;">개인정보 처리에 관한 문의사항은 아래로 연락해주세요.<br>
-    이메일: <a href="mailto:ask.perryworld.03@gmail.com">ask.perryworld.03@gmail.com</a></p>
-  </div>
-</div>
+const d = C[lang] || C.ko;
+let html = `<div class="header"><span class="back" onclick="history.back()">${d.back}</span><div><h1>${d.title}</h1><div class="updated">${d.updated}</div></div></div>`;
+d.sections.forEach(s => {
+  html += `<div class="section"><h2>${s.h}</h2><p>${s.p}</p>`;
+  if (s.ul) html += `<ul style="margin-top:10px">${s.ul.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+  html += `</div>`;
+});
+html += `<div class="contact"><h2>${d.contactTitle}</h2><p style="margin-top:8px;">${d.contactBody}</p></div>`;
+document.getElementById('wrap').innerHTML = html;
+document.documentElement.lang = lang;
+</script>
 </body>
 </html>
