@@ -554,6 +554,37 @@ body{
   font-size:11px;color:#E0DBD0;cursor:pointer;
   padding:0 2px;flex-shrink:0;
 }
+.record-chip-handle{
+  font-size:13px;color:#C8C4BC;cursor:grab;
+  padding:0 2px;flex-shrink:0;user-select:none;
+}
+.record-chip-handle:active{cursor:grabbing;}
+.record-chip.dragging{opacity:.4;border-style:dashed;}
+
+/* ── 기록 이동 확인 팝업 ── */
+.record-nav-overlay{
+  position:absolute;inset:0;z-index:95;
+  background:rgba(30,25,20,.6);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.record-nav-overlay.show{opacity:1;pointer-events:all;}
+.record-nav-card{
+  background:#fff;border-radius:20px;padding:24px 20px 16px;
+  width:calc(100% - 48px);max-width:320px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.record-nav-title{font-size:16px;font-weight:800;color:#3A3530;text-align:center;}
+.record-nav-desc{font-size:13px;color:#A8A49C;text-align:center;line-height:1.5;}
+.record-nav-btns{display:flex;gap:8px;}
+.record-nav-btn-yes{
+  flex:1;padding:13px;border-radius:12px;border:none;cursor:pointer;
+  background:#3A3530;color:#fff;font-size:14px;font-weight:700;
+}
+.record-nav-btn-no{
+  flex:1;padding:13px;border-radius:12px;cursor:pointer;
+  background:#F0ECE2;color:#A8A49C;font-size:14px;font-weight:700;border:none;
+}
 
 /* ── 기록 저장 버튼 ── */
 .save-record-btn{
@@ -620,7 +651,7 @@ body{
 
   <!-- 헤더 -->
   <div class="header">
-    <div class="logo">심신 안정 <span>v1.5</span></div>
+    <div class="logo">심신 안정 <span>v1.0</span></div>
     <div class="tier-badge free" id="tierBadge" onclick="onBadgeClick()" style="cursor:pointer;">심신 불안정 중</div>
   </div>
 
@@ -820,6 +851,18 @@ body{
     <div style="font-size:10px;color:#C8C4BC;">© 2026 심신 안정. All rights reserved.</div>
   </div>
 
+  <!-- 기록 이동 확인 팝업 -->
+  <div class="record-nav-overlay" id="recordNavOverlay">
+    <div class="record-nav-card">
+      <div class="record-nav-title">저장 하셨나요?</div>
+      <div class="record-nav-desc">기록 이동 시 지금 번호는 사라져요</div>
+      <div class="record-nav-btns">
+        <button class="record-nav-btn-yes" onclick="confirmRecordNav()">네</button>
+        <button class="record-nav-btn-no" onclick="closeRecordNav()">아니요</button>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /app -->
 
 <script>
@@ -853,20 +896,87 @@ function renderRecords() {
   if(state.tier !== 'premium') { row.innerHTML=''; return; }
   const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
   if(!records.length) { row.innerHTML=''; return; }
-  row.innerHTML = records.map(r => `<div class="record-chip" onclick="showRecordInfo(${r.id})">
+  row.innerHTML = records.map(r => `<div class="record-chip" data-id="${r.id}" draggable="true" onclick="showRecordNav(${r.id})">
+    <span class="record-chip-handle" onclick="event.stopPropagation()">⠿</span>
     <span class="record-chip-label" id="rlabel-${r.id}">${r.label}</span>
     <span class="record-chip-edit" onclick="event.stopPropagation();editRecord(${r.id})">✏️</span>
     <span class="record-chip-del" onclick="event.stopPropagation();deleteRecord(${r.id})" title="삭제">✕</span>
   </div>`).join('');
+  initDragSort();
 }
 
-function showRecordInfo(id) {
+let _pendingRecordId = null;
+function showRecordNav(id) {
+  _pendingRecordId = id;
+  document.getElementById('recordNavOverlay').classList.add('show');
+}
+function closeRecordNav() {
+  document.getElementById('recordNavOverlay').classList.remove('show');
+  _pendingRecordId = null;
+}
+function confirmRecordNav() {
+  closeRecordNav();
   const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
-  const r = records.find(x => x.id === id);
+  const r = records.find(x => x.id === _pendingRecordId);
   if(!r) return;
+  state.count = r.count;
+  document.getElementById('countNum').textContent = r.count;
   showToast(`${r.label} · ${THEME_NAMES[r.theme]||r.theme} · ${r.count}번`);
-  const chip = document.getElementById('rlabel-'+id)?.closest('.record-chip');
+  const chip = document.getElementById('rlabel-'+r.id)?.closest('.record-chip');
   if(chip) chip.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+}
+
+function saveRecordOrder() {
+  const row = document.getElementById('recordsRow');
+  const newOrder = [...row.querySelectorAll('.record-chip')].map(el => Number(el.dataset.id));
+  let records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  records = newOrder.map(id => records.find(r => r.id === id)).filter(Boolean);
+  localStorage.setItem('chillclick_records', JSON.stringify(records));
+}
+
+function initDragSort() {
+  const row = document.getElementById('recordsRow');
+  let dragSrc = null;
+  // desktop drag
+  row.querySelectorAll('.record-chip').forEach(chip => {
+    chip.addEventListener('dragstart', e => {
+      dragSrc = chip; setTimeout(() => chip.classList.add('dragging'), 0);
+    });
+    chip.addEventListener('dragend', () => {
+      chip.classList.remove('dragging'); dragSrc = null; saveRecordOrder();
+    });
+    chip.addEventListener('dragover', e => {
+      e.preventDefault();
+      if(!dragSrc || dragSrc === chip) return;
+      const mid = chip.getBoundingClientRect().left + chip.getBoundingClientRect().width / 2;
+      row.insertBefore(dragSrc, e.clientX < mid ? chip : chip.nextSibling);
+    });
+  });
+  // touch drag (handle only)
+  let touchDragging = null;
+  row.querySelectorAll('.record-chip-handle').forEach(handle => {
+    handle.addEventListener('touchstart', e => {
+      e.preventDefault();
+      touchDragging = handle.closest('.record-chip');
+      touchDragging.classList.add('dragging');
+    }, {passive:false});
+  });
+  document.addEventListener('touchmove', e => {
+    if(!touchDragging) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    const over = document.elementFromPoint(t.clientX, t.clientY)?.closest('.record-chip');
+    if(over && over !== touchDragging) {
+      const rect = over.getBoundingClientRect();
+      row.insertBefore(touchDragging, t.clientX < rect.left + rect.width/2 ? over : over.nextSibling);
+    }
+  }, {passive:false});
+  document.addEventListener('touchend', () => {
+    if(!touchDragging) return;
+    touchDragging.classList.remove('dragging');
+    touchDragging = null;
+    saveRecordOrder();
+  });
 }
 
 function editRecord(id) {
