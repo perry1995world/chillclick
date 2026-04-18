@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>심신 안정</title>
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --cream:#F0ECE2;--cream2:#E0DBD0;--cream3:#D0CBB8;
+  --ks:#FDFAF4;--kside:#C4BFB5;--kshad:#A8A39A;
+  --acc:#CF3E50;--acc2:#E85A6A;--pink:#F2A5AE;
+  --txt:#3A3530;--sub:#A8A49C;
+  --gold:#C49A20;--gold2:#8B6914;--yellow:#FFD96A;
+}
+
+body{
+  font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  background:var(--bg,var(--cream));
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;
+  overflow-x:hidden;overflow-y:auto;
+  user-select:none;
+}
+
+/* ── 앱 래퍼 (모바일 시뮬레이션) ── */
+.app{
+  width:100%;max-width:390px;
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  background:var(--bg,var(--cream));
+}
+
+/* ── 헤더 ── */
+.header{
+  padding:20px 20px 0;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;z-index:2;
+  background:var(--bg,var(--cream));
+}
+.logo{
+  font-size:20px;font-weight:900;
+  color:var(--acc,#CF3E50);letter-spacing:-0.5px;
+}
+.logo span{font-size:11px;font-weight:500;color:var(--sub);margin-left:4px;letter-spacing:0;}
+.tier-badge{
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
+  transition:all .3s;
+}
+.tier-badge.free{background:#E8E4DA;color:#A8A49C;}
+.tier-badge.premium{background:linear-gradient(135deg,#FFD96A,#C49A20);color:#5A3E00;}
+.tier-badge.guest{background:#F0ECE2;color:#C4BFB5;border:1px solid #DDD8CE;}
+
+/* ── 테마 탭 ── */
+.theme-tabs{
+  display:flex;gap:8px;
+  padding:16px 20px 0;
+  overflow-x:auto;scrollbar-width:none;
+  position:relative;z-index:2;
+  background:var(--bg,var(--cream));
+}
+.theme-tabs::-webkit-scrollbar{display:none;}
+.tab{
+  flex-shrink:0;
+  padding:8px 14px;border-radius:20px;
+  font-size:12px;font-weight:700;
+  border:1.5px solid transparent;
+  background:#E8E4DA;color:#A8A49C;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:5px;
+}
+.tab.active{
+  background:var(--acc,#CF3E50);color:#fff;
+  border-color:var(--acc,#CF3E50);
+}
+.tab.locked{
+  background:#F5F3EE;color:#CCC8C0;
+  position:relative;
+}
+.tab.locked::after{
+  content:'🔒';font-size:9px;margin-left:2px;
+}
+.tab.coming-soon{
+  background:#F5F3EE;color:#CCC8C0;
+  position:relative;cursor:pointer;
+}
+.tab.coming-soon::after{
+  content:'🔜';font-size:9px;margin-left:2px;
+}
+
+/* ── 메인 영역 ── */
+.main{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:28px 20px 20px;gap:0;
+}
+
+/* ── 체인 ── */
+.chain{margin-bottom:-2px;padding-left:20px;align-self:flex-start;}
+
+/* ── 키캡 바디 ── */
+.keycap-body{
+  background:var(--kbody,#E0DBD0);
+  border-radius:18px;padding:11px;gap:7px;
+  display:grid;grid-template-columns:1fr 1fr;
+  box-shadow:
+    0 10px 0 var(--kside2,#C4BFB5),
+    0 14px 0 var(--kshad2,#A8A39A),
+    0 18px 28px rgba(0,0,0,.16);
+  cursor:pointer;
+  transition:transform .07s cubic-bezier(.2,0,.6,1),box-shadow .07s cubic-bezier(.2,0,.6,1);
+  position:relative;will-change:transform;
+  width:270px;height:270px;
+}
+.keycap-body.pressed{
+  transform:translateY(10px);
+  box-shadow:0 1px 0 var(--kside2,#C4BFB5),0 3px 0 var(--kshad2,#A8A39A),0 5px 10px rgba(0,0,0,.1);
+}
+
+.key{
+  border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;
+  position:relative;
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,.07),inset 0 2px 3px rgba(255,255,255,.65);
+  transition:background .4s,color .4s;
+}
+.key-text{font-size:26px;}
+.key-icon svg{width:52px;height:52px;}
+
+/* ── 카운터 ── */
+.counter-wrap{
+  margin-top:28px;text-align:center;
+}
+.count-num{
+  font-size:58px;font-weight:900;
+  color:var(--acc,#CF3E50);
+  line-height:1;display:block;
+  transition:color .4s;
+}
+.count-num.pop{animation:numPop .18s ease-out;}
+@keyframes numPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+.count-label{font-size:13px;color:var(--sub);margin-top:3px;}
+
+/* ── 키 광고 이미지 ── */
+.key-ad{
+  position:absolute;border-radius:11px;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.key-ad-img{
+  width:100%;flex:1;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;
+}
+.key-ad-label{
+  width:100%;padding:4px 6px;
+  font-size:9px;font-weight:800;
+  color:#fff;
+  text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.key-ad-tag{
+  position:absolute;top:4px;right:4px;
+  background:rgba(255,255,255,.85);color:#333;
+  font-size:7px;font-weight:800;padding:2px 4px;border-radius:3px;
+  letter-spacing:.3px;
+}
+/* 광고주 모집 스타일 */
+#adKey1,#adKey2,#adKey3,#adKey4{
+  background:linear-gradient(160deg,#E8E4DA,#D0CBB8);
+}
+#adKey1 .key-ad-label,#adKey2 .key-ad-label,
+#adKey3 .key-ad-label,#adKey4 .key-ad-label{
+  background:#A8A49C;font-size:8px;
+}
+
+/* ── 공유 버튼 ── */
+.share-btn{
+  margin-top:20px;
+  padding:13px 32px;border-radius:30px;
+  background:var(--acc,#CF3E50);color:#fff;
+  font-size:14px;font-weight:700;
+  border:none;cursor:pointer;
+  display:flex;align-items:center;gap:7px;
+  box-shadow:0 4px 16px rgba(0,0,0,.12);
+  transition:all .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.share-btn:active{transform:scale(.96);}
+
+
+.demo-btn{
+  flex:1;padding:8px 0;border-radius:10px;
+  font-size:11px;font-weight:700;
+  border:1.5px solid #DDD8CE;
+  background:#fff;color:#A8A49C;
+  cursor:pointer;transition:all .2s;
+}
+.demo-btn.active{
+  background:var(--txt,#3A3530);color:#fff;border-color:var(--txt,#3A3530);
+}
+
+/* ── 광고 오버레이 ── */
+.ad-overlay{
+  position:absolute;inset:0;z-index:80;
+  background:rgba(240,236,226,.96);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s;
+}
+.ad-overlay.show{opacity:1;pointer-events:all;}
+
+.ad-box{
+  width:270px;
+  background:#fff;border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.12);
+}
+.ad-tag{
+  background:#FF5A5A;color:#fff;
+  font-size:10px;font-weight:800;
+  padding:6px 12px;letter-spacing:.5px;
+}
+.ad-content{
+  padding:24px;text-align:center;
+}
+.ad-img{
+  width:100%;height:120px;
+  background:linear-gradient(135deg,#E8E4DA,#D0CBB8);
+  border-radius:10px;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;
+}
+.ad-title{font-size:15px;font-weight:700;color:#3A3530;margin-bottom:6px;}
+.ad-desc{font-size:12px;color:#A8A49C;line-height:1.5;}
+.ad-cta{
+  margin-top:14px;width:100%;padding:11px;
+  border-radius:10px;background:#3A3530;color:#fff;
+  font-size:13px;font-weight:700;border:none;cursor:pointer;
+}
+
+.ad-close-btn{
+  position:absolute;top:12px;right:12px;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(0,0,0,.55);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:#fff;
+  z-index:10;
+}
+
+/* ── 업그레이드 선택 팝업 ── */
+.upgrade-choice-overlay{
+  position:absolute;inset:0;z-index:95;
+  background:rgba(30,25,20,.6);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.upgrade-choice-overlay.show{opacity:1;pointer-events:all;}
+.upgrade-choice-card{
+  width:300px;background:#fff;border-radius:20px;
+  padding:28px 24px 24px;position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+  animation:cardIn .3s cubic-bezier(.3,0,.5,1.2);
+}
+.upgrade-choice-close{
+  position:absolute;top:14px;right:14px;
+  width:28px;height:28px;border-radius:50%;
+  background:#F0ECE2;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#A8A49C;
+}
+.upgrade-choice-title{font-size:18px;font-weight:900;color:#3A3530;text-align:center;margin-bottom:6px;}
+.upgrade-choice-desc{font-size:13px;color:#A8A49C;text-align:center;line-height:1.6;margin-bottom:20px;}
+.upgrade-choice-benefits{
+  background:#FFF8E8;border-radius:12px;padding:14px;
+  margin-bottom:18px;border:1.5px solid #FFD96A;
+  display:flex;flex-direction:column;gap:7px;
+}
+.upgrade-choice-benefit{font-size:12px;color:#8B6914;display:flex;align-items:center;gap:7px;font-weight:600;}
+.upgrade-choice-btns{display:flex;flex-direction:column;gap:8px;}
+.upgrade-code-btn{
+  width:100%;padding:14px;border-radius:12px;
+  background:#3A3530;color:#fff;
+  font-size:14px;font-weight:700;border:none;cursor:pointer;
+  transition:background .2s;
+}
+.upgrade-pay-btn{
+  width:100%;padding:14px;border-radius:12px;
+  background:linear-gradient(135deg,#FFD96A,#C49A20);color:#5A3E00;
+  font-size:14px;font-weight:800;border:none;cursor:pointer;
+  box-shadow:0 4px 16px rgba(196,154,32,.3);
+}
+
+/* ── 코드 입력 팝업 ── */
+.code-input-overlay{
+  position:absolute;inset:0;z-index:96;
+  background:rgba(30,25,20,.6);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.code-input-overlay.show{opacity:1;pointer-events:all;}
+.code-input-card{
+  width:300px;background:#fff;border-radius:20px;
+  padding:28px 24px 24px;position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+  animation:cardIn .3s cubic-bezier(.3,0,.5,1.2);
+}
+.code-input-close{
+  position:absolute;top:14px;right:14px;
+  width:28px;height:28px;border-radius:50%;
+  background:#F0ECE2;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#A8A49C;
+}
+.code-input-title{font-size:18px;font-weight:900;color:#3A3530;text-align:center;margin-bottom:6px;}
+.code-input-desc{font-size:13px;color:#A8A49C;text-align:center;line-height:1.6;margin-bottom:18px;}
+.code-input-field{
+  width:100%;padding:13px 16px;border-radius:12px;
+  border:2px solid #E8E4DA;background:#F5F3EE;
+  font-size:15px;font-weight:700;text-align:center;
+  letter-spacing:2px;color:#3A3530;outline:none;
+  transition:border .2s;margin-bottom:6px;
+}
+.code-input-field:focus{border-color:#3A3530;}
+.code-input-err{font-size:12px;color:#CF3E50;text-align:center;min-height:18px;margin-bottom:12px;}
+.code-input-confirm{
+  width:100%;padding:14px;border-radius:12px;
+  background:#3A3530;color:#fff;
+  font-size:14px;font-weight:700;border:none;cursor:pointer;
+  margin-bottom:8px;
+}
+.code-input-back{
+  width:100%;padding:12px;border-radius:12px;
+  background:#F5F3EE;color:#A8A49C;
+  font-size:13px;font-weight:700;border:none;cursor:pointer;
+}
+
+/* ── 유료 전환 팝업 ── */
+.upgrade-overlay{
+  position:absolute;inset:0;z-index:95;
+  background:rgba(30,25,20,.6);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.upgrade-overlay.show{opacity:1;pointer-events:all;}
+
+.upgrade-card{
+  width:300px;background:#fff;border-radius:20px;
+  padding:28px 24px 24px;
+  position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+  animation:cardIn .3s cubic-bezier(.3,0,.5,1.2);
+}
+.upgrade-emoji{font-size:48px;text-align:center;display:block;margin-bottom:12px;}
+.upgrade-title{font-size:18px;font-weight:900;color:#3A3530;text-align:center;margin-bottom:8px;}
+.upgrade-desc{font-size:13px;color:#A8A49C;text-align:center;line-height:1.6;margin-bottom:18px;}
+.upgrade-benefits{
+  background:#FFF8E8;border-radius:12px;padding:14px;
+  margin-bottom:18px;border:1.5px solid #FFD96A;
+  display:flex;flex-direction:column;gap:7px;
+}
+.upgrade-benefit-item{
+  font-size:12px;color:#8B6914;
+  display:flex;align-items:center;gap:7px;font-weight:600;
+}
+.upgrade-btn-main{
+  width:100%;padding:14px;border-radius:12px;
+  background:linear-gradient(135deg,#FFD96A,#C49A20);color:#5A3E00;
+  font-size:14px;font-weight:800;border:none;cursor:pointer;
+  margin-bottom:8px;
+  box-shadow:0 4px 16px rgba(196,154,32,.3);
+  transition:transform .15s;
+}
+.upgrade-btn-main:active{transform:scale(.97);}
+.upgrade-btn-skip{
+  width:100%;padding:12px;border-radius:12px;
+  background:#F5F3EE;color:#A8A49C;
+  font-size:13px;font-weight:700;border:none;cursor:pointer;
+}
+
+/* ── 리셋 팝업 ── */
+.reset-overlay{
+  position:absolute;inset:0;z-index:90;
+  background:rgba(30,25,20,.6);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.reset-overlay.show{opacity:1;pointer-events:all;}
+
+.reset-card{
+  width:300px;background:#fff;border-radius:20px;
+  padding:28px 24px 24px;
+  position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+  animation:cardIn .3s cubic-bezier(.3,0,.5,1.2);
+}
+@keyframes cardIn{from{transform:scale(.88) translateY(20px)}to{transform:scale(1) translateY(0)}}
+
+.reset-close{
+  position:absolute;top:14px;right:14px;
+  width:28px;height:28px;border-radius:50%;
+  background:#F0ECE2;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#A8A49C;
+  transition:background .2s;
+}
+.reset-close:hover{background:#E0DBD0;}
+
+.reset-emoji{font-size:48px;text-align:center;display:block;margin-bottom:12px;}
+.reset-title{font-size:18px;font-weight:900;color:#3A3530;text-align:center;margin-bottom:8px;}
+.reset-desc{font-size:13px;color:#A8A49C;text-align:center;line-height:1.6;margin-bottom:20px;}
+.reset-upsell{
+  background:#FFF8E8;border-radius:12px;padding:14px;
+  margin-bottom:16px;
+  border:1.5px solid #FFD96A;
+}
+.reset-upsell-title{font-size:12px;font-weight:800;color:#8B6914;margin-bottom:4px;}
+.reset-upsell-desc{font-size:11px;color:#A8986C;line-height:1.5;}
+.reset-btn{
+  width:100%;padding:13px;border-radius:12px;
+  background:#3A3530;color:#fff;
+  font-size:14px;font-weight:700;border:none;cursor:pointer;
+  margin-bottom:8px;transition:background .2s;
+}
+.reset-btn-upgrade{
+  width:100%;padding:13px;border-radius:12px;
+  background:linear-gradient(135deg,#FFD96A,#C49A20);color:#5A3E00;
+  font-size:14px;font-weight:800;border:none;cursor:pointer;
+}
+
+/* ── 공유 팝업 ── */
+.share-overlay{
+  position:absolute;inset:0;z-index:90;
+  background:rgba(30,25,20,.5);
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.share-overlay.show{opacity:1;pointer-events:all;}
+
+.share-sheet{
+  width:100%;background:#fff;
+  border-radius:24px 24px 0 0;
+  padding:20px;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.3,0,.4,1);
+}
+.share-overlay.show .share-sheet{transform:translateY(0);}
+
+.share-handle{width:40px;height:4px;background:#E0DBD0;border-radius:4px;margin:0 auto 20px;}
+.share-preview{
+  background:var(--bg,var(--cream));border-radius:16px;
+  padding:20px;text-align:center;margin-bottom:20px;
+}
+.share-big-num{font-size:48px;font-weight:900;color:var(--acc,#CF3E50);}
+.share-theme-name{font-size:14px;font-weight:700;color:var(--txt,#3A3530);margin-top:4px;}
+.share-msg{font-size:12px;color:var(--sub);margin-top:2px;}
+.share-watermark{font-size:11px;font-weight:800;color:var(--sub);margin-top:8px;}
+
+.share-actions{display:flex;gap:10px;margin-bottom:12px;}
+.share-action{
+  flex:1;padding:13px;border-radius:12px;
+  border:1.5px solid #E8E4DA;
+  background:#fff;cursor:pointer;
+  font-size:12px;font-weight:700;color:#3A3530;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  transition:background .2s;
+}
+.share-action:active{background:#F5F3EE;}
+.share-action-icon{font-size:22px;}
+.share-cancel{
+  width:100%;padding:13px;border-radius:12px;
+  background:#F5F3EE;color:#A8A49C;
+  font-size:14px;font-weight:700;border:none;cursor:pointer;
+}
+
+/* ── 플로팅 텍스트 ── */
+.float-msg{
+  position:fixed;font-weight:900;
+  pointer-events:none;z-index:99;white-space:nowrap;
+  animation:floatUp 1.6s cubic-bezier(.2,0,.4,1) forwards;
+}
+@keyframes floatUp{
+  0%{opacity:1;transform:translateY(0) scale(1) rotate(var(--r))}
+  30%{opacity:1;transform:translateY(-40px) scale(1.06) rotate(var(--r))}
+  100%{opacity:0;transform:translateY(-140px) scale(.85) rotate(var(--r))}
+}
+
+/* ── 파티클 ── */
+.particle{
+  position:fixed;width:9px;height:9px;border-radius:2px;
+  pointer-events:none;z-index:98;
+  animation:pFly .85s ease-out forwards;
+}
+@keyframes pFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(.2)}}
+
+/* ── 토스트 ── */
+.toast{
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+  background:#3A3530;color:#fff;
+  padding:10px 20px;border-radius:20px;
+  font-size:13px;font-weight:600;
+  z-index:200;white-space:nowrap;
+  animation:toastIn .2s ease-out;
+  pointer-events:none;
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* 배경 키캡 */
+#bgKeys{
+  position:absolute;
+  top:0;left:0;right:0;
+  bottom:160px;
+  z-index:0;pointer-events:none;
+  overflow:hidden;
+}
+.bg-key{
+  position:absolute;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;pointer-events:none;
+  box-shadow:0 4px 0 rgba(0,0,0,.08);
+  transition:opacity .5s;
+}
+.main{position:relative;z-index:1;}
+.counter-wrap{position:relative;z-index:1;}
+
+
+/* ── 기록 저장 행 ── */
+.records-row{
+  display:flex;gap:8px;
+  padding:8px 20px 0;
+  overflow-x:auto;scrollbar-width:none;
+  position:relative;z-index:2;
+}
+.records-row:empty{display:none;}
+.records-row::-webkit-scrollbar{display:none;}
+.record-chip{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:5px;
+  padding:6px 8px 6px 12px;border-radius:16px;
+  background:#fff;border:1.5px solid #E8E4DA;
+  cursor:pointer;transition:background .15s;
+}
+.record-chip:active{background:#F5F3EE;}
+.record-chip-label{
+  font-size:11px;font-weight:700;color:#3A3530;
+  white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis;
+}
+.record-chip-input{
+  font-size:11px;font-weight:700;color:#3A3530;
+  border:none;outline:none;background:transparent;
+  width:80px;
+}
+.record-chip-edit{
+  font-size:13px;color:#C8C4BC;cursor:pointer;
+  padding:0 2px;flex-shrink:0;
+}
+.record-chip-del{
+  font-size:11px;color:#E0DBD0;cursor:pointer;
+  padding:0 2px;flex-shrink:0;
+}
+.record-chip-handle{
+  font-size:13px;color:#C8C4BC;cursor:grab;
+  padding:0 2px;flex-shrink:0;user-select:none;
+}
+.record-chip-handle:active{cursor:grabbing;}
+.record-chip.dragging{opacity:.4;border-style:dashed;}
+
+/* ── 기록 이동 확인 팝업 ── */
+.record-nav-overlay{
+  position:absolute;inset:0;z-index:95;
+  background:rgba(30,25,20,.6);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.record-nav-overlay.show{opacity:1;pointer-events:all;}
+.record-nav-card{
+  background:#fff;border-radius:20px;padding:24px 20px 16px;
+  width:calc(100% - 48px);max-width:320px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.record-nav-title{font-size:16px;font-weight:800;color:#3A3530;text-align:center;}
+.record-nav-desc{font-size:13px;color:#A8A49C;text-align:center;line-height:1.5;}
+.record-nav-btns{display:flex;gap:8px;}
+.record-nav-btn-yes{
+  flex:1;padding:13px;border-radius:12px;border:none;cursor:pointer;
+  background:#3A3530;color:#fff;font-size:14px;font-weight:700;
+}
+.record-nav-btn-no{
+  flex:1;padding:13px;border-radius:12px;cursor:pointer;
+  background:#F0ECE2;color:#A8A49C;font-size:14px;font-weight:700;border:none;
+}
+
+/* ── 설정 버튼 ── */
+.settings-btn{
+  background:none;border:none;cursor:pointer;
+  font-size:13px;padding:4px 8px;
+  display:flex;align-items:center;gap:3px;
+  opacity:.7;font-weight:600;color:inherit;
+}
+.settings-btn:active{opacity:1;}
+
+/* ── 설정 오버레이 ── */
+.settings-overlay{
+  position:absolute;inset:0;z-index:96;
+  background:rgba(30,25,20,.55);
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.settings-overlay.show{opacity:1;pointer-events:all;}
+.settings-sheet{
+  width:100%;background:#fff;border-radius:24px 24px 0 0;
+  padding:8px 20px 48px;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.3,0,.4,1);
+}
+.settings-overlay.show .settings-sheet{transform:translateY(0);}
+.settings-handle{width:36px;height:4px;background:#E0DBD0;border-radius:2px;margin:8px auto 20px;}
+.settings-title{font-size:17px;font-weight:800;color:#3A3530;margin-bottom:8px;}
+.settings-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:15px 0;border-bottom:1px solid #F5F3EE;cursor:pointer;
+}
+.settings-item:last-child{border-bottom:none;}
+.settings-item-label{font-size:14px;font-weight:600;color:#3A3530;}
+.settings-item-right{font-size:13px;color:#A8A49C;}
+.lang-list{display:flex;flex-direction:column;gap:2px;padding:4px 0 8px;}
+.lang-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 14px;border-radius:12px;cursor:pointer;transition:background .15s;
+}
+.lang-item:active{background:#F5F3EE;}
+.lang-item-name{font-size:14px;font-weight:600;color:#3A3530;}
+.lang-item-check{font-size:15px;color:var(--acc,#CF3E50);}
+
+/* ── 기록 저장 버튼 ── */
+.save-record-btn{
+  font-size:11px;color:#A8A49C;background:none;border:none;
+  cursor:pointer;text-decoration:none;
+  display:flex;align-items:center;gap:4px;
+  padding:4px 8px;border-radius:8px;
+  transition:background .15s;
+}
+.save-record-btn:active{background:#E8E4DA;}
+
+/* ── 비밀번호 게이트 ── */
+#pwGate{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--cream,#F0ECE2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;
+}
+#pwGate .pw-logo{
+  font-size:28px;font-weight:900;color:var(--acc,#CF3E50);letter-spacing:-1px;
+}
+#pwGate .pw-sub{
+  font-size:13px;color:var(--sub,#A8A49C);margin-top:-12px;
+}
+#pwGate input{
+  width:200px;padding:12px 16px;border-radius:12px;
+  border:2px solid var(--cream3,#D0CBB8);background:#fff;
+  font-size:18px;text-align:center;letter-spacing:4px;
+  color:var(--txt,#3A3530);outline:none;
+  transition:border .2s;
+}
+#pwGate input:focus{border-color:var(--acc,#CF3E50);}
+#pwGate button{
+  padding:12px 32px;border-radius:12px;border:none;
+  background:var(--acc,#CF3E50);color:#fff;
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:background .2s;
+}
+#pwGate button:hover{background:var(--acc2,#E85A6A);}
+#pwGate .pw-err{
+  font-size:12px;color:var(--acc,#CF3E50);
+  min-height:16px;
+}
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+
+
+<!-- 비밀번호 게이트 -->
+<div id="pwGate">
+  <div class="pw-logo">심신 안정</div>
+  <div class="pw-sub">비밀번호를 입력해주세요</div>
+  <input type="password" id="pwInput" placeholder="••••" maxlength="20" />
+  <button onclick="checkPw()">입장</button>
+  <div class="pw-err" id="pwErr"></div>
+</div>
+
+<div class="app" id="app">
+
+  <!-- 배경 키캡들 -->
+  <div id="bgKeys"></div>
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="logo">심신 안정 <span>v1.0</span></div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="tier-badge premium" id="tierBadge" style="cursor:default;">심신 안정 중</div>
+      <button class="settings-btn" onclick="openSettings()" title="설정">⚙️ <span id="settingsBtnLabel">설정</span></button>
+    </div>
+  </div>
+
+  <!-- 테마 탭 -->
+  <div class="theme-tabs" id="themeTabs">
+    <div class="tab active" data-theme="home" onclick="trySetTheme('home',this)">🏠 집가고싶다</div>
+    <div class="tab" data-theme="lottery" onclick="trySetTheme('lottery',this)">🍀 복권당첨</div>
+    <div class="tab coming-soon" data-theme="salary" onclick="showComingSoon()">💸 월급올려줘</div>
+    <div class="tab coming-soon" data-theme="rest" onclick="showComingSoon()">😴 그냥쉬고싶다</div>
+  </div>
+
+  <!-- 저장된 기록 버튼 행 -->
+  <div class="records-row" id="recordsRow"></div>
+
+  <!-- 메인 -->
+  <div class="main">
+
+    <!-- 체인 SVG -->
+    <div class="chain">
+      <svg width="56" height="44" viewBox="0 0 56 44" fill="none">
+        <ellipse cx="28" cy="13" rx="11" ry="7.5" stroke="#C0C4CC" stroke-width="2.8" fill="none"/>
+        <rect x="16" y="26" width="22" height="13" rx="5" fill="#C8CCCC" stroke="#B0B4B8" stroke-width="1.4"/>
+        <rect x="23" y="22" width="9" height="9" rx="3" fill="#D4D8D8" stroke="#B0B4B8" stroke-width="1.4"/>
+        <path d="M42 29 C42 27 40 25.5 38.5 25.5 C37 25.5 35 27 35 29 C35 31.5 38.5 34 38.5 34 C38.5 34 42 31.5 42 29Z" fill="#E85A6A" opacity=".85"/>
+      </svg>
+    </div>
+
+    <!-- 키캡 바디 -->
+    <div class="keycap-body" id="keycapBody">
+      <div class="key" id="key1" style="background:var(--ks)"><span class="key-text" id="k1" style="color:#CF3E50">집</span></div>
+      <div class="key" id="key2" style="background:#F2A5AE">
+        <span class="key-icon" id="k2">
+          <svg viewBox="0 0 52 52" fill="none">
+            <path d="M26 44C26 44 6 32 6 18c0-6 4-10 10-10 4 0 7 2 10 5 3-3 6-5 10-5 6 0 10 4 10 10 0 14-20 26-20 26z" fill="white" opacity=".9"/>
+            <line x1="14" y1="20" x2="36" y2="20" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round"/>
+            <polyline points="30,14 37,20 30,26" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+      <div class="key" id="key3" style="background:var(--ks)"><span class="key-text" id="k3" style="color:#CF3E50">가고</span></div>
+      <div class="key" id="key4" style="background:var(--ks)"><span class="key-text" id="k4" style="color:#CF3E50">싶다</span></div>
+
+      <!-- 광고 이미지 레이어 (키 패딩 11px, 갭 7px에 맞춤) -->
+      <div id="adKeyLayer" style="display:none;position:absolute;inset:0;pointer-events:none;">
+        <div class="key-ad" id="adKey1" style="position:absolute;top:11px;left:11px;width:calc(50% - 14.5px);height:calc(50% - 14.5px);">
+          <div class="key-ad-img" style="font-size:22px;flex-direction:column;gap:2px;"><span>📢</span><span style="font-size:9px;font-weight:800;color:#A8A49C;">광고주</span></div>
+          <div class="key-ad-label">모집합니다</div>
+          <div class="key-ad-tag">AD</div>
+        </div>
+        <div class="key-ad" id="adKey2" style="position:absolute;top:11px;right:11px;width:calc(50% - 14.5px);height:calc(50% - 14.5px);">
+          <div class="key-ad-img" style="font-size:22px;flex-direction:column;gap:2px;"><span>📢</span><span style="font-size:9px;font-weight:800;color:#A8A49C;">광고주</span></div>
+          <div class="key-ad-label">모집합니다</div>
+          <div class="key-ad-tag">AD</div>
+        </div>
+        <div class="key-ad" id="adKey3" style="position:absolute;bottom:11px;left:11px;width:calc(50% - 14.5px);height:calc(50% - 14.5px);">
+          <div class="key-ad-img" style="font-size:22px;flex-direction:column;gap:2px;"><span>📢</span><span style="font-size:9px;font-weight:800;color:#A8A49C;">광고주</span></div>
+          <div class="key-ad-label">모집합니다</div>
+          <div class="key-ad-tag">AD</div>
+        </div>
+        <div class="key-ad" id="adKey4" style="position:absolute;bottom:11px;right:11px;width:calc(50% - 14.5px);height:calc(50% - 14.5px);">
+          <div class="key-ad-img" style="font-size:22px;flex-direction:column;gap:2px;"><span>📢</span><span style="font-size:9px;font-weight:800;color:#A8A49C;">광고주</span></div>
+          <div class="key-ad-label">모집합니다</div>
+          <div class="key-ad-tag">AD</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 카운터 -->
+    <div class="counter-wrap">
+      <span class="count-num" id="countNum">0</span>
+      <div class="count-label" id="countLabel">번 눌렀어요</div>
+    </div>
+
+    <!-- 공유 버튼 -->
+    <button class="share-btn" onclick="openShare()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </svg>
+      <span id="shareBtnLabel">클릭 수 공유하기</span>
+    </button>
+
+  </div><!-- /main -->
+
+  <div id="premiumResetWrap" style="display:none;padding:8px 0 4px;display:none;flex-direction:row;align-items:center;justify-content:center;gap:12px;">
+    <button class="save-record-btn" onclick="saveRecord()">💾 기록 저장</button>
+    <button id="resetBtnEl" onclick="showResetConfirm()" style="
+      font-size:11px;color:#C8C4BC;background:none;border:none;
+      cursor:pointer;display:flex;align-items:center;gap:3px;
+    ">↩️ <span id="resetBtnLabel">초기화</span></button>
+  </div>
+
+  <!-- ── 광고 오버레이 ── -->
+  <div class="ad-overlay" id="adOverlay">
+    <div class="ad-box" style="position:relative;">
+      <button class="ad-close-btn" onclick="closeAd()">✕</button>
+      <div class="ad-tag">AD · 광고</div>
+      <div class="ad-content">
+        <div class="ad-img">📢</div>
+        <div class="ad-title">광고주를 모집합니다</div>
+        <div class="ad-desc">이 자리에 당신의 브랜드를 노출하세요.<br>문의: ask.perryworld.03@gmail.com</div>
+        <button class="ad-cta" onclick="closeAd()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 업그레이드 선택 팝업 ── -->
+  <div class="upgrade-choice-overlay" id="upgradeChoiceOverlay">
+    <div class="upgrade-choice-card">
+      <button class="upgrade-choice-close" onclick="closeUpgradeChoice()">✕</button>
+      <span class="upgrade-emoji">✨</span>
+      <div class="upgrade-choice-title">심신 안정으로 전환</div>
+      <div class="upgrade-choice-desc">심신 안정 중이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
+      <div class="upgrade-choice-btns">
+        <button class="upgrade-pay-btn" onclick="closeUpgradeChoice();purchasePremiumIAP()">💳 심신 안정 중으로 전환하기 (₩2,500)</button>
+        <button class="upgrade-pay-btn" style="background:#F0ECE2;color:#A8A49C;font-size:12px;" onclick="closeUpgradeChoice();restorePurchasesIAP()">이미 구매했어요 (복원)</button>
+        <!-- 코드 입력 버튼 비활성화 (Apple 심사 대응) -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 코드 입력 팝업 ── -->
+  <div class="code-input-overlay" id="codeInputOverlay">
+    <div class="code-input-card">
+      <button class="code-input-close" onclick="closeCodeInput()">✕</button>
+      <div class="code-input-title">🔑 코드 입력</div>
+      <div class="code-input-desc">유료 회원 전환 코드를<br>입력해주세요.</div>
+      <input class="code-input-field" id="codeInputField" type="text" placeholder="예) CHILL-2024" maxlength="20" oninput="this.value=this.value.toUpperCase()" />
+      <div class="code-input-err" id="codeInputErr"></div>
+      <button class="code-input-confirm" onclick="validateCode()">확인</button>
+      <button class="code-input-back" onclick="closeCodeInput();showUpgradeChoice()">← 돌아가기</button>
+    </div>
+  </div>
+
+  <!-- ── 유료 전환 팝업 (광고 후 노출용) ── -->
+  <div class="upgrade-overlay" id="upgradeOverlay">
+    <div class="upgrade-card">
+      <span class="upgrade-emoji">✨</span>
+      <div class="upgrade-title">광고 없이 즐겨볼까요?</div>
+      <div class="upgrade-desc">심신 안정 중이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
+      <div class="upgrade-benefits">
+        <div class="upgrade-benefit-item">🚫 광고 완전 제거</div>
+        <div class="upgrade-benefit-item">♾️ 클릭 횟수 무제한</div>
+        <div class="upgrade-benefit-item">💾 클릭 수 저장 및 유지</div>
+        <div class="upgrade-benefit-item">🔓 모든 테마 잠금 해제</div>
+      </div>
+      <button class="upgrade-btn-main" onclick="closeUpgradePopup();purchasePremiumIAP()">✨ 심신 안정 중으로 전환하기 (₩2,500)</button>
+      <button class="upgrade-btn-skip" onclick="closeUpgradePopup()">괜찮아요, 다음에</button>
+    </div>
+  </div>
+
+  <!-- ── 리셋 팝업 ── -->
+  <div class="reset-overlay" id="resetOverlay">
+    <div class="reset-card">
+      <button class="reset-close" onclick="closeReset()">✕</button>
+      <span class="reset-emoji">😮‍💨</span>
+      <div class="reset-title">초기화 시간이에요</div>
+      <div class="reset-desc">오늘의 심신 안정 <strong>159번</strong> 달성!<br>닫으면 자동으로 0부터 다시 시작돼요.</div>
+      <div class="reset-upsell">
+        <div class="reset-upsell-title">✨ 심신 안정 중이라면?</div>
+        <div class="reset-upsell-desc">횟수 제한 없이 무제한으로 누를 수 있어요.<br>광고도 없고, 클릭 수도 저장돼요.</div>
+      </div>
+      <button class="reset-btn-upgrade" onclick="closeReset();purchasePremiumIAP()">✨ 심신 안정 중으로 전환하기 (₩2,500)</button>
+      <div style="height:8px"></div>
+      <button class="reset-btn" onclick="closeReset()">닫고 처음부터 시작</button>
+    </div>
+  </div>
+
+  <!-- ── 공유 시트 ── -->
+  <div class="share-overlay" id="shareOverlay" onclick="closeShare(event)">
+    <div class="share-sheet">
+      <div class="share-handle"></div>
+      <div class="share-preview" id="sharePreview">
+        <div class="share-big-num" id="shareNum">0</div>
+        <div class="share-theme-name" id="shareThemeName">🏠 집가고싶다</div>
+        <div class="share-msg" id="shareMsg">번 눌렀어요</div>
+        <div class="share-watermark">— 심신 안정 —</div>
+      </div>
+      <div class="share-actions">
+        <button class="share-action" onclick="copyCount()"><span class="share-action-icon">📋</span>복사</button>
+        <button class="share-action" onclick="nativeShare()"><span class="share-action-icon">📤</span>공유</button>
+        <button class="share-action" onclick="saveImage()"><span class="share-action-icon">🖼️</span>이미지</button>
+      </div>
+      <button class="share-cancel" onclick="closeShare()">취소</button>
+    </div>
+  </div>
+
+  <!-- ── 하단 푸터 ── -->
+  <div style="padding:16px 20px 32px;text-align:center;display:flex;flex-direction:column;gap:8px;position:relative;z-index:2;">
+    <div style="display:flex;justify-content:center;gap:16px;">
+      <a onclick="openPrivacy()" id="footerPrivacy" style="font-size:11px;color:#A8A49C;text-decoration:none;cursor:pointer;">개인정보처리방침</a>
+      <span style="font-size:11px;color:#D0CBB8;">|</span>
+      <a onclick="openTerms()" id="footerTerms" style="font-size:11px;color:#A8A49C;text-decoration:none;cursor:pointer;">이용약관</a>
+      <span style="font-size:11px;color:#D0CBB8;">|</span>
+      <a href="mailto:ask.perryworld.03@gmail.com" id="footerContact" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
+    </div>
+    <div id="footerCopy" style="font-size:10px;color:#C8C4BC;">© 2026 심신 안정. All rights reserved.</div>
+  </div>
+
+  <!-- 설정 패널 -->
+  <div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsOutside(event)">
+    <div class="settings-sheet" id="settingsSheet">
+      <div class="settings-handle"></div>
+      <div class="settings-title" id="settingsTitle">설정</div>
+
+      <!-- 언어 변경 -->
+      <div class="settings-item" onclick="toggleLangList()">
+        <span class="settings-item-label" id="settingsLangLabel">언어 변경</span>
+        <span class="settings-item-right" id="settingsLangCurrent">한국어 ›</span>
+      </div>
+      <div class="lang-list" id="langList" style="display:none;">
+        <div class="lang-item" onclick="selectLang('ko')"><span class="lang-item-name">🇰🇷 한국어</span><span class="lang-item-check" id="lcheck-ko">✓</span></div>
+        <div class="lang-item" onclick="selectLang('en')"><span class="lang-item-name">🇺🇸 English</span><span class="lang-item-check" id="lcheck-en" style="display:none">✓</span></div>
+        <div class="lang-item" onclick="selectLang('ja')"><span class="lang-item-name">🇯🇵 日本語</span><span class="lang-item-check" id="lcheck-ja" style="display:none">✓</span></div>
+        <div class="lang-item" onclick="selectLang('zh-cn')"><span class="lang-item-name">🇨🇳 中文(简体)</span><span class="lang-item-check" id="lcheck-zh-cn" style="display:none">✓</span></div>
+        <div class="lang-item" onclick="selectLang('zh-tw')"><span class="lang-item-name">🇹🇼 中文(繁體)</span><span class="lang-item-check" id="lcheck-zh-tw" style="display:none">✓</span></div>
+      </div>
+
+      <!-- 개인정보처리방침 -->
+      <div class="settings-item" onclick="openPrivacy()">
+        <span class="settings-item-label" id="settingsPrivacyLabel">개인정보처리방침</span>
+        <span class="settings-item-right">›</span>
+      </div>
+
+      <!-- 이용약관 -->
+      <div class="settings-item" onclick="openTerms()">
+        <span class="settings-item-label" id="settingsTermsLabel">이용약관</span>
+        <span class="settings-item-right">›</span>
+      </div>
+
+      <!-- 1:1 문의 -->
+      <div class="settings-item" onclick="openContact()">
+        <span class="settings-item-label" id="settingsContactLabel">1:1 문의</span>
+        <span class="settings-item-right">›</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 초기화 확인 팝업 -->
+  <div class="record-nav-overlay" id="resetConfirmOverlay">
+    <div class="record-nav-card">
+      <div class="record-nav-title" id="resetConfirmTitle">↩️ 초기화 할까요?</div>
+      <div class="record-nav-desc" id="resetConfirmDesc">현재 클릭 수가 0으로 초기화돼요</div>
+      <div class="record-nav-btns">
+        <button class="record-nav-btn-yes" onclick="confirmReset()" id="resetConfirmYes">초기화</button>
+        <button class="record-nav-btn-no" onclick="closeResetConfirm()" id="resetConfirmNo">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 준비중 팝업 -->
+  <div class="record-nav-overlay" id="comingSoonOverlay">
+    <div class="record-nav-card">
+      <div class="record-nav-title">🔜 준비중이에요</div>
+      <div class="record-nav-desc">아직 준비중입니다.<br>조금만 기다려 주세요!</div>
+      <div class="record-nav-btns">
+        <button class="record-nav-btn-yes" onclick="document.getElementById('comingSoonOverlay').classList.remove('show')">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 기록 이동 확인 팝업 -->
+  <div class="record-nav-overlay" id="recordNavOverlay">
+    <div class="record-nav-card">
+      <div class="record-nav-title">저장 하셨나요?</div>
+      <div class="record-nav-desc">기록 이동 시 지금 번호는 사라져요</div>
+      <div class="record-nav-btns">
+        <button class="record-nav-btn-yes" onclick="confirmRecordNav()">네</button>
+        <button class="record-nav-btn-no" onclick="closeRecordNav()">아니요</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* ─── 상태 ─── */
+const state = {
+  tier: 'free',       // free | premium
+  theme: 'home',      // home | lottery | salary | rest
+  count: 0,
+  adShowing: false,
+  resetShowing: false,
+  adTimer: null,
+};
+
+/* ─── 기록 저장 ─── */
+const THEME_NAMES = {home:'집가고싶다', lottery:'복권당첨', salary:'월급올려줘', rest:'그냥쉬고싶다'};
+
+function saveRecord() {
+  if(state.tier !== 'premium') return;
+  const now = new Date();
+  const label = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+  const record = { id: Date.now(), label, count: state.count, theme: state.theme };
+  const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  records.unshift(record);
+  localStorage.setItem('chillclick_records', JSON.stringify(records));
+  renderRecords();
+  showToast('기록이 저장됐어요 💾');
+}
+
+function renderRecords() {
+  const row = document.getElementById('recordsRow');
+  if(state.tier !== 'premium') { row.innerHTML=''; return; }
+  const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  if(!records.length) { row.innerHTML=''; return; }
+  row.innerHTML = records.map(r => `<div class="record-chip" data-id="${r.id}" draggable="true" onclick="showRecordNav(${r.id})">
+    <span class="record-chip-handle" onclick="event.stopPropagation()">⠿</span>
+    <span class="record-chip-label" id="rlabel-${r.id}">${r.label}</span>
+    <span class="record-chip-edit" onclick="event.stopPropagation();editRecord(${r.id})">✏️</span>
+    <span class="record-chip-del" onclick="event.stopPropagation();deleteRecord(${r.id})" title="삭제">✕</span>
+  </div>`).join('');
+  initDragSort();
+}
+
+let _pendingRecordId = null;
+function showRecordNav(id) {
+  _pendingRecordId = id;
+  document.getElementById('recordNavOverlay').classList.add('show');
+}
+function closeRecordNav() {
+  document.getElementById('recordNavOverlay').classList.remove('show');
+  _pendingRecordId = null;
+}
+function confirmRecordNav() {
+  const id = _pendingRecordId;
+  closeRecordNav();
+  const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  const r = records.find(x => x.id === id);
+  if(!r) return;
+  state.count = r.count;
+  document.getElementById('countNum').textContent = r.count;
+  showToast(`${r.label} · ${THEME_NAMES[r.theme]||r.theme} · ${r.count}번`);
+  const chip = document.getElementById('rlabel-'+r.id)?.closest('.record-chip');
+  if(chip) chip.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+}
+
+function saveRecordOrder() {
+  const row = document.getElementById('recordsRow');
+  const newOrder = [...row.querySelectorAll('.record-chip')].map(el => Number(el.dataset.id));
+  let records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  records = newOrder.map(id => records.find(r => r.id === id)).filter(Boolean);
+  localStorage.setItem('chillclick_records', JSON.stringify(records));
+}
+
+function initDragSort() {
+  const row = document.getElementById('recordsRow');
+  let dragSrc = null;
+  // desktop drag
+  row.querySelectorAll('.record-chip').forEach(chip => {
+    chip.addEventListener('dragstart', e => {
+      dragSrc = chip; setTimeout(() => chip.classList.add('dragging'), 0);
+    });
+    chip.addEventListener('dragend', () => {
+      chip.classList.remove('dragging'); dragSrc = null; saveRecordOrder();
+    });
+    chip.addEventListener('dragover', e => {
+      e.preventDefault();
+      if(!dragSrc || dragSrc === chip) return;
+      const mid = chip.getBoundingClientRect().left + chip.getBoundingClientRect().width / 2;
+      row.insertBefore(dragSrc, e.clientX < mid ? chip : chip.nextSibling);
+    });
+  });
+  // touch drag (handle only)
+  let touchDragging = null;
+  row.querySelectorAll('.record-chip-handle').forEach(handle => {
+    handle.addEventListener('touchstart', e => {
+      e.preventDefault();
+      touchDragging = handle.closest('.record-chip');
+      touchDragging.classList.add('dragging');
+    }, {passive:false});
+  });
+  document.addEventListener('touchmove', e => {
+    if(!touchDragging) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    const over = document.elementFromPoint(t.clientX, t.clientY)?.closest('.record-chip');
+    if(over && over !== touchDragging) {
+      const rect = over.getBoundingClientRect();
+      row.insertBefore(touchDragging, t.clientX < rect.left + rect.width/2 ? over : over.nextSibling);
+    }
+  }, {passive:false});
+  document.addEventListener('touchend', () => {
+    if(!touchDragging) return;
+    touchDragging.classList.remove('dragging');
+    touchDragging = null;
+    saveRecordOrder();
+  });
+}
+
+function editRecord(id) {
+  const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  const r = records.find(x => x.id === id);
+  if(!r) return;
+  const labelEl = document.getElementById('rlabel-'+id);
+  if(!labelEl) return;
+  const input = document.createElement('input');
+  input.className = 'record-chip-input';
+  input.value = r.label;
+  input.style.width = Math.max(60, r.label.length * 9) + 'px';
+  labelEl.replaceWith(input);
+  input.focus(); input.select();
+  function save() {
+    const val = input.value.trim();
+    if(val) r.label = val;
+    localStorage.setItem('chillclick_records', JSON.stringify(records));
+    renderRecords();
+  }
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', e => { if(e.key==='Enter') { input.blur(); } });
+}
+
+function deleteRecord(id) {
+  let records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
+  records = records.filter(x => x.id !== id);
+  localStorage.setItem('chillclick_records', JSON.stringify(records));
+  renderRecords();
+}
+
+/* ─── 유료 회원 클릭 수 저장 ─── */
+function saveCount() {
+  if(state.tier === 'premium') {
+    localStorage.setItem('chillclick_count', state.count);
+  }
+}
+function loadCount() {
+  if(state.tier === 'premium') {
+    const saved = localStorage.getItem('chillclick_count');
+    return saved ? parseInt(saved) : 0;
+  }
+  return 0;
+}
+function showResetConfirm() {
+  const L = LANGS[currentLang] || LANGS.ko;
+  document.getElementById('resetConfirmTitle').textContent = L.resetConfirmTitle;
+  document.getElementById('resetConfirmDesc').textContent = L.resetConfirmDesc;
+  document.getElementById('resetConfirmYes').textContent = L.resetConfirmYes;
+  document.getElementById('resetConfirmNo').textContent = L.resetConfirmNo;
+  document.getElementById('resetConfirmOverlay').classList.add('show');
+}
+function closeResetConfirm() {
+  document.getElementById('resetConfirmOverlay').classList.remove('show');
+}
+function confirmReset() {
+  closeResetConfirm();
+  localStorage.removeItem('chillclick_count');
+  state.count = 0;
+  document.getElementById('countNum').textContent = '0';
+  const L = LANGS[currentLang] || LANGS.ko;
+  showToast(L.toastReset || '클릭 수가 초기화됐어요');
+}
+function resetPremiumCount() { showResetConfirm(); }
+
+/* ─── 테마 정의 ─── */
+const themes = {
+  home: {
+    bg: '#F0ECE2', kbody: '#E0DBD0', kside2: '#C4BFB5', kshad2: '#A8A39A',
+    acc: '#CF3E50',
+    keys: ['집','♥','가고','싶다'],
+    key2type: 'heart',
+    key2bg: '#F2A5AE',
+    keyColor: '#CF3E50',
+    msgs: ['집가고 싶다','퇴근하고 싶다','집에 가고파','제발','집!!!','집가자','밥먹고 싶다'],
+    adEmoji:'🏠', adTitle:'집이 그리운 당신께', adDesc:'배달의민족과 함께라면 집이 더 좋아져요 🍕',
+    bgkeys: ['ㅎ','ㅏ','ㅁ','집','♥','퇴','근'],
+    particles: ['#CF3E50','#F2A5AE','#E85A6A','#F5C8CC'],
+  },
+  lottery: {
+    bg: '#FFFBF0', kbody: '#F0E8C0', kside2: '#C8B870', kshad2: '#A89840',
+    acc: '#8B6914',
+    keys: ['복권','🍀','당첨','!!!'],
+    key2type: 'clover',
+    key2bg: '#FFD96A',
+    keyColor: '#8B6914',
+    msgs: ['당첨되면 좋겠다','로또 1등!','제발제발','777','🍀🍀🍀','돈돈돈','복권 사야지'],
+    bgkeys: ['복','권','🍀','당','첨','7','★'],
+    particles: ['#C49A20','#FFD96A','#8B6914','#FFE89A'],
+  },
+  salary: {
+    bg: '#F0FFF4', kbody: '#C6F6D5', kside2: '#68D391', kshad2: '#48BB78',
+    acc: '#276749',
+    keys: ['월급','💰','올려줘','!!!'],
+    key2type: 'money',
+    key2bg: '#9AE6B4',
+    keyColor: '#276749',
+    msgs: ['월급 올려줘!','나도 연봉협상','인상 좀요','이게 맞나?','💰💰💰','사장님!!','최저임금이라도'],
+    bgkeys: ['월','급','💰','↑','$$','Pay','올'],
+    particles: ['#276749','#68D391','#C6F6D5','#9AE6B4'],
+  },
+  rest: {
+    bg: '#EEF2FF', kbody: '#E0E7FF', kside2: '#A5B4FC', kshad2: '#818CF8',
+    acc: '#4338CA',
+    keys: ['그냥','😴','쉬고','싶다'],
+    key2type: 'sleep',
+    key2bg: '#C7D2FE',
+    keyColor: '#4338CA',
+    msgs: ['그냥 쉬고싶다','피곤해...','낮잠 자고싶다','오늘은 좀','침대가 최고야','쉬어야 해','😴😴😴'],
+    bgkeys: ['😴','zz','쉬자','휴가','침대','낮잠','😪'],
+    particles: ['#4338CA','#818CF8','#A5B4FC','#C7D2FE'],
+  },
+};
+
+/* ─── 배경 키캡 생성 ─── */
+function buildBgKeys() {
+  const container = document.getElementById('bgKeys');
+  container.innerHTML = '';
+  const t = themes[state.theme];
+  for(let i=0;i<18;i++){
+    const el = document.createElement('div');
+    el.className = 'bg-key';
+    const sz = 32 + Math.random()*24;
+    el.style.cssText = `
+      width:${sz}px;height:${sz}px;
+      left:${Math.random()*92}%;top:${Math.random()*92}%;
+      background:${t.bg};
+      color:${t.keyColor};font-size:${sz*.38}px;opacity:.25;
+      transform:rotate(${-20+Math.random()*40}deg);
+    `;
+    el.textContent = t.bgkeys[Math.floor(Math.random()*t.bgkeys.length)];
+    container.appendChild(el);
+  }
+}
+
+/* ─── 테마 적용 ─── */
+function setTheme(name, el) {
+
+  state.theme = name;
+  // count는 테마 변경 시 유지 (단, 첫 로드 시에만 localStorage에서 읽음)
+  document.getElementById('countNum').textContent = state.count;
+  updateProgress();
+
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  const t = themes[name];
+  const app = document.getElementById('app');
+  app.style.setProperty('--bg', t.bg);
+  app.style.setProperty('--acc', t.acc);
+  app.style.background = t.bg;
+  document.body.style.background = t.bg;
+  document.getElementById('keycapBody').style.background = t.kbody;
+  document.getElementById('keycapBody').style.setProperty('--kside2', t.kside2);
+  document.getElementById('keycapBody').style.setProperty('--kshad2', t.kshad2);
+  document.getElementById('countNum').style.color = t.acc;
+  document.querySelector('.share-btn').style.background = t.acc;
+
+  // 키 색상
+  document.getElementById('key1').style.background = '#FDFAF4';
+  document.getElementById('k1').style.color = t.keyColor;
+  document.getElementById('key2').style.background = t.key2bg;
+  document.getElementById('key3').style.background = name==='lottery'?'#FFF8E0':'#FDFAF4';
+  document.getElementById('k3').style.color = t.keyColor;
+  document.getElementById('k3').textContent = t.keys[2];
+  document.getElementById('key4').style.background = name==='lottery'?'#FFF8E0':'#FDFAF4';
+  document.getElementById('k4').style.color = t.keyColor;
+  document.getElementById('k4').textContent = t.keys[3];
+  document.getElementById('k1').textContent = t.keys[0];
+
+  if(name === 'lottery') {
+    document.getElementById('k2').innerHTML = '<span style="font-size:44px">🍀</span>';
+  } else if(name === 'salary') {
+    document.getElementById('k2').innerHTML = '<span style="font-size:44px">💰</span>';
+  } else if(name === 'rest') {
+    document.getElementById('k2').innerHTML = '<span style="font-size:44px">😴</span>';
+  } else {
+    document.getElementById('k2').innerHTML = `<svg viewBox="0 0 52 52" fill="none" width="52" height="52">
+      <path d="M26 44C26 44 6 32 6 18c0-6 4-10 10-10 4 0 7 2 10 5 3-3 6-5 10-5 6 0 10 4 10 10 0 14-20 26-20 26z" fill="white" opacity=".9"/>
+      <line x1="14" y1="20" x2="36" y2="20" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round"/>
+      <polyline points="30,14 37,20 30,26" stroke="#F2A5AE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+
+  updateAdKeyLayer();
+  buildBgKeys();
+  // 현재 언어 키캡 적용
+  const L = LANGS[currentLang] || LANGS.ko;
+  const lkeys = L.themeKeys ? L.themeKeys[name] : null;
+  if (lkeys) {
+    document.getElementById('k1').textContent = lkeys[0];
+    document.getElementById('k3').textContent = lkeys[2];
+    document.getElementById('k4').textContent = lkeys[3];
+  }
+}
+
+/* ─── 유효 코드 목록 ─── */
+const VALID_CODES = ['CHILL-2024','RELAX-PRO','SINSIN-VIP','CHILLPRO','PREMIUM777','LUCKY-STAR'];
+
+/* ─── 뱃지 클릭 ─── */
+function onBadgeClick() {
+  if(state.tier === 'free') {
+    const IAP = window.Capacitor?.Plugins?.IAP;
+    if(!IAP) { activatePremium(); return; } // 라이브 서버: 바로 토글
+    showUpgradeChoice();
+  } else {
+    deactivatePremium();
+  }
+}
+
+/* ─── 업그레이드 선택 팝업 ─── */
+function showUpgradeChoice() {
+  document.getElementById('upgradeChoiceOverlay').classList.add('show');
+}
+function closeUpgradeChoice() {
+  document.getElementById('upgradeChoiceOverlay').classList.remove('show');
+}
+
+/* ─── 코드 입력 팝업 ─── */
+function showCodeInput() {
+  document.getElementById('codeInputField').value = '';
+  document.getElementById('codeInputErr').textContent = '';
+  document.getElementById('codeInputOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('codeInputField').focus(), 100);
+}
+function closeCodeInput() {
+  document.getElementById('codeInputOverlay').classList.remove('show');
+}
+function validateCode() {
+  const code = document.getElementById('codeInputField').value.trim().toUpperCase();
+  const err = document.getElementById('codeInputErr');
+  if(!code) { err.textContent = '코드를 입력해주세요.'; return; }
+  if(VALID_CODES.includes(code)) {
+    closeCodeInput();
+    activatePremium();
+  } else {
+    err.textContent = '유효하지 않은 코드예요.';
+    document.getElementById('codeInputField').value = '';
+    setTimeout(() => { err.textContent = ''; }, 2000);
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const f = document.getElementById('codeInputField');
+  if(f) f.addEventListener('keydown', function(e) { if(e.key==='Enter') validateCode(); });
+});
+
+/* ─── 무료 회원 전환 ─── */
+function deactivatePremium() {
+  state.tier = 'free';
+  localStorage.removeItem('premium_purchased');
+  const badge = document.getElementById('tierBadge');
+  badge.className = 'tier-badge free';
+  badge.textContent = '심신 불안정 중';
+  document.querySelectorAll('.tab[data-theme="salary"], .tab[data-theme="rest"]').forEach(t => t.classList.add('locked'));
+  if(state.theme === 'salary' || state.theme === 'rest') {
+    trySetTheme('home', document.querySelector('.tab[data-theme="home"]'));
+  }
+  document.getElementById('premiumResetWrap').style.cssText = 'display:none;';
+  updateAdKeyLayer();
+  showToast('무료 계정으로 전환됐어요.');
+}
+
+/* ─── 유료 회원 활성화 ─── */
+function activatePremium() {
+  state.tier = 'premium';
+  const badge = document.getElementById('tierBadge');
+  badge.className = 'tier-badge premium';
+  badge.textContent = '✨ 심신 안정 중';
+  // 탭 잠금 해제
+  document.querySelectorAll('.tab.locked').forEach(t => t.classList.remove('locked'));
+  state.count = loadCount();
+  document.getElementById('countNum').textContent = state.count;
+  document.getElementById('premiumResetWrap').style.cssText = 'display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;padding:8px 0 4px;';
+  updateAdKeyLayer();
+  renderRecords();
+  showToast('✨ 심신 안정 중으로 전환됐어요!');
+}
+
+/* ─── 회원 등급 설정 ─── */
+function setTier(tier, el) {
+  state.tier = tier;
+  state.count = 0;
+  document.getElementById('countNum').textContent = '0';
+
+  const badge = document.getElementById('tierBadge');
+  badge.className = 'tier-badge';
+  badge.style.cursor = 'pointer';
+  if(tier === 'free') { badge.classList.add('free'); badge.textContent = '심신 불안정 중'; }
+  else if(tier === 'premium') { badge.classList.add('premium'); badge.textContent = '✨ 심신 안정 중'; }
+
+  state.count = loadCount();
+  document.getElementById('countNum').textContent = state.count;
+  if(tier === 'premium') {
+    document.getElementById('premiumResetWrap').style.cssText = 'display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;padding:8px 0 4px;';
+  } else {
+    document.getElementById('premiumResetWrap').style.display = 'none';
+  }
+  updateProgress();
+  updateAdKeyLayer();
+  renderRecords();
+}
+
+/* ─── 테마 설정 시도 ─── */
+function trySetTheme(name, el) {
+  const premiumOnly = ['salary','rest'];
+  if(premiumOnly.includes(name) && state.tier !== 'premium') {
+    showUpgradeChoice();
+    return;
+  }
+  setTheme(name, el);
+}
+
+/* ─── 진행바 업데이트 (비활성) ─── */
+function updateProgress() {}
+
+/* ─── 광고 체크 ─── */
+function checkAdKeys() {
+  if(state.tier !== 'free') return false;
+  const c = state.count;
+  return c === 50 || c === 100 || c === 150;
+}
+function checkAdPopup() {
+  if(state.tier !== 'free') return false;
+  const c = state.count;
+  return c === 51 || c === 101 || c === 151;
+}
+
+function updateAdKeyLayer() {
+  document.getElementById('adKeyLayer').style.display = 'none';
+}
+function showAdKeyLayer() {
+  document.getElementById('adKeyLayer').style.display = 'block';
+}
+
+/* ─── 광고 표시 ─── */
+function showAd() {
+  state.adShowing = true;
+  showAdKeyLayer();
+  document.getElementById('adOverlay').classList.add('show');
+}
+
+function closeAd() {
+  document.getElementById('adOverlay').classList.remove('show');
+  document.getElementById('adKeyLayer').style.display = 'none';
+  state.adShowing = false;
+  setTimeout(showUpgradePopup, 300);
+}
+
+/* ─── 유료 전환 팝업 ─── */
+function showUpgradePopup() {
+  document.getElementById('upgradeOverlay').classList.add('show');
+}
+function closeUpgradePopup() {
+  document.getElementById('upgradeOverlay').classList.remove('show');
+}
+
+/* ─── 리셋 팝업 ─── */
+function showReset() {
+  state.resetShowing = true;
+  document.getElementById('resetOverlay').classList.add('show');
+}
+function closeReset() {
+  document.getElementById('resetOverlay').classList.remove('show');
+  state.resetShowing = false;
+  state.count = 0;
+  document.getElementById('countNum').textContent = '0';
+  updateProgress();
+}
+
+/* ─── 공유 ─── */
+function openShare() {
+  document.getElementById('shareNum').textContent = state.count;
+  document.getElementById('shareThemeName').textContent =
+    state.theme === 'home' ? '🏠 집가고싶다' : '🍀 복권당첨';
+  document.getElementById('shareOverlay').classList.add('show');
+}
+function closeShare(e) {
+  if(!e || e.target.id === 'shareOverlay') {
+    document.getElementById('shareOverlay').classList.remove('show');
+  }
+}
+async function nativeShare() {
+  const t = themes[state.theme];
+  const text = `나 오늘 "${state.theme === 'home' ? '집가고싶다' : '복권당첨되면좋겠다'}" ${state.count}번 눌렀어 😮‍💨\n— 심신 안정 앱`;
+  if(navigator.share) {
+    await navigator.share({ text });
+  } else { copyCount(); }
+}
+function copyCount() {
+  const text = `나 오늘 ${state.count}번 눌렀어 😮‍💨 — 심신 안정`;
+  navigator.clipboard?.writeText(text).then(() => showToast('복사됐어요!'));
+  document.getElementById('shareOverlay').classList.remove('show');
+}
+function saveImage() { showToast('이미지 저장 (준비중)'); }
+
+/* ─── 업그레이드 안내 ─── */
+function showUpgrade() {
+  showUpgradeChoice();
+}
+
+/* ─── 토스트 ─── */
+function showToast(msg) {
+  const old = document.querySelector('.toast');
+  if(old) old.remove();
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2200);
+}
+
+/* ─── 플로팅 텍스트 ─── */
+function spawnFloat(x, y) {
+  const t = themes[state.theme];
+  const L = LANGS[currentLang] || LANGS.ko;
+  const msgPool = (L.themeMsgs && L.themeMsgs[state.theme]) ? L.themeMsgs[state.theme] : t.msgs;
+  const msg = msgPool[Math.floor(Math.random() * msgPool.length)];
+  const el = document.createElement('div');
+  el.className = 'float-msg';
+  const rot = (-10 + Math.random() * 20).toFixed(1);
+  el.style.cssText = `
+    left:${x + (-50 + Math.random()*100)}px;
+    top:${y - 10}px;
+    font-size:${16 + Math.random()*12}px;
+    color:${themes[state.theme].acc};
+    --r:${rot}deg;
+  `;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1700);
+}
+
+/* ─── 파티클 ─── */
+function spawnParticles(x, y) {
+  const colors = themes[state.theme].particles;
+  for(let i=0;i<10;i++){
+    const el = document.createElement('div');
+    el.className = 'particle';
+    const angle = (Math.PI * 2 * i) / 10 + Math.random() * .4;
+    const d = 50 + Math.random() * 70;
+    el.style.cssText = `
+      left:${x}px;top:${y}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      --px:${(Math.cos(angle)*d).toFixed(0)}px;
+      --py:${(Math.sin(angle)*d - 20).toFixed(0)}px;
+      border-radius:${Math.random()>.5?'50%':'3px'};
+    `;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 900);
+  }
+}
+
+/* ─── Web Audio 클릭음 ─── */
+let actx;
+function playClick() {
+  try {
+    if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.connect(g); g.connect(actx.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(580, actx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(180, actx.currentTime+.08);
+    g.gain.setValueAtTime(.2, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, actx.currentTime+.1);
+    o.start(); o.stop(actx.currentTime+.12);
+  } catch(e){}
+}
+
+/* ─── 메인 클릭 핸들러 ─── */
+const body = document.getElementById('keycapBody');
+
+function handlePress(e) {
+  if(state.adShowing || state.resetShowing) return;
+
+  body.classList.add('pressed');
+  playClick();
+  state.count++;
+
+  const num = document.getElementById('countNum');
+  num.textContent = state.count;
+  num.classList.remove('pop');
+  void num.offsetWidth;
+  num.classList.add('pop');
+
+  updateProgress();
+
+  const cx = e?.clientX ?? window.innerWidth/2;
+  const cy = e?.clientY ?? window.innerHeight/2;
+  spawnFloat(cx, cy);
+  if(state.count % 5 === 0) spawnParticles(cx, cy);
+
+  saveCount();
+
+  // 50/100/150회: 키캡에 광고 이미지 노출
+  if(checkAdKeys()) { showAdKeyLayer(); return; }
+
+  // 51/101/151회: 팝업 노출
+  if(checkAdPopup()) { setTimeout(showAd, 100); return; }
+
+  // 리셋 체크 (무료 회원)
+  if(state.tier === 'free' && state.count >= 159) {
+    setTimeout(showReset, 300);
+  }
+}
+
+body.addEventListener('mousedown', handlePress);
+body.addEventListener('touchstart', e => { e.preventDefault(); handlePress(e.touches[0]); }, {passive:false});
+document.addEventListener('mouseup', () => body.classList.remove('pressed'));
+document.addEventListener('touchend', () => body.classList.remove('pressed'));
+
+document.addEventListener('keydown', e => {
+  if(e.code === 'Space' && !e.repeat) {
+    e.preventDefault();
+    body.classList.add('pressed');
+    const r = body.getBoundingClientRect();
+    handlePress({clientX: r.left+r.width/2, clientY: r.top+r.height/2});
+  }
+});
+document.addEventListener('keyup', e => { if(e.code==='Space') body.classList.remove('pressed'); });
+
+/* ─── 비밀번호 게이트 ─── */
+(function(){
+  if(sessionStorage.getItem('pw_ok')==='1'){
+    document.getElementById('pwGate').style.display='none';
+  }
+})();
+function checkPw(){
+  const v = document.getElementById('pwInput').value;
+  if(v==='1234'){
+    sessionStorage.setItem('pw_ok','1');
+    document.getElementById('pwGate').style.display='none';
+  } else {
+    const err = document.getElementById('pwErr');
+    err.textContent='비밀번호가 틀렸습니다.';
+    document.getElementById('pwInput').value='';
+    setTimeout(()=>{ err.textContent=''; },2000);
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  const input = document.getElementById('pwInput');
+  if(input) input.addEventListener('keydown',function(e){
+    if(e.key==='Enter') checkPw();
+  });
+});
+
+/* ─── StoreKit IAP (v1.0 비활성화) ─── */
+async function purchasePremiumIAP() { /* v1.0: 결제 없음 */ }
+async function restorePurchasesIAP() { /* v1.0: 복원 없음 */ }
+
+/* ─── 언어 / i18n ─── */
+const LANGS = {
+  ko: {
+    name: '한국어',
+    settingsBtn: '설정',
+    logo: '심신 안정',
+    badgeFree: '심신 불안정 중',
+    badgePremium: '심신 안정 중',
+    tabs: ['🏠 집가고싶다','🍀 복권당첨','💸 월급올려줘','😴 그냥쉬고싶다'],
+    settingsTitle: '설정',
+    settingsLang: '언어 변경',
+    settingsPrivacy: '개인정보처리방침',
+    settingsTerms: '이용약관',
+    settingsContact: '1:1 문의',
+    recordNavTitle: '저장 하셨나요?',
+    recordNavDesc: '기록 이동 시 지금 번호는 사라져요',
+    recordNavYes: '네',
+    recordNavNo: '아니요',
+    saveRecordBtn: '💾 기록 저장',
+    resetBtn: '초기화',
+    resetConfirmTitle: '↩️ 초기화 할까요?',
+    resetConfirmDesc: '현재 클릭 수가 0으로 초기화돼요',
+    resetConfirmYes: '초기화',
+    resetConfirmNo: '취소',
+    toastReset: '클릭 수가 초기화됐어요',
+    comingSoonTitle: '🔜 준비중이에요',
+    comingSoonDesc: '아직 준비중입니다. 조금만 기다려 주세요!',
+    comingSoonBtn: '확인',
+    upgradeTitle: '심신 안정으로 전환',
+    upgradeDesc: '심신 안정 중이 되면 광고 없이\n마음껏 누를 수 있어요.',
+    upgradePayBtn: '💳 심신 안정 중으로 전환하기 (₩2,500)',
+    upgradeRestoreBtn: '이미 구매했어요 (복원)',
+    adTag: 'AD · 광고',
+    adTitle: '광고주를 모집합니다',
+    adClose: '닫기',
+    countLabel: '번 눌렀어요',
+    shareBtn: '클릭 수 공유하기',
+    footerPrivacy: '개인정보처리방침',
+    footerTerms: '이용약관',
+    footerContact: '1:1 문의',
+    footerCopy: '© 2026 심신 안정. All rights reserved.',
+    themeKeys: {
+      home: ['집','♥','가고','싶다'],
+      lottery: ['복권','🍀','당첨','!!!'],
+      salary: ['월급','💰','올려줘','!!!'],
+      rest: ['그냥','😴','쉬고','싶다'],
+    },
+    themeMsgs: {
+      home: ['집가고 싶다','퇴근하고 싶다','집에 가고파','제발','집!!!','집가자','밥먹고 싶다'],
+      lottery: ['당첨되면 좋겠다','로또 1등!','제발제발','777','🍀🍀🍀','돈돈돈','복권 사야지'],
+      salary: ['월급 올려줘!','나도 연봉협상','인상 좀요','이게 맞나?','💰💰💰','사장님!!','최저임금이라도'],
+      rest: ['그냥 쉬고싶다','피곤해...','낮잠 자고싶다','오늘은 좀','침대가 최고야','쉬어야 해','😴😴😴'],
+    },
+    toastPremium: '✨ 심신 안정 계정이에요!',
+    toastFree: '무료 계정으로 전환됐어요.',
+  },
+  en: {
+    name: 'English',
+    settingsBtn: 'Settings',
+    logo: 'ChillClick',
+    badgeFree: 'Stressed 😓',
+    badgePremium: 'Chilling ✨',
+    tabs: ['🏠 Go Home','🍀 Lottery','💸 Pay Raise','😴 Just Rest'],
+    settingsTitle: 'Settings',
+    settingsLang: 'Language',
+    settingsPrivacy: 'Privacy Policy',
+    settingsTerms: 'Terms of Use',
+    settingsContact: 'Contact Us',
+    recordNavTitle: 'Did you save?',
+    recordNavDesc: 'Current count will be lost if you switch.',
+    recordNavYes: 'Yes',
+    recordNavNo: 'No',
+    saveRecordBtn: '💾 Save Record',
+    resetBtn: 'Reset',
+    resetConfirmTitle: '↩️ Reset count?',
+    resetConfirmDesc: 'Your current click count will be set to 0.',
+    resetConfirmYes: 'Reset',
+    resetConfirmNo: 'Cancel',
+    toastReset: 'Click count has been reset.',
+    comingSoonTitle: '🔜 Coming Soon',
+    comingSoonDesc: 'This theme is not available yet. Stay tuned!',
+    comingSoonBtn: 'OK',
+    upgradeTitle: 'Go Premium',
+    upgradeDesc: 'No ads, unlimited clicks\nwith Premium.',
+    upgradePayBtn: '💳 Go Premium (₩2,500)',
+    upgradeRestoreBtn: 'Already purchased (Restore)',
+    adTag: 'AD',
+    adTitle: 'Advertise Here',
+    adClose: 'Close',
+    countLabel: 'times clicked',
+    shareBtn: 'Share my count',
+    footerPrivacy: 'Privacy Policy',
+    footerTerms: 'Terms of Use',
+    footerContact: 'Contact Us',
+    footerCopy: '© 2026 ChillClick. All rights reserved.',
+    themeKeys: {
+      home: ['Go','♥','Home','Now!'],
+      lottery: ['Win','🍀','The','Lotto'],
+      salary: ['Raise','💰','My','Pay!'],
+      rest: ['Just','😴','Let','Rest'],
+    },
+    themeMsgs: {
+      home: ['I wanna go home','Time to leave!','Please...','Home!!!','Take me home','I miss home','Feed me🍕'],
+      lottery: ['Pick me!','Jackpot!','Please please','777','🍀🍀🍀','Money money','Gotta win!'],
+      salary: ['Raise my pay!','Pay negotiation','Give me more','Is this fair?','💰💰💰','Boss!!','At least minimum'],
+      rest: ['Just let me rest','So tired...','Need a nap','Just today','Bed is best','I need rest','😴😴😴'],
+    },
+    toastPremium: '✨ Premium activated!',
+    toastFree: 'Switched to free account.',
+  },
+  ja: {
+    name: '日本語',
+    settingsBtn: '設定',
+    logo: 'チルクリック',
+    badgeFree: 'ストレス中 😓',
+    badgePremium: 'リラックス中 ✨',
+    tabs: ['🏠 帰りたい','🍀 宝くじ','💸 給料アップ','😴 休みたい'],
+    settingsTitle: '設定',
+    settingsLang: '言語変更',
+    settingsPrivacy: 'プライバシーポリシー',
+    settingsTerms: '利用規約',
+    settingsContact: 'お問い合わせ',
+    recordNavTitle: '保存しましたか？',
+    recordNavDesc: '移動すると現在の数字が消えます',
+    recordNavYes: 'はい',
+    recordNavNo: 'いいえ',
+    saveRecordBtn: '💾 記録を保存',
+    resetBtn: 'リセット',
+    resetConfirmTitle: '↩️ リセットしますか？',
+    resetConfirmDesc: '現在のクリック数が0になります',
+    resetConfirmYes: 'リセット',
+    resetConfirmNo: 'キャンセル',
+    toastReset: 'クリック数をリセットしました',
+    comingSoonTitle: '🔜 準備中です',
+    comingSoonDesc: 'まだ準備中です。少々お待ちください！',
+    comingSoonBtn: '確認',
+    upgradeTitle: 'プレミアムへ',
+    upgradeDesc: '広告なしで思いきりタップ\nできます。',
+    upgradePayBtn: '💳 プレミアムになる (₩2,500)',
+    upgradeRestoreBtn: '購入済み (復元)',
+    adTag: 'AD',
+    adTitle: '広告主を募集中',
+    adClose: '閉じる',
+    countLabel: '回タップした',
+    shareBtn: 'カウントをシェア',
+    footerPrivacy: 'プライバシーポリシー',
+    footerTerms: '利用規約',
+    footerContact: 'お問い合わせ',
+    footerCopy: '© 2026 ChillClick. All rights reserved.',
+    themeKeys: {
+      home: ['帰り','♥','たい','な～'],
+      lottery: ['宝くじ','🍀','当たれ','!!!'],
+      salary: ['給料','💰','上げて','!!!'],
+      rest: ['ただ','😴','休み','たい'],
+    },
+    themeMsgs: {
+      home: ['家に帰りたい','退勤したい','家が恋しい','お願い','家!!!','帰ろう','ご飯食べたい'],
+      lottery: ['当たればいいな','宝くじ1等!','お願いします','777','🍀🍀🍀','お金お金','買わなきゃ'],
+      salary: ['給料上げて!','年収交渉したい','もっとほしい','これでいいの?','💰💰💰','社長!!','最低賃金でも'],
+      rest: ['ただ休みたい','疲れた...','昼寝したい','今日くらい','ベッド最高','休まなきゃ','😴😴😴'],
+    },
+    toastPremium: '✨ プレミアム有効！',
+    toastFree: '無料アカウントに戻りました。',
+  },
+  'zh-cn': {
+    name: '中文(简体)',
+    settingsBtn: '设置',
+    logo: '冥想点击',
+    badgeFree: '压力中 😓',
+    badgePremium: '放松中 ✨',
+    tabs: ['🏠 想回家','🍀 彩票','💸 涨工资','😴 想休息'],
+    settingsTitle: '设置',
+    settingsLang: '语言设置',
+    settingsPrivacy: '隐私政策',
+    settingsTerms: '服务条款',
+    settingsContact: '联系我们',
+    recordNavTitle: '已保存了吗？',
+    recordNavDesc: '切换后当前数字将消失',
+    recordNavYes: '是',
+    recordNavNo: '否',
+    saveRecordBtn: '💾 保存记录',
+    resetBtn: '重置',
+    resetConfirmTitle: '↩️ 确认重置？',
+    resetConfirmDesc: '当前点击次数将归零',
+    resetConfirmYes: '重置',
+    resetConfirmNo: '取消',
+    toastReset: '点击次数已重置',
+    comingSoonTitle: '🔜 即将推出',
+    comingSoonDesc: '此主题尚未准备好，请稍候！',
+    comingSoonBtn: '确认',
+    upgradeTitle: '升级会员',
+    upgradeDesc: '无广告，随心点击\n尽情享受。',
+    upgradePayBtn: '💳 升级会员 (₩2,500)',
+    upgradeRestoreBtn: '已购买 (恢复)',
+    adTag: 'AD',
+    adTitle: '招募广告主',
+    adClose: '关闭',
+    countLabel: '次点击',
+    shareBtn: '分享次数',
+    footerPrivacy: '隐私政策',
+    footerTerms: '服务条款',
+    footerContact: '联系我们',
+    footerCopy: '© 2026 ChillClick. All rights reserved.',
+    themeKeys: {
+      home: ['想回','♥','家了','！！'],
+      lottery: ['彩票','🍀','中奖','!!!'],
+      salary: ['涨工','💰','资吧','！！'],
+      rest: ['就想','😴','休息','啊！'],
+    },
+    themeMsgs: {
+      home: ['好想回家','想下班了','想家了','求求了','家!!!','回家吧','想吃饭🍚'],
+      lottery: ['希望中奖','彩票一等奖!','拜托拜托','777','🍀🍀🍀','钱钱钱','去买彩票'],
+      salary: ['给我涨工资!','我要谈薪资','多给点嘛','这合理吗?','💰💰💰','老板!!','至少最低工资'],
+      rest: ['就想休息','好累啊...','想睡午觉','就今天','床最棒','该休息了','😴😴😴'],
+    },
+    toastPremium: '✨ 高级版已激活！',
+    toastFree: '已切换到免费账号。',
+  },
+  'zh-tw': {
+    name: '中文(繁體)',
+    settingsBtn: '設定',
+    logo: '冥想點擊',
+    badgeFree: '壓力中 😓',
+    badgePremium: '放鬆中 ✨',
+    tabs: ['🏠 想回家','🍀 彩票','💸 漲薪水','😴 想休息'],
+    settingsTitle: '設定',
+    settingsLang: '語言設定',
+    settingsPrivacy: '隱私政策',
+    settingsTerms: '服務條款',
+    settingsContact: '聯絡我們',
+    recordNavTitle: '已儲存了嗎？',
+    recordNavDesc: '切換後目前數字將消失',
+    recordNavYes: '是',
+    recordNavNo: '否',
+    saveRecordBtn: '💾 儲存記錄',
+    resetBtn: '重置',
+    resetConfirmTitle: '↩️ 確認重置？',
+    resetConfirmDesc: '目前點擊次數將歸零',
+    resetConfirmYes: '重置',
+    resetConfirmNo: '取消',
+    toastReset: '點擊次數已重置',
+    comingSoonTitle: '🔜 即將推出',
+    comingSoonDesc: '此主題尚未準備好，請稍候！',
+    comingSoonBtn: '確認',
+    upgradeTitle: '升級會員',
+    upgradeDesc: '無廣告，盡情點擊\n享受放鬆。',
+    upgradePayBtn: '💳 升級會員 (₩2,500)',
+    upgradeRestoreBtn: '已購買 (恢復)',
+    adTag: 'AD',
+    adTitle: '招募廣告主',
+    adClose: '關閉',
+    countLabel: '次點擊',
+    shareBtn: '分享次數',
+    footerPrivacy: '隱私政策',
+    footerTerms: '服務條款',
+    footerContact: '聯絡我們',
+    footerCopy: '© 2026 ChillClick. All rights reserved.',
+    themeKeys: {
+      home: ['想回','♥','家了','！！'],
+      lottery: ['彩票','🍀','中獎','!!!'],
+      salary: ['漲薪','💰','水啦','！！'],
+      rest: ['就想','😴','休息','啊！'],
+    },
+    themeMsgs: {
+      home: ['好想回家','想下班了','想家了','求求了','家!!!','回家吧','想吃飯🍚'],
+      lottery: ['希望中獎','彩票一等獎!','拜託拜託','777','🍀🍀🍀','錢錢錢','去買彩票'],
+      salary: ['給我漲薪水!','我要談薪資','多給點嘛','這合理嗎?','💰💰💰','老闆!!','至少最低薪資'],
+      rest: ['就想休息','好累啊...','想睡午覺','就今天','床最棒','該休息了','😴😴😴'],
+    },
+    toastPremium: '✨ 高級版已啟用！',
+    toastFree: '已切換至免費帳號。',
+  },
+};
+
+let currentLang = localStorage.getItem('chillclick_lang') || 'ko';
+
+function applyLanguage(lang) {
+  const L = LANGS[lang] || LANGS.ko;
+  currentLang = lang;
+  const el = (id) => document.getElementById(id);
+  const qs = (sel) => document.querySelector(sel);
+  // 로고
+  const logoEl = qs('.logo');
+  if (logoEl) logoEl.innerHTML = L.logo + ' <span>v1.0</span>';
+  // 설정 버튼 텍스트
+  if (el('settingsBtnLabel')) el('settingsBtnLabel').textContent = L.settingsBtn;
+  // 뱃지
+  const badge = el('tierBadge');
+  if (badge) badge.textContent = state.tier === 'premium' ? L.badgePremium : L.badgeFree;
+  // 탭
+  document.querySelectorAll('.tab').forEach((t, i) => { if (L.tabs[i]) t.textContent = L.tabs[i]; });
+  // 설정 패널
+  if (el('settingsTitle')) el('settingsTitle').textContent = L.settingsTitle;
+  if (el('settingsLangLabel')) el('settingsLangLabel').textContent = L.settingsLang;
+  if (el('settingsPrivacyLabel')) el('settingsPrivacyLabel').textContent = L.settingsPrivacy;
+  if (el('settingsTermsLabel')) el('settingsTermsLabel').textContent = L.settingsTerms;
+  if (el('settingsContactLabel')) el('settingsContactLabel').textContent = L.settingsContact;
+  if (el('settingsLangCurrent')) el('settingsLangCurrent').textContent = L.name + ' ›';
+  // 기록 저장/초기화 버튼
+  const saveBtn = qs('.save-record-btn');
+  if (saveBtn) saveBtn.textContent = L.saveRecordBtn;
+  if (el('resetBtnLabel')) el('resetBtnLabel').textContent = L.resetBtn;
+  // 초기화 확인 팝업
+  if (el('resetConfirmTitle')) el('resetConfirmTitle').textContent = L.resetConfirmTitle;
+  if (el('resetConfirmDesc')) el('resetConfirmDesc').textContent = L.resetConfirmDesc;
+  if (el('resetConfirmYes')) el('resetConfirmYes').textContent = L.resetConfirmYes;
+  if (el('resetConfirmNo')) el('resetConfirmNo').textContent = L.resetConfirmNo;
+  // 업그레이드 팝업
+  const upTitle = qs('.upgrade-choice-title');
+  const upDesc = qs('.upgrade-choice-desc');
+  const upPay = qs('.upgrade-pay-btn');
+  const upRestore = qs('.upgrade-pay-btn + .upgrade-pay-btn, .upgrade-pay-btn:nth-child(2)');
+  if (upTitle) upTitle.textContent = L.upgradeTitle;
+  if (upDesc) upDesc.innerHTML = L.upgradeDesc.replace('\n','<br>');
+  if (upPay) upPay.textContent = L.upgradePayBtn;
+  // 광고 팝업
+  const adTag = qs('.ad-tag');
+  const adTitle = qs('.ad-title');
+  const adCta = qs('.ad-cta');
+  if (adTag) adTag.textContent = L.adTag;
+  if (adTitle) adTitle.textContent = L.adTitle;
+  if (adCta) adCta.textContent = L.adClose;
+  // 카운터 라벨 / 공유 버튼
+  if (el('countLabel')) el('countLabel').textContent = L.countLabel;
+  if (el('shareBtnLabel')) el('shareBtnLabel').textContent = L.shareBtn;
+  // 푸터
+  if (el('footerPrivacy')) el('footerPrivacy').textContent = L.footerPrivacy;
+  if (el('footerTerms')) el('footerTerms').textContent = L.footerTerms;
+  if (el('footerContact')) el('footerContact').textContent = L.footerContact;
+  if (el('footerCopy')) el('footerCopy').textContent = L.footerCopy;
+  // 키캡 텍스트 업데이트
+  if (L.themeKeys) {
+    const keys = L.themeKeys[state.theme];
+    if (keys) {
+      if (el('k1')) el('k1').textContent = keys[0];
+      if (el('k3')) el('k3').textContent = keys[2];
+      if (el('k4')) el('k4').textContent = keys[3];
+    }
+  }
+  // 기록 이동 팝업
+  const rTitle = qs('.record-nav-title');
+  const rDesc = qs('.record-nav-desc');
+  const rYes = qs('.record-nav-btn-yes');
+  const rNo = qs('.record-nav-btn-no');
+  if (rTitle) rTitle.textContent = L.recordNavTitle;
+  if (rDesc) rDesc.textContent = L.recordNavDesc;
+  if (rYes) rYes.textContent = L.recordNavYes;
+  if (rNo) rNo.textContent = L.recordNavNo;
+}
+
+function openSettings() {
+  document.getElementById('settingsOverlay').classList.add('show');
+  document.getElementById('langList').style.display = 'none';
+  // 현재 언어 체크 표시
+  ['ko','en','ja','zh-cn','zh-tw'].forEach(l => {
+    const el = document.getElementById('lcheck-'+l);
+    if (el) el.style.display = l === currentLang ? 'block' : 'none';
+  });
+}
+function closeSettings() {
+  document.getElementById('settingsOverlay').classList.remove('show');
+}
+function closeSettingsOutside(e) {
+  if (e.target === document.getElementById('settingsOverlay')) closeSettings();
+}
+function toggleLangList() {
+  const list = document.getElementById('langList');
+  list.style.display = list.style.display === 'none' ? 'flex' : 'none';
+}
+function selectLang(lang) {
+  localStorage.setItem('chillclick_lang', lang);
+  applyLanguage(lang);
+  document.getElementById('langList').style.display = 'none';
+  ['ko','en','ja','zh-cn','zh-tw'].forEach(l => {
+    const el = document.getElementById('lcheck-'+l);
+    if (el) el.style.display = l === lang ? 'block' : 'none';
+  });
+}
+function openPrivacy() {
+  window.open('privacy.html?lang=' + currentLang, '_blank');
+}
+function openTerms() {
+  window.open('terms.html?lang=' + currentLang, '_blank');
+}
+function openContact() {
+  window.location.href = 'mailto:ask.perryworld.03@gmail.com?subject=ChillClick 문의';
+}
+
+async function initPremiumStatus() {
+  // v1.0: 모든 사용자 무료 프리미엄 제공 + v1.5 업그레이드 시 인식 플래그 저장
+  localStorage.setItem('premium_v1_user', '1');
+  activatePremium();
+}
+
+function showComingSoon() {
+  const L = LANGS[currentLang] || LANGS.ko;
+  document.querySelector('#comingSoonOverlay .record-nav-title').textContent = L.comingSoonTitle;
+  document.querySelector('#comingSoonOverlay .record-nav-desc').innerHTML = L.comingSoonDesc;
+  document.querySelector('#comingSoonOverlay .record-nav-btn-yes').textContent = L.comingSoonBtn;
+  document.getElementById('comingSoonOverlay').classList.add('show');
+}
+
+/* ─── 초기화 ─── */
+document.getElementById('app').style.setProperty('--bg', themes[state.theme].bg);
+document.getElementById('app').style.setProperty('--acc', themes[state.theme].acc);
+document.body.style.background = themes[state.theme].bg;
+buildBgKeys();
+updateAdKeyLayer();
+applyLanguage(currentLang);
+initPremiumStatus();
+</script>
+</body>
+</html>
