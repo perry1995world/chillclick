@@ -864,7 +864,7 @@ body{
         <div class="share-big-num" id="shareNum">0</div>
         <div class="share-theme-name" id="shareThemeName">🏠 집가고싶다</div>
         <div class="share-msg" id="shareMsg">번 눌렀어요</div>
-        <div class="share-watermark">— 심신 안정 —</div>
+        <div class="share-watermark" id="shareWatermark">— 심신 안정 —</div>
       </div>
       <div class="share-actions">
         <button class="share-action" onclick="copyCount()"><span class="share-action-icon">📋</span>복사</button>
@@ -1467,9 +1467,11 @@ function closeReset() {
 
 /* ─── 공유 ─── */
 function openShare() {
+  const L = LANGS[currentLang] || LANGS.ko;
   document.getElementById('shareNum').textContent = state.count;
-  document.getElementById('shareThemeName').textContent =
-    state.theme === 'home' ? '🏠 집가고싶다' : '🍀 복권당첨';
+  document.getElementById('shareThemeName').textContent = L.shareThemeNames[state.theme] || L.shareThemeNames.home;
+  document.getElementById('shareMsg').textContent = L.shareCountMsg;
+  document.getElementById('shareWatermark').textContent = L.shareWatermark;
   document.getElementById('shareOverlay').classList.add('show');
 }
 function closeShare(e) {
@@ -1478,18 +1480,22 @@ function closeShare(e) {
   }
 }
 async function nativeShare() {
-  const t = themes[state.theme];
-  const text = `나 오늘 "${state.theme === 'home' ? '집가고싶다' : '복권당첨되면좋겠다'}" ${state.count}번 눌렀어 😮‍💨\n— 심신 안정 앱`;
+  const L = LANGS[currentLang] || LANGS.ko;
+  const text = L.nativeShareText(state.theme, state.count);
   if(navigator.share) {
     await navigator.share({ text });
   } else { copyCount(); }
 }
 function copyCount() {
-  const text = `나 오늘 ${state.count}번 눌렀어 😮‍💨 — 심신 안정`;
-  navigator.clipboard?.writeText(text).then(() => showToast('복사됐어요!'));
+  const L = LANGS[currentLang] || LANGS.ko;
+  const text = L.copyText(state.count);
+  navigator.clipboard?.writeText(text).then(() => showToast(L.toastCopy));
   document.getElementById('shareOverlay').classList.remove('show');
 }
-function saveImage() { showToast('이미지 저장 (준비중)'); }
+function saveImage() {
+  const L = LANGS[currentLang] || LANGS.ko;
+  showToast(L.toastImageSoon);
+}
 
 /* ─── 업그레이드 안내 ─── */
 function showUpgrade() {
@@ -1674,6 +1680,13 @@ const LANGS = {
     },
     toastPremium: '✨ 심신 안정 계정이에요!',
     toastFree: '무료 계정으로 전환됐어요.',
+    shareThemeNames: {home:'🏠 집가고싶다', lottery:'🍀 복권당첨'},
+    shareCountMsg: '번 눌렀어요',
+    shareWatermark: '— 심신 안정 —',
+    nativeShareText: (theme, count) => `나 오늘 "${theme === 'home' ? '집가고싶다' : '복권당첨되면좋겠다'}" ${count}번 눌렀어 😮‍💨\n— 심신 안정 앱`,
+    copyText: (count) => `나 오늘 ${count}번 눌렀어 😮‍💨 — 심신 안정`,
+    toastCopy: '복사됐어요!',
+    toastImageSoon: '이미지 저장 (준비중)',
   },
   en: {
     name: 'English',
@@ -1726,6 +1739,13 @@ const LANGS = {
     },
     toastPremium: '✨ Premium activated!',
     toastFree: 'Switched to free account.',
+    shareThemeNames: {home:'🏠 Go Home', lottery:'🍀 Lottery'},
+    shareCountMsg: 'times clicked',
+    shareWatermark: '— ChillClick —',
+    nativeShareText: (theme, count) => `I clicked "${theme === 'home' ? 'Go Home' : 'Lottery'}" ${count} times today 😮‍💨\n— ChillClick App`,
+    copyText: (count) => `I clicked ${count} times today 😮‍💨 — ChillClick`,
+    toastCopy: 'Copied!',
+    toastImageSoon: 'Save image (coming soon)',
   },
   ja: {
     name: '日本語',
@@ -1778,6 +1798,13 @@ const LANGS = {
     },
     toastPremium: '✨ プレミアム有効！',
     toastFree: '無料アカウントに戻りました。',
+    shareThemeNames: {home:'🏠 帰りたい', lottery:'🍀 宝くじ'},
+    shareCountMsg: '回タップした',
+    shareWatermark: '— チルクリック —',
+    nativeShareText: (theme, count) => `今日「${theme === 'home' ? '帰りたい' : '宝くじ当たれ'}」を${count}回押したよ 😮‍💨\n— チルクリック`,
+    copyText: (count) => `今日${count}回押した 😮‍💨 — チルクリック`,
+    toastCopy: 'コピーしました！',
+    toastImageSoon: '画像保存（準備中）',
   },
   'zh-cn': {
     name: '中文(简体)',
@@ -1830,6 +1857,13 @@ const LANGS = {
     },
     toastPremium: '✨ 高级版已激活！',
     toastFree: '已切换到免费账号。',
+    shareThemeNames: {home:'🏠 想回家', lottery:'🍀 彩票'},
+    shareCountMsg: '次点击',
+    shareWatermark: '— 冥想点击 —',
+    nativeShareText: (theme, count) => `我今天点了「${theme === 'home' ? '想回家' : '彩票'}」${count}次 😮‍💨\n— 冥想点击`,
+    copyText: (count) => `我今天点了${count}次 😮‍💨 — 冥想点击`,
+    toastCopy: '已复制！',
+    toastImageSoon: '保存图片（准备中）',
   },
   'zh-tw': {
     name: '中文(繁體)',
@@ -1882,6 +1916,13 @@ const LANGS = {
     },
     toastPremium: '✨ 高級版已啟用！',
     toastFree: '已切換至免費帳號。',
+    shareThemeNames: {home:'🏠 想回家', lottery:'🍀 彩票'},
+    shareCountMsg: '次點擊',
+    shareWatermark: '— 冥想點擊 —',
+    nativeShareText: (theme, count) => `我今天點了「${theme === 'home' ? '想回家' : '彩票'}」${count}次 😮‍💨\n— 冥想點擊`,
+    copyText: (count) => `我今天點了${count}次 😮‍💨 — 冥想點擊`,
+    toastCopy: '已複製！',
+    toastImageSoon: '儲存圖片（準備中）',
   },
 };
 
