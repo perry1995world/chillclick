@@ -865,6 +865,8 @@ function showRecordInfo(id) {
   const r = records.find(x => x.id === id);
   if(!r) return;
   showToast(`${r.label} · ${THEME_NAMES[r.theme]||r.theme} · ${r.count}번`);
+  const chip = document.getElementById('rlabel-'+id)?.closest('.record-chip');
+  if(chip) chip.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
 }
 
 function editRecord(id) {
