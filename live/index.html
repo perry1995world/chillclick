@@ -24,7 +24,6 @@ body{
   display:flex;flex-direction:column;align-items:center;
   overflow-x:hidden;overflow-y:auto;
   user-select:none;
-  transition:background .5s;
 }
 
 /* ── 앱 래퍼 (모바일 시뮬레이션) ── */
@@ -34,7 +33,6 @@ body{
   display:flex;flex-direction:column;
   position:relative;overflow:hidden;
   background:var(--bg,var(--cream));
-  transition:background .5s;
 }
 
 /* ── 헤더 ── */
@@ -1047,7 +1045,7 @@ const VALID_CODES = ['CHILL-2024','RELAX-PRO','SINSIN-VIP','CHILLPRO','PREMIUM77
 /* ─── 뱃지 클릭 ─── */
 function onBadgeClick() {
   if(state.tier === 'free') { showUpgradeChoice(); }
-  else { showToast('✨ 심신 안정 중이에요!'); }
+  else { deactivatePremium(); }
 }
 
 /* ─── 업그레이드 선택 팝업 ─── */
@@ -1085,6 +1083,22 @@ document.addEventListener('DOMContentLoaded', function() {
   const f = document.getElementById('codeInputField');
   if(f) f.addEventListener('keydown', function(e) { if(e.key==='Enter') validateCode(); });
 });
+
+/* ─── 무료 회원 전환 ─── */
+function deactivatePremium() {
+  state.tier = 'free';
+  localStorage.removeItem('premium_purchased');
+  const badge = document.getElementById('tierBadge');
+  badge.className = 'tier-badge free';
+  badge.textContent = '심신 불안정 중';
+  document.querySelectorAll('.tab[data-theme="salary"], .tab[data-theme="rest"]').forEach(t => t.classList.add('locked'));
+  if(state.theme === 'salary' || state.theme === 'rest') {
+    trySetTheme('home', document.querySelector('.tab[data-theme="home"]'));
+  }
+  document.getElementById('premiumResetWrap').style.cssText = 'display:none;';
+  updateAdKeyLayer();
+  showToast('무료 계정으로 전환됐어요.');
+}
 
 /* ─── 유료 회원 활성화 ─── */
 function activatePremium() {
