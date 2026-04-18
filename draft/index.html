@@ -867,11 +867,11 @@ body{
         <div class="share-watermark" id="shareWatermark">— 심신 안정 —</div>
       </div>
       <div class="share-actions">
-        <button class="share-action" onclick="copyCount()"><span class="share-action-icon">📋</span>복사</button>
-        <button class="share-action" onclick="nativeShare()"><span class="share-action-icon">📤</span>공유</button>
-        <button class="share-action" onclick="saveImage()"><span class="share-action-icon">🖼️</span>이미지</button>
+        <button class="share-action" onclick="copyCount()"><span class="share-action-icon">📋</span><span id="shareCopyBtn">복사</span></button>
+        <button class="share-action" onclick="nativeShare()"><span class="share-action-icon">📤</span><span id="shareNativeBtn">공유</span></button>
+        <button class="share-action" onclick="saveImage()"><span class="share-action-icon">🖼️</span><span id="shareImageBtn">이미지</span></button>
       </div>
-      <button class="share-cancel" onclick="closeShare()">취소</button>
+      <button class="share-cancel" onclick="closeShare()" id="shareCancelBtn">취소</button>
     </div>
   </div>
 
@@ -1472,6 +1472,10 @@ function openShare() {
   document.getElementById('shareThemeName').textContent = L.shareThemeNames[state.theme] || L.shareThemeNames.home;
   document.getElementById('shareMsg').textContent = L.shareCountMsg;
   document.getElementById('shareWatermark').textContent = L.shareWatermark;
+  document.getElementById('shareCopyBtn').textContent = L.shareCopy;
+  document.getElementById('shareNativeBtn').textContent = L.shareNative;
+  document.getElementById('shareImageBtn').textContent = L.shareImage;
+  document.getElementById('shareCancelBtn').textContent = L.shareCancel;
   document.getElementById('shareOverlay').classList.add('show');
 }
 function closeShare(e) {
@@ -1687,6 +1691,7 @@ const LANGS = {
     copyText: (count) => `나 오늘 ${count}번 눌렀어 😮‍💨 — 심신 안정`,
     toastCopy: '복사됐어요!',
     toastImageSoon: '이미지 저장 (준비중)',
+    shareCopy: '복사', shareNative: '공유', shareImage: '이미지', shareCancel: '취소',
   },
   en: {
     name: 'English',
@@ -1746,6 +1751,7 @@ const LANGS = {
     copyText: (count) => `I clicked ${count} times today 😮‍💨 — ChillClick`,
     toastCopy: 'Copied!',
     toastImageSoon: 'Save image (coming soon)',
+    shareCopy: 'Copy', shareNative: 'Share', shareImage: 'Image', shareCancel: 'Cancel',
   },
   ja: {
     name: '日本語',
@@ -1805,6 +1811,7 @@ const LANGS = {
     copyText: (count) => `今日${count}回押した 😮‍💨 — チルクリック`,
     toastCopy: 'コピーしました！',
     toastImageSoon: '画像保存（準備中）',
+    shareCopy: 'コピー', shareNative: '共有', shareImage: '画像', shareCancel: 'キャンセル',
   },
   'zh-cn': {
     name: '中文(简体)',
@@ -1864,6 +1871,7 @@ const LANGS = {
     copyText: (count) => `我今天点了${count}次 😮‍💨 — 冥想点击`,
     toastCopy: '已复制！',
     toastImageSoon: '保存图片（准备中）',
+    shareCopy: '复制', shareNative: '分享', shareImage: '图片', shareCancel: '取消',
   },
   'zh-tw': {
     name: '中文(繁體)',
@@ -1923,6 +1931,7 @@ const LANGS = {
     copyText: (count) => `我今天點了${count}次 😮‍💨 — 冥想點擊`,
     toastCopy: '已複製！',
     toastImageSoon: '儲存圖片（準備中）',
+    shareCopy: '複製', shareNative: '分享', shareImage: '圖片', shareCancel: '取消',
   },
 };
 
