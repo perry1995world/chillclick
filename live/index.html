@@ -737,7 +737,8 @@ body{
       <div class="upgrade-choice-title">심신 안정으로 전환</div>
       <div class="upgrade-choice-desc">심신 안정 중이 되면 광고 없이<br>마음껏 누를 수 있어요.</div>
       <div class="upgrade-choice-btns">
-        <button class="upgrade-pay-btn" onclick="closeUpgradeChoice();showToast('결제 페이지 준비중이에요 🙏')">💳 심신 안정 중으로 전환하기</button>
+        <button class="upgrade-pay-btn" onclick="closeUpgradeChoice();purchasePremiumIAP()">💳 심신 안정 중으로 전환하기 (₩2,500)</button>
+        <button class="upgrade-pay-btn" style="background:#F0ECE2;color:#A8A49C;font-size:12px;" onclick="closeUpgradeChoice();restorePurchasesIAP()">이미 구매했어요 (복원)</button>
         <!-- 코드 입력 버튼 비활성화 (Apple 심사 대응) -->
       </div>
     </div>
@@ -768,7 +769,7 @@ body{
         <div class="upgrade-benefit-item">💾 클릭 수 저장 및 유지</div>
         <div class="upgrade-benefit-item">🔓 모든 테마 잠금 해제</div>
       </div>
-      <button class="upgrade-btn-main" onclick="closeUpgradePopup();showUpgradeChoice()">✨ 심신 안정 중으로 전환하기</button>
+      <button class="upgrade-btn-main" onclick="closeUpgradePopup();purchasePremiumIAP()">✨ 심신 안정 중으로 전환하기 (₩2,500)</button>
       <button class="upgrade-btn-skip" onclick="closeUpgradePopup()">괜찮아요, 다음에</button>
     </div>
   </div>
@@ -784,7 +785,7 @@ body{
         <div class="reset-upsell-title">✨ 심신 안정 중이라면?</div>
         <div class="reset-upsell-desc">횟수 제한 없이 무제한으로 누를 수 있어요.<br>광고도 없고, 클릭 수도 저장돼요.</div>
       </div>
-      <button class="reset-btn-upgrade" onclick="closeReset();showToast('결제 페이지 준비중이에요 🙏')">✨ 심신 안정 중으로 전환하기</button>
+      <button class="reset-btn-upgrade" onclick="closeReset();purchasePremiumIAP()">✨ 심신 안정 중으로 전환하기 (₩2,500)</button>
       <div style="height:8px"></div>
       <button class="reset-btn" onclick="closeReset()">닫고 처음부터 시작</button>
     </div>
@@ -1364,10 +1365,58 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 });
 
+/* ─── StoreKit IAP ─── */
+async function purchasePremiumIAP() {
+  const IAP = window.Capacitor?.Plugins?.IAP;
+  if (!IAP) { showToast('앱에서만 구매 가능합니다.'); return; }
+  showToast('결제 중...');
+  try {
+    const result = await IAP.purchasePremium();
+    if (result.success) {
+      localStorage.setItem('premium_purchased','1');
+      activatePremium();
+    }
+  } catch(e) {
+    showToast('결제 실패: ' + (e.message || e));
+  }
+}
+
+async function restorePurchasesIAP() {
+  const IAP = window.Capacitor?.Plugins?.IAP;
+  if (!IAP) { showToast('앱에서만 복원 가능합니다.'); return; }
+  showToast('복원 중...');
+  try {
+    const result = await IAP.restorePurchases();
+    if (result.success) {
+      localStorage.setItem('premium_purchased','1');
+      activatePremium();
+      showToast('✨ 구매 내역이 복원됐어요!');
+    } else {
+      showToast('복원할 구매 내역이 없어요.');
+    }
+  } catch(e) {
+    showToast('복원 실패: ' + (e.message || e));
+  }
+}
+
+async function initPremiumStatus() {
+  if (localStorage.getItem('premium_purchased') === '1') { activatePremium(); return; }
+  const IAP = window.Capacitor?.Plugins?.IAP;
+  if (!IAP) return;
+  try {
+    const result = await IAP.checkPremium();
+    if (result.isPremium) {
+      localStorage.setItem('premium_purchased','1');
+      activatePremium();
+    }
+  } catch(e) {}
+}
+
 /* ─── 초기화 ─── */
 document.body.style.background = themes[state.theme].bg;
 buildBgKeys();
 updateAdKeyLayer();
+initPremiumStatus();
 </script>
 </body>
 </html>
