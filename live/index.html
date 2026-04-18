@@ -782,10 +782,10 @@ body{
 
   <div id="premiumResetWrap" style="display:none;padding:8px 0 4px;display:none;flex-direction:row;align-items:center;justify-content:center;gap:12px;">
     <button class="save-record-btn" onclick="saveRecord()">💾 기록 저장</button>
-    <button onclick="resetPremiumCount()" style="
+    <button id="resetBtnEl" onclick="showResetConfirm()" style="
       font-size:11px;color:#C8C4BC;background:none;border:none;
-      cursor:pointer;
-    ">초기화</button>
+      cursor:pointer;display:flex;align-items:center;gap:3px;
+    ">↩️ <span id="resetBtnLabel">초기화</span></button>
   </div>
 
   <!-- ── 광고 오버레이 ── -->
@@ -930,6 +930,18 @@ body{
       <div class="settings-item" onclick="openContact()">
         <span class="settings-item-label" id="settingsContactLabel">1:1 문의</span>
         <span class="settings-item-right">›</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 초기화 확인 팝업 -->
+  <div class="record-nav-overlay" id="resetConfirmOverlay">
+    <div class="record-nav-card">
+      <div class="record-nav-title" id="resetConfirmTitle">↩️ 초기화 할까요?</div>
+      <div class="record-nav-desc" id="resetConfirmDesc">현재 클릭 수가 0으로 초기화돼요</div>
+      <div class="record-nav-btns">
+        <button class="record-nav-btn-yes" onclick="confirmReset()" id="resetConfirmYes">초기화</button>
+        <button class="record-nav-btn-no" onclick="closeResetConfirm()" id="resetConfirmNo">취소</button>
       </div>
     </div>
   </div>
@@ -1105,12 +1117,21 @@ function loadCount() {
   }
   return 0;
 }
-function resetPremiumCount() {
+function showResetConfirm() {
+  document.getElementById('resetConfirmOverlay').classList.add('show');
+}
+function closeResetConfirm() {
+  document.getElementById('resetConfirmOverlay').classList.remove('show');
+}
+function confirmReset() {
+  closeResetConfirm();
   localStorage.removeItem('chillclick_count_' + state.theme);
   state.count = 0;
   document.getElementById('countNum').textContent = '0';
-  showToast('클릭 수가 초기화됐어요');
+  const L = LANGS[currentLang] || LANGS.ko;
+  showToast(L.toastReset || '클릭 수가 초기화됐어요');
 }
+function resetPremiumCount() { showResetConfirm(); }
 
 /* ─── 테마 정의 ─── */
 const themes = {
@@ -1646,6 +1667,11 @@ const LANGS = {
     recordNavNo: '아니요',
     saveRecordBtn: '💾 기록 저장',
     resetBtn: '초기화',
+    resetConfirmTitle: '↩️ 초기화 할까요?',
+    resetConfirmDesc: '현재 클릭 수가 0으로 초기화돼요',
+    resetConfirmYes: '초기화',
+    resetConfirmNo: '취소',
+    toastReset: '클릭 수가 초기화됐어요',
     upgradeTitle: '심신 안정으로 전환',
     upgradeDesc: '심신 안정 중이 되면 광고 없이\n마음껏 누를 수 있어요.',
     upgradePayBtn: '💳 심신 안정 중으로 전환하기 (₩2,500)',
@@ -1692,6 +1718,11 @@ const LANGS = {
     recordNavNo: 'No',
     saveRecordBtn: '💾 Save Record',
     resetBtn: 'Reset',
+    resetConfirmTitle: '↩️ Reset count?',
+    resetConfirmDesc: 'Your current click count will be set to 0.',
+    resetConfirmYes: 'Reset',
+    resetConfirmNo: 'Cancel',
+    toastReset: 'Click count has been reset.',
     upgradeTitle: 'Go Premium',
     upgradeDesc: 'No ads, unlimited clicks\nwith Premium.',
     upgradePayBtn: '💳 Go Premium (₩2,500)',
@@ -1738,6 +1769,11 @@ const LANGS = {
     recordNavNo: 'いいえ',
     saveRecordBtn: '💾 記録を保存',
     resetBtn: 'リセット',
+    resetConfirmTitle: '↩️ リセットしますか？',
+    resetConfirmDesc: '現在のクリック数が0になります',
+    resetConfirmYes: 'リセット',
+    resetConfirmNo: 'キャンセル',
+    toastReset: 'クリック数をリセットしました',
     upgradeTitle: 'プレミアムへ',
     upgradeDesc: '広告なしで思いきりタップ\nできます。',
     upgradePayBtn: '💳 プレミアムになる (₩2,500)',
@@ -1784,6 +1820,11 @@ const LANGS = {
     recordNavNo: '否',
     saveRecordBtn: '💾 保存记录',
     resetBtn: '重置',
+    resetConfirmTitle: '↩️ 确认重置？',
+    resetConfirmDesc: '当前点击次数将归零',
+    resetConfirmYes: '重置',
+    resetConfirmNo: '取消',
+    toastReset: '点击次数已重置',
     upgradeTitle: '升级会员',
     upgradeDesc: '无广告，随心点击\n尽情享受。',
     upgradePayBtn: '💳 升级会员 (₩2,500)',
@@ -1830,6 +1871,11 @@ const LANGS = {
     recordNavNo: '否',
     saveRecordBtn: '💾 儲存記錄',
     resetBtn: '重置',
+    resetConfirmTitle: '↩️ 確認重置？',
+    resetConfirmDesc: '目前點擊次數將歸零',
+    resetConfirmYes: '重置',
+    resetConfirmNo: '取消',
+    toastReset: '點擊次數已重置',
     upgradeTitle: '升級會員',
     upgradeDesc: '無廣告，盡情點擊\n享受放鬆。',
     upgradePayBtn: '💳 升級會員 (₩2,500)',
@@ -1887,8 +1933,12 @@ function applyLanguage(lang) {
   // 기록 저장/초기화 버튼
   const saveBtn = qs('.save-record-btn');
   if (saveBtn) saveBtn.textContent = L.saveRecordBtn;
-  const resetBtn = qs('#premiumResetWrap button:last-child');
-  if (resetBtn) resetBtn.textContent = L.resetBtn;
+  if (el('resetBtnLabel')) el('resetBtnLabel').textContent = L.resetBtn;
+  // 초기화 확인 팝업
+  if (el('resetConfirmTitle')) el('resetConfirmTitle').textContent = L.resetConfirmTitle;
+  if (el('resetConfirmDesc')) el('resetConfirmDesc').textContent = L.resetConfirmDesc;
+  if (el('resetConfirmYes')) el('resetConfirmYes').textContent = L.resetConfirmYes;
+  if (el('resetConfirmNo')) el('resetConfirmNo').textContent = L.resetConfirmNo;
   // 업그레이드 팝업
   const upTitle = qs('.upgrade-choice-title');
   const upDesc = qs('.upgrade-choice-desc');
