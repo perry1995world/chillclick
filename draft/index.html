@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>심신 안정</title>
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
@@ -37,7 +37,7 @@ body{
 
 /* ── 헤더 ── */
 .header{
-  padding:20px 20px 0;
+  padding:calc(env(safe-area-inset-top) + 20px) 20px 0;
   display:flex;align-items:center;justify-content:space-between;
   position:relative;z-index:2;
   background:var(--bg,var(--cream));
@@ -83,13 +83,6 @@ body{
 }
 .tab.locked::after{
   content:'🔒';font-size:9px;margin-left:2px;
-}
-.tab.coming-soon{
-  background:#F5F3EE;color:#CCC8C0;
-  position:relative;cursor:pointer;
-}
-.tab.coming-soon::after{
-  content:'🔜';font-size:9px;margin-left:2px;
 }
 
 /* ── 메인 영역 ── */
@@ -646,38 +639,6 @@ body{
 }
 .save-record-btn:active{background:#E8E4DA;}
 
-/* ── 비밀번호 게이트 ── */
-#pwGate{
-  position:fixed;inset:0;z-index:9999;
-  background:var(--cream,#F0ECE2);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:20px;
-}
-#pwGate .pw-logo{
-  font-size:28px;font-weight:900;color:var(--acc,#CF3E50);letter-spacing:-1px;
-}
-#pwGate .pw-sub{
-  font-size:13px;color:var(--sub,#A8A49C);margin-top:-12px;
-}
-#pwGate input{
-  width:200px;padding:12px 16px;border-radius:12px;
-  border:2px solid var(--cream3,#D0CBB8);background:#fff;
-  font-size:18px;text-align:center;letter-spacing:4px;
-  color:var(--txt,#3A3530);outline:none;
-  transition:border .2s;
-}
-#pwGate input:focus{border-color:var(--acc,#CF3E50);}
-#pwGate button{
-  padding:12px 32px;border-radius:12px;border:none;
-  background:var(--acc,#CF3E50);color:#fff;
-  font-size:15px;font-weight:700;cursor:pointer;
-  transition:background .2s;
-}
-#pwGate button:hover{background:var(--acc2,#E85A6A);}
-#pwGate .pw-err{
-  font-size:12px;color:var(--acc,#CF3E50);
-  min-height:16px;
-}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -685,14 +646,6 @@ body{
 
 
 
-<!-- 비밀번호 게이트 -->
-<div id="pwGate">
-  <div class="pw-logo">심신 안정</div>
-  <div class="pw-sub">비밀번호를 입력해주세요</div>
-  <input type="password" id="pwInput" placeholder="••••" maxlength="20" />
-  <button onclick="checkPw()">입장</button>
-  <div class="pw-err" id="pwErr"></div>
-</div>
 
 <div class="app" id="app">
 
@@ -712,8 +665,6 @@ body{
   <div class="theme-tabs" id="themeTabs">
     <div class="tab active" data-theme="home" onclick="trySetTheme('home',this)">🏠 집가고싶다</div>
     <div class="tab" data-theme="lottery" onclick="trySetTheme('lottery',this)">🍀 복권당첨</div>
-    <div class="tab coming-soon" data-theme="salary" onclick="showComingSoon()">💸 월급올려줘</div>
-    <div class="tab coming-soon" data-theme="rest" onclick="showComingSoon()">😴 그냥쉬고싶다</div>
   </div>
 
   <!-- 저장된 기록 버튼 행 -->
@@ -955,16 +906,6 @@ body{
     </div>
   </div>
 
-  <!-- 준비중 팝업 -->
-  <div class="record-nav-overlay" id="comingSoonOverlay">
-    <div class="record-nav-card">
-      <div class="record-nav-title">🔜 준비중이에요</div>
-      <div class="record-nav-desc">아직 준비중입니다.<br>조금만 기다려 주세요!</div>
-      <div class="record-nav-btns">
-        <button class="record-nav-btn-yes" onclick="document.getElementById('comingSoonOverlay').classList.remove('show')">확인</button>
-      </div>
-    </div>
-  </div>
 
   <!-- 기록 이동 확인 팝업 -->
   <div class="record-nav-overlay" id="recordNavOverlay">
@@ -992,7 +933,7 @@ const state = {
 };
 
 /* ─── 기록 저장 ─── */
-const THEME_NAMES = {home:'집가고싶다', lottery:'복권당첨', salary:'월급올려줘', rest:'그냥쉬고싶다'};
+const THEME_NAMES = {home:'집가고싶다', lottery:'복권당첨'};
 
 function saveRecord() {
   if(state.tier !== 'premium') return;
@@ -1613,30 +1554,6 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('keyup', e => { if(e.code==='Space') body.classList.remove('pressed'); });
 
-/* ─── 비밀번호 게이트 ─── */
-(function(){
-  if(sessionStorage.getItem('pw_ok')==='1'){
-    document.getElementById('pwGate').style.display='none';
-  }
-})();
-function checkPw(){
-  const v = document.getElementById('pwInput').value;
-  if(v==='1234'){
-    sessionStorage.setItem('pw_ok','1');
-    document.getElementById('pwGate').style.display='none';
-  } else {
-    const err = document.getElementById('pwErr');
-    err.textContent='비밀번호가 틀렸습니다.';
-    document.getElementById('pwInput').value='';
-    setTimeout(()=>{ err.textContent=''; },2000);
-  }
-}
-document.addEventListener('DOMContentLoaded',function(){
-  const input = document.getElementById('pwInput');
-  if(input) input.addEventListener('keydown',function(e){
-    if(e.key==='Enter') checkPw();
-  });
-});
 
 /* ─── StoreKit IAP (v1.0 비활성화) ─── */
 async function purchasePremiumIAP() { /* v1.0: 결제 없음 */ }
@@ -1650,7 +1567,7 @@ const LANGS = {
     logo: '심신 안정',
     badgeFree: '심신 불안정 중',
     badgePremium: '심신 안정 중',
-    tabs: ['🏠 집가고싶다','🍀 복권당첨','💸 월급올려줘','😴 그냥쉬고싶다'],
+    tabs: ['🏠 집가고싶다','🍀 복권당첨'],
     settingsTitle: '설정',
     settingsLang: '언어 변경',
     settingsPrivacy: '개인정보처리방침',
@@ -1667,9 +1584,6 @@ const LANGS = {
     resetConfirmYes: '초기화',
     resetConfirmNo: '취소',
     toastReset: '클릭 수가 초기화됐어요',
-    comingSoonTitle: '🔜 준비중이에요',
-    comingSoonDesc: '아직 준비중입니다. 조금만 기다려 주세요!',
-    comingSoonBtn: '확인',
     upgradeTitle: '심신 안정으로 전환',
     upgradeDesc: '심신 안정 중이 되면 광고 없이\n마음껏 누를 수 있어요.',
     upgradePayBtn: '💳 심신 안정 중으로 전환하기 (₩2,500)',
@@ -1704,7 +1618,7 @@ const LANGS = {
     logo: 'ChillClick',
     badgeFree: 'Stressed 😓',
     badgePremium: 'Chilling ✨',
-    tabs: ['🏠 Go Home','🍀 Lottery','💸 Pay Raise','😴 Just Rest'],
+    tabs: ['🏠 Go Home','🍀 Lottery'],
     settingsTitle: 'Settings',
     settingsLang: 'Language',
     settingsPrivacy: 'Privacy Policy',
@@ -1721,9 +1635,6 @@ const LANGS = {
     resetConfirmYes: 'Reset',
     resetConfirmNo: 'Cancel',
     toastReset: 'Click count has been reset.',
-    comingSoonTitle: '🔜 Coming Soon',
-    comingSoonDesc: 'This theme is not available yet. Stay tuned!',
-    comingSoonBtn: 'OK',
     upgradeTitle: 'Go Premium',
     upgradeDesc: 'No ads, unlimited clicks\nwith Premium.',
     upgradePayBtn: '💳 Go Premium (₩2,500)',
@@ -1758,7 +1669,7 @@ const LANGS = {
     logo: 'チルクリック',
     badgeFree: 'ストレス中 😓',
     badgePremium: 'リラックス中 ✨',
-    tabs: ['🏠 帰りたい','🍀 宝くじ','💸 給料アップ','😴 休みたい'],
+    tabs: ['🏠 帰りたい','🍀 宝くじ'],
     settingsTitle: '設定',
     settingsLang: '言語変更',
     settingsPrivacy: 'プライバシーポリシー',
@@ -1775,9 +1686,6 @@ const LANGS = {
     resetConfirmYes: 'リセット',
     resetConfirmNo: 'キャンセル',
     toastReset: 'クリック数をリセットしました',
-    comingSoonTitle: '🔜 準備中です',
-    comingSoonDesc: 'まだ準備中です。少々お待ちください！',
-    comingSoonBtn: '確認',
     upgradeTitle: 'プレミアムへ',
     upgradeDesc: '広告なしで思いきりタップ\nできます。',
     upgradePayBtn: '💳 プレミアムになる (₩2,500)',
@@ -1812,7 +1720,7 @@ const LANGS = {
     logo: '冥想点击',
     badgeFree: '压力中 😓',
     badgePremium: '放松中 ✨',
-    tabs: ['🏠 想回家','🍀 彩票','💸 涨工资','😴 想休息'],
+    tabs: ['🏠 想回家','🍀 彩票'],
     settingsTitle: '设置',
     settingsLang: '语言设置',
     settingsPrivacy: '隐私政策',
@@ -1829,9 +1737,6 @@ const LANGS = {
     resetConfirmYes: '重置',
     resetConfirmNo: '取消',
     toastReset: '点击次数已重置',
-    comingSoonTitle: '🔜 即将推出',
-    comingSoonDesc: '此主题尚未准备好，请稍候！',
-    comingSoonBtn: '确认',
     upgradeTitle: '升级会员',
     upgradeDesc: '无广告，随心点击\n尽情享受。',
     upgradePayBtn: '💳 升级会员 (₩2,500)',
@@ -1866,7 +1771,7 @@ const LANGS = {
     logo: '冥想點擊',
     badgeFree: '壓力中 😓',
     badgePremium: '放鬆中 ✨',
-    tabs: ['🏠 想回家','🍀 彩票','💸 漲薪水','😴 想休息'],
+    tabs: ['🏠 想回家','🍀 彩票'],
     settingsTitle: '設定',
     settingsLang: '語言設定',
     settingsPrivacy: '隱私政策',
@@ -1883,9 +1788,6 @@ const LANGS = {
     resetConfirmYes: '重置',
     resetConfirmNo: '取消',
     toastReset: '點擊次數已重置',
-    comingSoonTitle: '🔜 即將推出',
-    comingSoonDesc: '此主題尚未準備好，請稍候！',
-    comingSoonBtn: '確認',
     upgradeTitle: '升級會員',
     upgradeDesc: '無廣告，盡情點擊\n享受放鬆。',
     upgradePayBtn: '💳 升級會員 (₩2,500)',
@@ -2036,13 +1938,6 @@ async function initPremiumStatus() {
   activatePremium();
 }
 
-function showComingSoon() {
-  const L = LANGS[currentLang] || LANGS.ko;
-  document.querySelector('#comingSoonOverlay .record-nav-title').textContent = L.comingSoonTitle;
-  document.querySelector('#comingSoonOverlay .record-nav-desc').innerHTML = L.comingSoonDesc;
-  document.querySelector('#comingSoonOverlay .record-nav-btn-yes').textContent = L.comingSoonBtn;
-  document.getElementById('comingSoonOverlay').classList.add('show');
-}
 
 /* ─── 초기화 ─── */
 document.getElementById('app').style.setProperty('--bg', themes[state.theme].bg);
