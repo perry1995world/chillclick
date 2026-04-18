@@ -890,7 +890,7 @@ body{
       <span style="font-size:11px;color:#D0CBB8;">|</span>
       <a href="terms.html" id="footerTerms" style="font-size:11px;color:#A8A49C;text-decoration:none;">이용약관</a>
       <span style="font-size:11px;color:#D0CBB8;">|</span>
-      <a href="mailto:minwoo5836@gmail.com" id="footerContact" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
+      <a href="mailto:ask.perryworld.03@gmail.com" id="footerContact" style="font-size:11px;color:#A8A49C;text-decoration:none;">1:1 문의</a>
     </div>
     <div id="footerCopy" style="font-size:10px;color:#C8C4BC;">© 2026 심신 안정. All rights reserved.</div>
   </div>
@@ -1884,8 +1884,9 @@ function applyLanguage(lang) {
   if (L.themeKeys) {
     const keys = L.themeKeys[state.theme];
     if (keys) {
-      const keyEls = document.querySelectorAll('.key-label');
-      keyEls.forEach((k, i) => { if (keys[i]) k.textContent = keys[i]; });
+      if (el('k1')) el('k1').textContent = keys[0];
+      if (el('k3')) el('k3').textContent = keys[2];
+      if (el('k4')) el('k4').textContent = keys[3];
     }
   }
   // 기록 이동 팝업
@@ -1934,7 +1935,7 @@ function openTerms() {
   window.open('terms.html', '_blank');
 }
 function openContact() {
-  window.location.href = 'mailto:minwoo5836@gmail.com?subject=ChillClick 문의';
+  window.location.href = 'mailto:ask.perryworld.03@gmail.com?subject=ChillClick 문의';
 }
 
 async function initPremiumStatus() {
