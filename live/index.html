@@ -915,9 +915,10 @@ function closeRecordNav() {
   _pendingRecordId = null;
 }
 function confirmRecordNav() {
+  const id = _pendingRecordId;
   closeRecordNav();
   const records = JSON.parse(localStorage.getItem('chillclick_records')||'[]');
-  const r = records.find(x => x.id === _pendingRecordId);
+  const r = records.find(x => x.id === id);
   if(!r) return;
   state.count = r.count;
   document.getElementById('countNum').textContent = r.count;
