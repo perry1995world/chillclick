@@ -1107,12 +1107,12 @@ function deleteRecord(id) {
 /* ─── 유료 회원 클릭 수 저장 ─── */
 function saveCount() {
   if(state.tier === 'premium') {
-    localStorage.setItem('chillclick_count_' + state.theme, state.count);
+    localStorage.setItem('chillclick_count', state.count);
   }
 }
 function loadCount() {
   if(state.tier === 'premium') {
-    const saved = localStorage.getItem('chillclick_count_' + state.theme);
+    const saved = localStorage.getItem('chillclick_count');
     return saved ? parseInt(saved) : 0;
   }
   return 0;
@@ -1125,7 +1125,7 @@ function closeResetConfirm() {
 }
 function confirmReset() {
   closeResetConfirm();
-  localStorage.removeItem('chillclick_count_' + state.theme);
+  localStorage.removeItem('chillclick_count');
   state.count = 0;
   document.getElementById('countNum').textContent = '0';
   const L = LANGS[currentLang] || LANGS.ko;
@@ -1207,7 +1207,7 @@ function buildBgKeys() {
 function setTheme(name, el) {
 
   state.theme = name;
-  state.count = loadCount();
+  // count는 테마 변경 시 유지 (단, 첫 로드 시에만 localStorage에서 읽음)
   document.getElementById('countNum').textContent = state.count;
   updateProgress();
 
