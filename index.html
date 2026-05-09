@@ -485,13 +485,18 @@ body{
   100%{opacity:0;transform:translateY(-140px) scale(.85) rotate(var(--r))}
 }
 
-/* ── 파티클 ── */
+/* ── 파티클 (애니팡 스타일) ── */
 .particle{
-  position:fixed;width:9px;height:9px;border-radius:2px;
-  pointer-events:none;z-index:98;
-  animation:pFly .85s ease-out forwards;
+  position:fixed;pointer-events:none;z-index:98;
+  animation:pFly .9s ease-out forwards;
 }
-@keyframes pFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(.2)}}
+@keyframes pFly{0%{opacity:1;transform:translate(0,0) scale(1.1) rotate(0deg)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(.1) rotate(var(--pr,360deg))}}
+
+/* ── 폭죽 ── */
+.firework{position:fixed;pointer-events:none;z-index:200;animation:fwFly var(--fd,.9s) ease-out forwards;}
+@keyframes fwFly{0%{opacity:1;transform:translate(0,0) scale(1.4)}80%{opacity:.8}100%{opacity:0;transform:translate(var(--fx),var(--fy)) scale(.08)}}
+.screen-flash{position:fixed;inset:0;pointer-events:none;z-index:190;background:radial-gradient(circle,rgba(255,255,255,.75) 0%,transparent 70%);animation:screenFlash .5s ease-out forwards;}
+@keyframes screenFlash{0%{opacity:1}100%{opacity:0}}
 
 /* ── 토스트 ── */
 .toast{
@@ -1250,23 +1255,70 @@ function spawnFloat(x, y) {
   setTimeout(() => el.remove(), 1700);
 }
 
-/* ─── 파티클 ─── */
+/* ─── 파티클 (애니팡 스타일) ─── */
 function spawnParticles(x, y) {
   const colors = themes[state.theme].particles;
-  for(let i=0;i<10;i++){
+  const count = 16;
+  for(let i=0;i<count;i++){
     const el = document.createElement('div');
     el.className = 'particle';
-    const angle = (Math.PI * 2 * i) / 10 + Math.random() * .4;
-    const d = 50 + Math.random() * 70;
+    const angle = (Math.PI*2*i)/count + (Math.random()-.5)*.7;
+    const d = 45 + Math.random()*80;
+    const size = 6 + Math.floor(Math.random()*10);
     el.style.cssText = `
       left:${x}px;top:${y}px;
+      width:${size}px;height:${size}px;
       background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:${Math.random()>.4?'50%':'3px'};
       --px:${(Math.cos(angle)*d).toFixed(0)}px;
-      --py:${(Math.sin(angle)*d - 20).toFixed(0)}px;
-      border-radius:${Math.random()>.5?'50%':'3px'};
+      --py:${(Math.sin(angle)*d - 28).toFixed(0)}px;
+      --pr:${Math.random()>.5?'360deg':'-360deg'};
     `;
     document.body.appendChild(el);
-    setTimeout(()=>el.remove(), 900);
+    setTimeout(()=>el.remove(), 1000);
+  }
+}
+
+/* ─── 폭죽 (마일스톤) ─── */
+function spawnFireworks() {
+  const app = document.getElementById('app');
+  const rect = app.getBoundingClientRect();
+  const base = themes[state.theme].particles;
+  const extra = ['#FFD700','#FF69B4','#00FFCC','#FF6347','#7B68EE','#00BFFF','#FFA500'];
+  const allColors = [...base, ...extra];
+
+  for(let burst=0;burst<5;burst++){
+    setTimeout(()=>{
+      const cx = rect.left + rect.width*(.12 + Math.random()*.76);
+      const cy = rect.top + rect.height*(.1 + Math.random()*.5);
+
+      if(burst===0){
+        const flash = document.createElement('div');
+        flash.className = 'screen-flash';
+        document.body.appendChild(flash);
+        setTimeout(()=>flash.remove(), 600);
+      }
+
+      for(let i=0;i<32;i++){
+        const el = document.createElement('div');
+        el.className = 'firework';
+        const angle = (Math.PI*2*i)/32 + (Math.random()-.5)*.3;
+        const d = 55 + Math.random()*110;
+        const size = 5 + Math.floor(Math.random()*12);
+        const dur = (.65 + Math.random()*.5).toFixed(2)+'s';
+        el.style.cssText = `
+          left:${cx}px;top:${cy}px;
+          width:${size}px;height:${size}px;
+          background:${allColors[Math.floor(Math.random()*allColors.length)]};
+          border-radius:${Math.random()>.5?'50%':'2px'};
+          --fx:${(Math.cos(angle)*d).toFixed(0)}px;
+          --fy:${(Math.sin(angle)*d - 15).toFixed(0)}px;
+          --fd:${dur};
+        `;
+        document.body.appendChild(el);
+        setTimeout(()=>el.remove(), parseFloat(dur)*1000+100);
+      }
+    }, burst*200);
   }
 }
 
@@ -1308,6 +1360,9 @@ function handlePress(e) {
   const cy = e?.clientY ?? window.innerHeight/2;
   spawnFloat(cx, cy);
   if(state.count % 5 === 0) spawnParticles(cx, cy);
+
+  const FW_MILESTONES = [30, 100, 200, 300, 500, 1000];
+  if(FW_MILESTONES.includes(state.count)) setTimeout(spawnFireworks, 50);
 
   saveCount();
 
