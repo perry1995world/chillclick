@@ -1538,7 +1538,7 @@ function spawnParticles(x, y) {
   }
 }
 
-/* ─── 폭죽 (마일스톤) ─── */
+/* ─── 폭죽 — 10배수 (기본) ─── */
 function spawnFireworks() {
   const app = document.getElementById('app');
   const rect = app.getBoundingClientRect();
@@ -1546,38 +1546,71 @@ function spawnFireworks() {
   const extra = ['#FFD700','#FF69B4','#00FFCC','#FF6347','#7B68EE','#00BFFF','#FFA500'];
   const allColors = [...base, ...extra];
 
-  for(let burst=0;burst<8;burst++){
+  for(let burst=0;burst<4;burst++){
     setTimeout(()=>{
-      const cx = rect.left + rect.width*(.08 + Math.random()*.84);
-      const cy = rect.top + rect.height*(.08 + Math.random()*.55);
-
-      if(burst===0){
-        const flash = document.createElement('div');
-        flash.className = 'screen-flash';
-        document.body.appendChild(flash);
-        setTimeout(()=>flash.remove(), 600);
-      }
-
-      for(let i=0;i<48;i++){
+      const cx = rect.left + rect.width*(.15 + Math.random()*.7);
+      const cy = rect.top + rect.height*(.15 + Math.random()*.5);
+      for(let i=0;i<24;i++){
         const el = document.createElement('div');
         el.className = 'firework';
-        const angle = (Math.PI*2*i)/48 + (Math.random()-.5)*.3;
-        const d = 70 + Math.random()*150;
-        const size = 6 + Math.floor(Math.random()*16);
-        const dur = (.7 + Math.random()*.65).toFixed(2)+'s';
+        const angle = (Math.PI*2*i)/24 + (Math.random()-.5)*.4;
+        const d = 40 + Math.random()*80;
+        const size = 4 + Math.floor(Math.random()*8);
+        const dur = (.55 + Math.random()*.4).toFixed(2)+'s';
         el.style.cssText = `
           left:${cx}px;top:${cy}px;
           width:${size}px;height:${size}px;
           background:${allColors[Math.floor(Math.random()*allColors.length)]};
           border-radius:${Math.random()>.5?'50%':'2px'};
           --fx:${(Math.cos(angle)*d).toFixed(0)}px;
-          --fy:${(Math.sin(angle)*d - 20).toFixed(0)}px;
+          --fy:${(Math.sin(angle)*d - 15).toFixed(0)}px;
           --fd:${dur};
         `;
         document.body.appendChild(el);
         setTimeout(()=>el.remove(), parseFloat(dur)*1000+100);
       }
-    }, burst*180);
+    }, burst*160);
+  }
+}
+
+/* ─── 폭죽 — 50배수 (메가) ─── */
+function spawnMegaFireworks() {
+  const app = document.getElementById('app');
+  const rect = app.getBoundingClientRect();
+  const base = themes[state.theme].particles;
+  const mega = ['#FFD700','#FF1493','#00FFCC','#FF4500','#9400D3','#00BFFF','#FFA500','#ADFF2F','#FF6347','#1E90FF'];
+  const allColors = [...base, ...mega];
+
+  // 화면 플래시
+  const flash = document.createElement('div');
+  flash.className = 'screen-flash';
+  document.body.appendChild(flash);
+  setTimeout(()=>flash.remove(), 600);
+
+  for(let burst=0;burst<10;burst++){
+    setTimeout(()=>{
+      const cx = rect.left + rect.width*(.06 + Math.random()*.88);
+      const cy = rect.top + rect.height*(.06 + Math.random()*.6);
+      for(let i=0;i<56;i++){
+        const el = document.createElement('div');
+        el.className = 'firework';
+        const angle = (Math.PI*2*i)/56 + (Math.random()-.5)*.25;
+        const d = 80 + Math.random()*170;
+        const size = 7 + Math.floor(Math.random()*18);
+        const dur = (.8 + Math.random()*.7).toFixed(2)+'s';
+        el.style.cssText = `
+          left:${cx}px;top:${cy}px;
+          width:${size}px;height:${size}px;
+          background:${allColors[Math.floor(Math.random()*allColors.length)]};
+          border-radius:${Math.random()>.4?'50%':'3px'};
+          --fx:${(Math.cos(angle)*d).toFixed(0)}px;
+          --fy:${(Math.sin(angle)*d - 25).toFixed(0)}px;
+          --fd:${dur};
+        `;
+        document.body.appendChild(el);
+        setTimeout(()=>el.remove(), parseFloat(dur)*1000+100);
+      }
+    }, burst*150);
   }
 }
 
@@ -1624,6 +1657,8 @@ function handlePress(e) {
     num.classList.remove('pop','milestone');
     void num.offsetWidth;
     num.classList.add('milestone');
+    setTimeout(spawnMegaFireworks, 50);
+  } else if(state.count % 10 === 0){
     setTimeout(spawnFireworks, 50);
   }
 
