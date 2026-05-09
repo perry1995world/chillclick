@@ -1618,8 +1618,7 @@ function handlePress(e) {
   spawnFloat(cx, cy);
   if(state.count % 5 === 0) spawnParticles(cx, cy);
 
-  const FW_MILESTONES = [10, 100, 200, 300, 500, 1000];
-  if(FW_MILESTONES.includes(state.count)) setTimeout(spawnFireworks, 50);
+  if(state.count % 10 === 0) setTimeout(spawnFireworks, 50);
 
   saveCount();
 
